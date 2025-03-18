@@ -7,8 +7,6 @@ From detailed new user statistics to role and nickname persistence, Overseer han
 
 Support Server: https://discord.gg/xpBaH8DnYy
 
-Overseer is a Discord bot designed to moderate servers.
-
 
 Overseer currently can:
 
