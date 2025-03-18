@@ -6,7 +6,7 @@ const { joinVoiceChannel } = require('@discordjs/voice');
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
 const { REST, Routes } = require('discord.js');
-const { clientId, token, dbusr, dbpwd } = require('./config.json');
+const { clientId, token, dbusr, dbpwd, addr } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./fsfuncs');
 const path = require('node:path');
@@ -23,7 +23,7 @@ client.once(Events.ClientReady, async c => {
 	console.log(`${clc.red(await printLines())} lines of code found!\nLogged in as ${clc.red(c.user.tag)}.`);
 	global.client = client;
 	global.connections = {};
-	global.mongo = await MongoClient.connect(`mongodb://${dbusr}:${dbpwd}@127.0.0.1:29183`);
+	global.mongo = await MongoClient.connect(`mongodb://${dbusr}:${dbpwd}@${addr}`);
 	global.db = global.mongo.db("overseer");
 	global.msgcol = global.db.collection("messages");
 	global.srvcol = global.db.collection("servers");
