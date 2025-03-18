@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const purgeset = require('../Modules/purgeset.js');
+const purgeset = require('../Command_Modules/purgeset.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
