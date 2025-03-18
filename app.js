@@ -10,10 +10,10 @@ const { clientId, token, dbusr, dbpwd, addr } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./fsfuncs');
 const path = require('node:path');
-const guildEvents = require('./commands/Modules/guildevents.js');
-const messageEvents = require('./commands/Modules/messageevents.js');
-const EmbedCreator = require('./commands/Modules/embedcreator.js');
-const essentials = require('./commands/Modules/essentials.js');
+const guildEvents = require('./Event_Modules/guildevents.js');
+const messageEvents = require('./Event_Modules/messageevents.js');
+const EmbedCreator = require('./Event_Modules/embedcreator.js');
+const essentials = require('./Event_Modules/essentials.js');
 const client = new Client({ intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
 
 
