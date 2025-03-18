@@ -1,0 +1,1 @@
+while true ; do sleep 3 && node ./deploy-commands.js && echo "Refreshing Complete!" && sleep 2 && node ./app.js && echo "Restarting in 3 Seconds!" && sleep 1 && echo "Restarting in 2 Seconds!" && sleep 1 && echo "Restarting in 1 Seconds!" && sleep 1; done
