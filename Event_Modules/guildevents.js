@@ -239,12 +239,12 @@ class guildEvents {
 						exampleEmbed.addFields([{ name: "Removed Roles:", value: `${rolesrem}`, inline: false }]);
 						flag = true;
 					}
-					if (obj.userUpdate === "none" || !obj || !flag) {
+					if (obj.userupdate === "none" || !obj || !flag) {
 						return;
 					}
 					else {
-						if (((guild.members.me).permissionsIn(obj.userUpdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userUpdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userUpdate).has(PermissionFlagsBits.Administrator))
-							await client.channels.cache.get(obj.userUpdate).send({ embeds: [exampleEmbed] });
+						if (((guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.Administrator))
+							await client.channels.cache.get(obj.userupdate).send({ embeds: [exampleEmbed] });
 						else
 							return;
 					}
@@ -280,7 +280,7 @@ class guildEvents {
 								exampleEmbed.addFields([{ name: "Avatar Changed", value: `Old Avatar: ${oldUser.displayAvatarURL()}\nNew Avatar: ${newUser.displayAvatarURL()}`, inline: false }]);
 								flag = true;
 							}
-							if (obj.userUpdate === "none" || !obj || !flag) {
+							if (obj.userupdate === "none" || !obj || !flag) {
 								return;
 							}
 							if (oldUser.system !== newUser.system) {
@@ -292,8 +292,8 @@ class guildEvents {
 								flag = true;
 							}
 							else {
-								if (((guild.members.me).permissionsIn(obj.userUpdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userUpdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userUpdate).has(PermissionFlagsBits.Administrator))
-									await client.channels.cache.get(obj.userUpdate).send({ embeds: [exampleEmbed] });
+								if (((guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.Administrator))
+									await client.channels.cache.get(obj.userupdate).send({ embeds: [exampleEmbed] });
 								else
 									return;
 							}
@@ -331,7 +331,7 @@ class guildEvents {
 		return new Promise((resolve, reject) => {
 			(async () => {
 				if (!(await global.srvcol.findOne({ "srv": guild.id }))){
-					const obj = { srv: guild.id, delete: "none", update: "none", join: "none", leave: "none", bans: "none", command: "none", joinstat: "none", leavestat: "none", banstat: "none", userUpdate: "none", rolepersistency: false, joinmsg: "Welcome {@user}!!!", leavemsg: "Goodbye!\n{@user} left the server. :(", banmsg: "{@user} has been banned from {servername}!", ismsgembed: false, defaultnick: "", autobanlist: [], autodelist: [], joinroles: [], editlog: [], banlist: [], secretkeys: [], fishmode: false, users: {} };
+					const obj = { srv: guild.id, name: guild.name, delete: "none", update: "none", join: "none", leave: "none", bans: "none", command: "none", joinstat: "none", leavestat: "none", banstat: "none", userupdate: "none", rolepersistency: false, joinmsg: "Welcome {@user}!!!", leavemsg: "Goodbye!\n{@user} left the server. :(", banmsg: "{@user} has been banned from {servername}!", ismsgembed: false, defaultnick: "", autobanlist: [], autodelist: [], joinroles: [], editlog: [], banlist: [], secretkeys: [], fishmode: false, users: {} };
 					await global.srvcol.insertOne(obj);
 				}
 				resolve(true);

@@ -41,6 +41,14 @@ module.exports = {
 		subcommand
 			.setName('banstat')
 			.setDescription('Sets the User Information on Ban log channel.'))
+		.addSubcommand(subcommand =>
+		subcommand
+			.setName('userupdate')
+			.setDescription('Sets the User Updates log channel.'))
+		.addSubcommand(subcommand =>
+		subcommand
+			.setName('moderationlog')
+			.setDescription('Sets the Moderation Log channel.'))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 	async execute(interaction) {
 		const sub = interaction.options.getSubcommand();
