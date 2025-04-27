@@ -2,18 +2,18 @@
 const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
-const { joinVoiceChannel } = require('@discordjs/voice');
+//const { joinVoiceChannel } = require('@discordjs/voice');
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-const { REST, Routes } = require('discord.js');
-const { clientId, token, dbusr, dbpwd, addr } = require('./config.json');
+//const { REST, Routes } = require('discord.js');
+const { token, dbusr, dbpwd, addr } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./fsfuncs');
 const path = require('node:path');
 const guildEvents = require('./Event_Modules/guildevents.js');
 const messageEvents = require('./Event_Modules/messageevents.js');
-const EmbedCreator = require('./Event_Modules/embedcreator.js');
-const essentials = require('./Event_Modules/essentials.js');
+//const EmbedCreator = require('./Event_Modules/embedcreator.js');
+//const essentials = require('./Event_Modules/essentials.js');
 const client = new Client({ intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
 
 //Initialization
@@ -38,11 +38,21 @@ client.once(Events.ClientReady, async c => {
 		totalSeconds %= 3600;
 		let minutes = Math.floor(totalSeconds / 60);
 		let seconds = Math.floor(totalSeconds % 60);
-		await client.user.setPresence({ activities: [{ name: `Overseeing...`, type: ActivityType.Custom }] });
+		await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
 		await sleep(7);
-		await client.user.setPresence({ activities: [{ name: `In ${client.guilds.cache.size} servers!`, type: ActivityType.Custom }] });
+		await client.user.setPresence({
+			activities: [{
+				name: `In ${client.guilds.cache.size} servers!`,
+				type: ActivityType.Custom
+			}]
+		});
 		await sleep(7);
-		await client.user.setPresence({ activities: [{ name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`, type: ActivityType.Custom }] });
+		await client.user.setPresence({
+			activities: [{
+				name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
+				type: ActivityType.Custom
+			}]
+		});
 	}
 });
 client.login(token);
@@ -85,7 +95,7 @@ async function bancheck(){
 						nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
 						const look = {srv: guild.id};
 						const upd = { $set: {banlist: nbanlist} };
-						const data = global.srvcol.updateOne(look, upd);
+						/*const data = */global.srvcol.updateOne(look, upd);
 					}
 				});
 			}
@@ -142,13 +152,13 @@ client.on(Events.InteractionCreate, async interaction => {
         }
         let obj = await global.srvcol.findOne({ "srv": interaction.guild.id });
         if (obj.command === "none" || !obj) {
-            return;
+            return -1;
         }
         else {
             if (((interaction.guild.members.me).permissionsIn(obj.command).has(PermissionFlagsBits.SendMessages) && (interaction.guild.members.me).permissionsIn(obj.command).has(PermissionFlagsBits.ViewChannel)) || (interaction.guild.members.me).permissionsIn(obj.command).has(PermissionFlagsBits.Administrator))
                 await client.channels.cache.get(obj.command).send({ embeds: [exampleEmbed] });
             else
-                return;
+                return -1;
         }
     }
     else if (interaction.isUserContextMenuCommand()) {
@@ -187,13 +197,13 @@ client.on(Events.InteractionCreate, async interaction => {
             }
         }
         if (obj.command === "none" || !obj) {
-            return;
+            return -1;
         }
         else {
             if (((interaction.guild.members.me).permissionsIn(obj.command).has(PermissionFlagsBits.SendMessages) && (interaction.guild.members.me).permissionsIn(obj.command).has(PermissionFlagsBits.ViewChannel)) || (interaction.guild.members.me).permissionsIn(obj.command).has(PermissionFlagsBits.Administrator))
                 await client.channels.cache.get(obj.command).send({ embeds: [exampleEmbed] });
             else
-                return;
+                return -1;
         }
     }
 	else if (interaction.isButton()) {
@@ -328,9 +338,9 @@ client.on(Events.MessageDelete, async (message) => {
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
-function logMapElements(value, key, map) {
+/*function logMapElements(value, key, map) {
   console.log(`map.get('${key}') = ${value}`);
-}
+}*/
 client.on(Events.MessageBulkDelete, async (messages) => {
 	try {
 		await messageEvents.MessageBulkDelete(messages);
@@ -357,7 +367,7 @@ function getArgs(obj) {
     }
     else if (obj.type === 6) {
         let tst;
-        if (obj.user.username != obj.user.username.toLowerCase())
+        if (obj.user.username !== obj.user.username.toLowerCase())
             tst = obj.user.username + '#' + obj.user.discriminator + " (Bot)";
         return { name: obj.name, val: (tst || obj.user.username) };
     }
@@ -369,7 +379,7 @@ function getArgs(obj) {
     }
     else if (obj.type === 9) {
         let tst;
-        if (obj.user.username != obj.user.username.toLowerCase())
+        if (obj.user.username !== obj.user.username.toLowerCase())
             tst = obj.user.username + '#' + obj.user.discriminator + " (Bot)";
         return { name: obj.name, val: (tst || obj.user.username) };
     }
