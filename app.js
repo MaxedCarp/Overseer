@@ -28,6 +28,7 @@ client.once(Events.ClientReady, async c => {
 	global.msgcol = global.db.collection("messages");
 	global.srvcol = global.db.collection("servers");
 	global.fishcol = global.db.collection("fish");
+	global.notecol = global.db.collection("notes");
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	while (true) {

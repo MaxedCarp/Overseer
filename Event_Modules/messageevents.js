@@ -14,7 +14,16 @@ class messageEvents {
 					return;
 				const { guild } = message
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
+				if (obj.autodelist.find(id => id === message.author.id))
+				{
+					await message.delete();
+					return;
+				}
+				if (message.channel.type === 1)
+					console.log(message.author.globalName + ": " + message.content);
 				if (obj.fishmode === true) {
+					if (message.content.toLowerCase().includes("limbo") || message.content.toLowerCase().includes("limbible"))
+						await message.react("🎩");
 					const msgsplit = message.content.toLowerCase().split(' ');
 					let flag = true;
 					msgsplit.forEach(async prt => {
@@ -29,16 +38,12 @@ class messageEvents {
 					if (message.content.toLowerCase().includes("you know what that means"))
 						await message.reply("🐟FISH!");
 					if (message.content.toLowerCase().includes("ghoti")){
-					await message.reply("Sorry, not a real word...").then(async msg => {
-						await essentials.sleep(5);
-						msg.delete();
-					})
-				}
-				}
-				if (obj.autodelist.find(id => id === message.author.id))
-				{
-					await message.delete();
-					return;
+						await message.reply("Sorry, not a real word...").then(async msg => {
+							await essentials.sleep(5);
+							msg.delete();
+							message.delete();
+						})
+					}
 				}
 				if (message.content.includes("<@1205253895258120304>"))
 					await message.reply("Yes, how may I assist?");

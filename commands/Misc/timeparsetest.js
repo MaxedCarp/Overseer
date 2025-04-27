@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const essentials = require('../../Event_Modules/essentials.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -10,8 +11,7 @@ module.exports = {
                 .setRequired(true))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	async execute(interaction) {
-		const parseDuration = await import('parse-duration');
-		const time = parseDuration.default(interaction.options.getString('time'), 's');
+		const time = await essentials.parsetime(interaction.options.getString('time'), 's');
 		await interaction.reply({ content: `${interaction.options.getString('time')} = ${time} seconds!`, ephemeral: true });
 	},
 };
