@@ -6,7 +6,7 @@ const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
 //const { REST, Routes } = require('discord.js');
-const { token, dbusr, dbpwd, addr } = require('./config.json');
+const { token, dbusr, dbpwd, addr, activedb } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./fsfuncs');
 const path = require('node:path');
@@ -23,7 +23,7 @@ client.once(Events.ClientReady, async c => {
 	global.client = client;
 	global.connections = {};
 	global.mongo = await MongoClient.connect(`mongodb://${dbusr}:${dbpwd}@${addr}`);
-	global.db = global.mongo.db("overseer");
+	global.db = global.mongo.db(activedb);
 	global.msgcol = global.db.collection("messages");
 	global.srvcol = global.db.collection("servers");
 	global.fishcol = global.db.collection("fish");
@@ -219,7 +219,7 @@ client.on(Events.InteractionCreate, async interaction => {
 			let mission = missionpool[index];
 			await interaction.reply({ content: (mission || "An error has occurred!"), ephemeral: true });
 		}
-	} 
+	}
 });
 async function getRandomInt(min, max) {
 	min = Math.ceil(min);
