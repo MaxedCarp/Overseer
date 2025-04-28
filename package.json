@@ -3,6 +3,12 @@
   "version": "0.0.0",
   "description": "Overseer",
   "main": "app.js",
+  "scripts": {
+    "flush": "node flush-commands.js",
+    "deploy": "node deploy-commands.js",
+    "run-bot": "node app.js",
+    "run-full": "npm run flush && npm run deploy && npm run run-bot"
+  },
   "author": {
     "name": "MaxedCarp"
   },
