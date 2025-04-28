@@ -22,7 +22,7 @@ module.exports = {
 			return;
 		}
 		await member.ban();
-		await interaction.reply({ content: `User: ${member.user} banned successfully for: ${reason}`});
+		await interaction.reply({ content: `User: ${member.user} banned successfully for: ${reason} || "No reason provided."}.`});
 		const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "ban", text: `${reason || "No reason provided."}.`};
 		await global.notecol.insertOne(msgobj);
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});
