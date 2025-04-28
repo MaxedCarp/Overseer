@@ -1,7 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const fs2 = require('../../Event_Modules/fsfuncs')
-const path = require('node:path');
-const dataset = require('../Command_Modules/dataset.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('togglepersistency')

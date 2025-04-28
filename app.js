@@ -107,10 +107,10 @@ async function bancheck(){
 async function UpdateKeep_Alive(){
 	global.mongo.db("global").collection("availability").updateOne({name: activedb}, { $set: {lastreported: Math.floor(await essentials.parsetime(Date.now() + "ms","s")), uptime: client.uptime } });
 }
-var banTimer = function () {
+let banTimer = function () {
   setInterval(bancheck, 3000);
 }
-var keep_alive = function () {
+let keep_alive = function () {
 	setInterval(UpdateKeep_Alive, 5000);
 }
 eventEmitter.on('banTimer', banTimer);
