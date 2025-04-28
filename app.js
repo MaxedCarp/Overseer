@@ -13,7 +13,7 @@ const path = require('node:path');
 const guildEvents = require('./Event_Modules/guildevents.js');
 const messageEvents = require('./Event_Modules/messageevents.js');
 //const EmbedCreator = require('./Event_Modules/embedcreator.js');
-//const essentials = require('./Event_Modules/essentials.js');
+const essentials = require('./Event_Modules/essentials.js');
 const client = new Client({ intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
 
 
@@ -30,6 +30,7 @@ client.once(Events.ClientReady, async c => {
 	global.notecol = global.db.collection("notes");
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
+	eventEmitter.emit('keepAlive');
 	while (true) {
 		await sleep(7);
 		let totalSeconds = (client.uptime / 1000);
@@ -103,10 +104,17 @@ async function bancheck(){
 		});
 	});
 }
+async function UpdateKeep_Alive(){
+	global.mongo.db("global").collection("availability").updateOne({name: activedb}, { $set: {lastreported: Math.floor(await essentials.parsetime(Date.now() + "ms","s")), uptime: client.uptime } });
+}
 var banTimer = function () {
   setInterval(bancheck, 3000);
 }
+var keep_alive = function () {
+	setInterval(UpdateKeep_Alive, 5000);
+}
 eventEmitter.on('banTimer', banTimer);
+eventEmitter.on('keepAlive', keep_alive);
 //Interaction Event
 client.on(Events.InteractionCreate, async interaction => {
 	if (interaction.channel.type === 1) {
