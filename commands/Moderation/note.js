@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const fs2 = require('../../fsfuncs')
+const fs2 = require('../../Event_Modules/fsfuncs')
 const path = require('node:path');
 module.exports = {
 	data: new SlashCommandBuilder()
