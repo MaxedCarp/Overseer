@@ -105,7 +105,7 @@ async function bancheck(){
 	});
 }
 async function UpdateKeep_Alive(){
-	global.mongo.db("global").collection("availability").updateOne({name: activedb}, { $set: {lastreported: Math.floor(Math.floor(new Date().valueOf() + 10000 / 1000)), uptime: client.uptime } });
+	global.mongo.db("global").collection("availability").updateOne({name: activedb}, { $set: {lastreported: Math.floor(Math.floor((new Date().valueOf() + 10000) / 1000)), uptime: client.uptime } });
 }
 let banTimer = function () {
   setInterval(bancheck, 3000);
