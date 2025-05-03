@@ -11,14 +11,14 @@ module.exports = {
 			.setColor(0xfa8b2a)
 			.setTitle(`${user.username}'s notes`)
 			.setThumbnail(user.displayAvatarURL())
-			.setAuthor({ name: `${interaction.user.globalName || interaction.user.username} (${interaction.user.username})`, iconURL: `${interaction.member.displayAvatarURL()}` })
-			.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+			.setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.member.displayAvatarURL()}` })
+			.setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() });
 		var list = "";
 		const data = await global.notecol.find({srv: interaction.guild.id, userID: user.id}).toArray();
-		if (data.length > 0) {
+		if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
 			i = 1;
 			data.forEach(note => {
-				list += `(${i}).\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
+				list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
 				i++;
 			});
 			notelist.setDescription(list);
