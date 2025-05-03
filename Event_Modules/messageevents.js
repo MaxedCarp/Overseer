@@ -37,13 +37,13 @@ class messageEvents {
 					});
 					if (message.content.toLowerCase().includes("you know what that means"))
 						await message.reply("🐟FISH!");
-					if (message.content.toLowerCase().includes("ghoti")){
+					/*if (message.content.toLowerCase().includes("ghoti")){
 						await message.reply("Sorry, not a real word...").then(async msg => {
 							await essentials.sleep(5);
 							msg.delete();
 							message.delete();
 						})
-					}
+					}*/
 				}
 				if (message.content.includes("<@1205253895258120304>"))
 					await message.reply("Yes, how may I assist?");
