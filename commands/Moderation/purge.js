@@ -15,7 +15,7 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	async execute(interaction) {
 		if (!((interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages) || (interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.Administrator))) {
-			await interaction.reply({content: "I apologize, but I do not have the ability to delete or purge messages. Please grant me the \"Manage Messages\" or the \"Administrator\" permission."});
+			await interaction.reply({content: "I apologize, but I do not have the ability to delete or purge messages. Please grant me the \"Manage Messages\" or the \"Administrator\" permission.", ephemeral: true});
 			return;
 		}
 		const sub = interaction.options.getSubcommand();
