@@ -144,6 +144,7 @@ class messageEvents {
 						return;
 					guild = await client.guilds.fetch(message.guildId);
 					msg = await global.msgcol.findOne({"messageID": message.id});
+					await global.msgcol.deleteOne({ "messageID": message.id });
 				}
 				/*	let resembed = "";
 				
@@ -153,14 +154,13 @@ class messageEvents {
 						resembed = await EmbedCreator.Create(`Image BULK Deleted in: <#${message.channelId}>`, msg.messageContent || " ", msg.messageAttachments[0].attachurl, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
 					*/
 					let resembed = await EmbedCreator.Create(`Message${messages2.length > 1 ? "s **BULK**" : ""} Deleted in: <#${msg.channelId}>`, `${messages2.length} Message${messages2.length > 1 ? "s" : ""} Deleted`, false, guild.name, guild.iconURL(), `${global.client.user.userName}`, `https://cdn.discordapp.com/avatars/${global.client.id}/${global.client.user.avatar}`, 0xFA042A, []);
-					let obj = await global.srvcol.findOne({ "srv": message.guild.id });
+					let obj = await global.srvcol.findOne({ "srv": guild.id });
 					if (obj.delete === "none" || !obj)
 						return;
 					if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator))
 						await client.channels.cache.get(obj.delete).send({ embeds: [resembed] });
 					else
 						return;
-					await global.msgcol.deleteOne({ "messageID": message.id });
 				//};
 				resolve(true);
 			})();
