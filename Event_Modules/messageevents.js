@@ -148,7 +148,7 @@ class messageEvents {
 						return;
 					guild = await client.guilds.fetch(message.guildId);
 					msg = await global.msgcol.findOne({"messageID": message.id});
-					chan = msg.channelId;
+					chan = msg.messageChannelID;
 					await global.msgcol.deleteOne({ "messageID": message.id });
 				}
 				/*	let resembed = "";
