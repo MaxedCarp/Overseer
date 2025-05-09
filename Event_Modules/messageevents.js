@@ -132,6 +132,7 @@ class messageEvents {
 						test.push(messages2.at(i));
 					i++;
 				}
+				let msg;
 				for (let i = test.length - 1; i >= 0; i--) {
 					let message = test[i];
 					if (message.guild === null)
@@ -141,7 +142,7 @@ class messageEvents {
 					if (!(await global.msgcol.findOne({"messageID": message.id})))
 						return;
 					const guild = await client.guilds.fetch(message.guildId);
-					let msg = await global.msgcol.findOne({"messageID": message.id});
+					msg = await global.msgcol.findOne({"messageID": message.id});
 				}
 				/*	let resembed = "";
 				
