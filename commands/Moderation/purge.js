@@ -12,8 +12,12 @@ module.exports = {
 			.addIntegerOption(option =>
 				option.setName('limit')
 				.setDescription('Amount of messages to fetch')))
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	async execute(interaction) {
+		if (!((interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages) || (interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.Administrator))) {
+			await interaction.reply({content: "I apologize, but I do not have the ability to delete or purge messages. Please grant me the \"Manage Messages\" or the \"Administrator\" permission."});
+			return;
+		}
 		const sub = interaction.options.getSubcommand();
 		const lim = interaction.options.getInteger("limit") || 100;
 		switch(sub) {
