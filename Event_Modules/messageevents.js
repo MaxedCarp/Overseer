@@ -125,7 +125,7 @@ class messageEvents {
 				
 				if (messages2.length < 1)
 					return;
-				const msgcount = messages2.length;
+
 				let test = [];
 				let i = 0;
 				while (messages2.at(i)) {
@@ -135,7 +135,9 @@ class messageEvents {
 				}
 				let msg;
 				let guild;
+				let msgcount;
 				for (let i = test.length - 1; i >= 0; i--) {
+					msgcount = test.length;
 					let message = test[i];
 					if (message.guild === null)
 						return;
