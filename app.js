@@ -1,5 +1,9 @@
 //Declaration
-const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits,
+	ButtonBuilder,
+	ButtonStyle,
+	ActionRowBuilder
+} = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
 //const { joinVoiceChannel } = require('@discordjs/voice');
@@ -226,6 +230,158 @@ client.on(Events.InteractionCreate, async interaction => {
 			}
 			let mission = missionpool[index];
 			await interaction.reply({ content: (mission || "An error has occurred!"), ephemeral: true });
+		}
+		if (interaction.customId === "help0") {
+			const helpChannels = new EmbedBuilder()
+				.setColor(0x00A012)
+				.setTitle(`Command List - Page 1: Channels`)
+				.setAuthor({
+					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
+				})
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.addFields(
+					{ name: 'Channels', value: "----------------" },
+					{ name: '/setlogchannel <type>', value: "Sets the specified logs channel to the channel the command is executed in." },
+				)
+				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+			const left = new ButtonBuilder()
+				.setCustomId('help4')
+				.setLabel('Miscellaneous')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('◀️');
+			const right = new ButtonBuilder()
+				.setCustomId('help1')
+				.setLabel('Roles')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('▶️');
+			const row = new ActionRowBuilder()
+				.addComponents(left, right);
+			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
+			await interaction.update({embeds: [helpChannels], components: [row]});
+		}
+		if (interaction.customId === "help1") {
+			const helpRoles = new EmbedBuilder()
+				.setColor(0x00A012)
+				.setTitle(`Command List - Page 2: Roles`)
+				.setAuthor({
+					name: `Help Form`,
+					iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
+				})
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.addFields(
+					{name: 'Roles', value: "----------------"},
+					{name: '/togglepersistency', value: "Enables role persistence, which allows roles to be reacquired if a member leaves and then rejoins."},
+					{name: '/joinroles add <role>', value: "Adds a roles to be assigned to new members."},
+					{name: '/joinroles list', value: "Lists all roles added on join."}, {name: '/joinroles remove <index>', value: "Prevent a role from being added on join (use /joinroles list to get the index)"},
+					{name: '/secretkeys add <keyset> <role> <age requirement>', value: "Assigns a role to a user if they send a message that matches the specified keyset and have the proper time-since-join (in seconds)"},
+					{name: '/secretkeys list', value: "Lists all secret keys"}, {name: '/secretkeys delete <index>', value: "Delete a secret keyset (use /secretkeys list list to get the index)"}
+					)
+				.setFooter({text: interaction.guild.name, iconURL: interaction.guild.iconURL()});
+			const left = new ButtonBuilder()
+				.setCustomId('help0')
+				.setLabel('Channels')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('◀️');
+			const right = new ButtonBuilder()
+				.setCustomId('help2')
+				.setLabel('Moderation')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('▶️');
+			const row = new ActionRowBuilder()
+				.addComponents(left, right);
+			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
+			await interaction.update({embeds: [helpRoles], components: [row]});
+		}
+		if (interaction.customId === "help2") {
+			const helpMod = new EmbedBuilder()
+				.setColor(0x00A012)
+				.setTitle(`Command List - Page 3: Moderation`)
+				.setAuthor({
+					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
+				})
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.addFields(
+					{ name: 'Moderation', value: "----------------" },
+					{ name: '/ban <user> (<reason>)', value: "Bans a user (reason will be added to the user's notes)" },
+					{ name: '/timeout <user> <time> (<reason>)', value: "Times a user out for the specified duration (For example: 3 days 1h 10minutes and 32 s. Reason will be added to the user's notes)" },
+					{ name: '/userstats <user>', value: "Check detailed information about the target user." },
+					{ name: '/note add <user> <text>', value: "Assigns a note to a user." },
+					{ name: '/note list <user>', value: "View a user's notes." },
+					{ name: '/note delete <ID>', value: "Delete a user's note by ID." },
+					{ name: '/purge any (<count>)', value: "Purges messages in a channel up to 100 messages." },
+				)
+				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+			const left = new ButtonBuilder()
+				.setCustomId('help1')
+				.setLabel('Roles')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('◀️');
+			const right = new ButtonBuilder()
+				.setCustomId('help3')
+				.setLabel('Administration')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('▶️');
+			const row = new ActionRowBuilder()
+				.addComponents(left, right);
+			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
+			await interaction.update({embeds: [helpMod], components: [row]});
+		}
+		if (interaction.customId === "help3") {
+			const helpAdmin = new EmbedBuilder()
+				.setColor(0x00A012)
+				.setTitle(`Command List - Page 4: Administration`)
+				.setAuthor({
+					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
+				})
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.addFields(
+					{ name: 'Administration', value: "----------------" },
+					{ name: '/setjoinmsg <text>', value: "Sets the join message for the server. Type {@user} to ping the user, {servername} for server name, {username} for the user's username and {user} for the user's global name." },
+					{ name: '/setleavemsg <text>', value: "Sets the leave message for the server. Type {@user} to ping the user, {servername} for server name, {username} for the user's username and {user} for the user's global name." },
+				)
+				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+			const left = new ButtonBuilder()
+				.setCustomId('help2')
+				.setLabel('Moderation')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('◀️');
+			const right = new ButtonBuilder()
+				.setCustomId('help4')
+				.setLabel('Miscellaneous')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('▶️');
+			const row = new ActionRowBuilder()
+				.addComponents(left, right);
+			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
+			await interaction.update({embeds: [helpAdmin], components: [row]});
+		}
+		if (interaction.customId === "help4") {
+			const helpMisc = new EmbedBuilder()
+				.setColor(0x00A012)
+				.setTitle(`Command List - Page 5: Miscellaneous`)
+				.setAuthor({
+					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
+				})
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.addFields(
+					{ name: 'Misc', value: "----------------" },
+					{ name: '/help', value: "- Displays this help form" }
+				)
+				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+			const left = new ButtonBuilder()
+				.setCustomId('help3')
+				.setLabel('Administration')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('◀️');
+			const right = new ButtonBuilder()
+				.setCustomId('help0')
+				.setLabel('Channels')
+				.setStyle(ButtonStyle.Primary)
+				.setEmoji('▶️');
+			const row = new ActionRowBuilder()
+				.addComponents(left, right);
+			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
+			await interaction.update({embeds: [helpMisc], components: [row]});
 		}
 	}
 });
