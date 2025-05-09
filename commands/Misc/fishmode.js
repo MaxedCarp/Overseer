@@ -11,6 +11,6 @@ module.exports = {
 		const test = { fishmode: !fishmode};
 		const upd = { $set: test };
 		await global.srvcol.updateOne(look, upd);
-		await interaction.reply({ content: `Fish mode is now ${!persistence ? "enabled" : "disabled"}`, ephemeral: true });
+		await interaction.reply({ content: `Fish mode is now ${!fishmode ? "enabled" : "disabled"}`, ephemeral: true });
 	},
 };
