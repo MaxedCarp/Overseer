@@ -125,7 +125,7 @@ class messageEvents {
 				
 				if (messages2.length < 1)
 					return;
-				let test = [];
+				/*let test = [];
 				let i = 0;
 				while (messages2.at(i)) {
 					if (messages2.at(i) != undefined)
@@ -148,7 +148,8 @@ class messageEvents {
 						resembed = await EmbedCreator.Create(`Message BULK Deleted in: <#${message.channelId}>`, msg.messageContent || " ", false, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
 					else
 						resembed = await EmbedCreator.Create(`Image BULK Deleted in: <#${message.channelId}>`, msg.messageContent || " ", msg.messageAttachments[0].attachurl, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
-					
+					*/
+					let resembed = await EmbedCreator.Create(`${messages2.length} Message${messages2.length > 1 ? "s" : ""} **BULK** Deleted in: <#${message.channelId}>`, msg.messageContent || " ", false, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
 					let obj = await global.srvcol.findOne({ "srv": message.guild.id });
 					if (obj.delete === "none" || !obj)
 						return;
@@ -157,7 +158,7 @@ class messageEvents {
 					else
 						return;
 					await global.msgcol.deleteOne({ "messageID": message.id });
-				};
+				//};
 				resolve(true);
 			})();
 		});
