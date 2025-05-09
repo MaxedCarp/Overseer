@@ -22,7 +22,7 @@ class messageEvents {
 				if (message.channel.type === 1)
 					console.log(message.author.globalName + ": " + message.content);
 				if (obj.fishmode === true) {
-					if (message.content.toLowerCase().includes("limbo") || message.content.toLowerCase().includes("limbible"))
+					if (message.content.toLowerCase().includes("limbo") || message.content.toLowerCase().includes("limbible") || message.content.includes("<@528963161622052915>"))
 						await message.react("🎩");
 					const msgsplit = message.content.toLowerCase().split(' ');
 					let flag = true;
