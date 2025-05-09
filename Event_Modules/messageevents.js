@@ -125,6 +125,7 @@ class messageEvents {
 				
 				if (messages2.length < 1)
 					return;
+				const msgcount = messages2.length;
 				let test = [];
 				let i = 0;
 				while (messages2.at(i)) {
@@ -153,7 +154,7 @@ class messageEvents {
 					else
 						resembed = await EmbedCreator.Create(`Image BULK Deleted in: <#${message.channelId}>`, msg.messageContent || " ", msg.messageAttachments[0].attachurl, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
 					*/
-					let resembed = await EmbedCreator.Create(`Message${messages2.length > 1 ? "s **BULK**" : ""} Deleted in: <#${msg.channelId}>`, `${messages2.length} Message${messages2.length > 1 ? "s" : ""} Deleted`, false, guild.name, guild.iconURL(), `${global.client.user.userName}`, `https://cdn.discordapp.com/avatars/${global.client.id}/${global.client.user.avatar}`, 0xFA042A, []);
+					let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${msg.channelId}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guild.name, guild.iconURL(), `${global.client.user.userName}`, `https://cdn.discordapp.com/avatars/${global.client.id}/${global.client.user.avatar}`, 0xFA042A, []);
 					let obj = await global.srvcol.findOne({ "srv": guild.id });
 					if (obj.delete === "none" || !obj)
 						return;
