@@ -20,7 +20,7 @@ module.exports = {
 		const isadmin = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator);
 		const ismod = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.BanMembers)
 		if (!(isadmin || ismod)) {
-			await interaction.reply({ content: `You don't have the required permissions to ban!`, ephemeral: true });
+			await interaction.reply({ content: `My apologies. I don't have the required permissions to ban!`, ephemeral: true });
 			return;
 		}
 		if (!member?.bannable) {
@@ -28,7 +28,7 @@ module.exports = {
 			return;
 		}
 		if (member.user.bot) {
-			await interaction.reply({content: `This user is a bot!`, ephemeral: true});
+			await interaction.reply({content: `My apologies. This user is a bot so I could not ban them!`, ephemeral: true});
 			return;
 		}
 		await member.ban();

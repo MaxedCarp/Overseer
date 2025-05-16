@@ -23,22 +23,18 @@ module.exports = {
 		const user = member.user;
 		const reason = interaction.options.getString('reason');
 		const time = interaction.options.getString('time');
-		//console.log(member.roles.highest.position);
-		//const botuser = interaction.guild.members.cache.get(client.id);
-		//console.log(botuser.roles.highest.position);
-		//if (member.roles.highest.position < botuser.roles.highest.position) {
 		const isadmin = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator);
 		const ismod = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.ModerateMembers)
 		if (!(isadmin || ismod)) {
-			await interaction.reply({ content: `You don't have the required permissions to time out!`, ephemeral: true });
+			await interaction.reply({ content: `My apologies. I do not have the required permissions to time out!`, ephemeral: true });
 			return;
 		}
 		if (!member.bannable) {
-			await interaction.reply({ content: `You can not time out this user!`, ephemeral: true });
+			await interaction.reply({ content: `My apologies. You can not time out this user!`, ephemeral: true });
 			return;
 		}
 		if (member.user.bot) {
-			await interaction.reply({content: `This user is a bot!`, ephemeral: true});
+			await interaction.reply({content: `My apologies. This user is a bot so I could not time them out!`, ephemeral: true});
 			return;
 		}
 		if (await essentials.parsetime(time,'d') <= await essentials.parsetime("28 days",'d')) {
