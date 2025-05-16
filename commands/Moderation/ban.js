@@ -15,7 +15,6 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 	async execute(interaction) {
 		const member = interaction.options.getMember('user');
-		//const user = member.user;
 		const reason = interaction.options.getString('reason');
 		const isadmin = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator);
 		const ismod = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.BanMembers)
@@ -31,8 +30,9 @@ module.exports = {
 			await interaction.reply({content: `My apologies. This user is a bot so I could not ban them!`, ephemeral: true});
 			return;
 		}
+		const user = member.user;
 		await member.ban();
-		await interaction.reply({ content: `User: <@${member.id}> banned successfully for: ${reason} || "No reason provided."}.`});
+		await interaction.reply({ content: `User: <@${member.id}> banned successfully for: ${reason || "No reason provided."}.`});
 		const dt = await global.notecol.findOne({serial: {$gt: -1}});
 		const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "ban", text: `${reason || "No reason provided."}.`, serial: dt.serial + 1};
 		await global.notecol.insertOne(msgobj);
