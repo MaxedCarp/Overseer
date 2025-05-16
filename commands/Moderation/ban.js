@@ -17,8 +17,18 @@ module.exports = {
 		const member = interaction.options.getMember('user');
 		//const user = member.user;
 		const reason = interaction.options.getString('reason');
-		if (!member?.roles?.highest.editable) {
+		const isadmin = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator);
+		const ismod = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.BanMembers)
+		if (!(isadmin || ismod)) {
+			await interaction.reply({ content: `You don't have the required permissions to ban!`, ephemeral: true });
+			return;
+		}
+		if (!member?.bannable) {
 			await interaction.reply({ content: `My apologies. Either this user has a higher role than me or they are not in the server, so I could not ban them.`, ephemeral: true });
+			return;
+		}
+		if (member.user.bot) {
+			await interaction.reply({content: `This user is a bot!`, ephemeral: true});
 			return;
 		}
 		await member.ban();
