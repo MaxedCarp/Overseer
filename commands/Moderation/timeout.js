@@ -23,10 +23,10 @@ module.exports = {
 		const user = member.user;
 		const reason = interaction.options.getString('reason');
 		const time = interaction.options.getString('time');
-		/*if (!member.roles.highest.editable) {
+		if (member.roles.highest.position < interaction.guild.members.cache.get(client.id).roles.highest.position) {
 			await interaction.reply({ content: `You can not time out this user!`, ephemeral: true });
 			return;
-		}*/
+		}
 		if (await essentials.parsetime(time,'d') <= await essentials.parsetime("28 days",'d')) {
 			member.timeout(await essentials.parsetime(time,'ms'));
 			await interaction.reply({ content: `User: ${member.user} timed out for: ${await essentials.parsetime(time,'s')} seconds`, ephemeral: true });
