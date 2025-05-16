@@ -25,10 +25,8 @@ class guildEvents {
 						.setAuthor({ name: `${member.user.username}`, iconURL: `${member.displayAvatarURL()}` })
 						.setDescription(obj.joinmsg.replace("{@user}", `<@${usr.id}>`).replace("{servername}", guild.name).replace("{username}", usr.username).replace("{user}", usr.globalName))
 						.setFooter({ text: member.guild.name, iconURL: member.guild.iconURL() });
-					if (!shouldban)
-					{
-						if (obj.defaultnick !== "")
-						{
+					if (!shouldban) {
+						if (obj.defaultnick !== "") {
 							if ((member.guild.members.me).permissions.has(PermissionFlagsBits.ManageNicknames))
 								member.setNickname(obj.defaultnick);
 						}
@@ -36,16 +34,21 @@ class guildEvents {
 							if (obj.users[member.id] !== undefined && obj.users[member.id] !== null && !!(obj.users[member.id])) {
 								if (obj.users[member.id].nickname !== null)
 									member.setNickname(obj.users[member.id].nickname);
-								let roles = await guild.roles.cache.filter(role3 => obj.users[member.id].roles.indexOf(role3.id) !== -1);
+								let finrole = obj.users[member.id].roles;
+								if (obj?.joinroles?.length !== 0 ) {
+									finrole.push(obj.joinroles);
+								}
+								let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
 								roles = await roles.filter(role => role.editable);
 								member2.roles.add(roles);
 							}
-						}
-						if (obj?.joinroles?.length !== 0 && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles)) {
-							if ((guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) || (guild.members.me).permissions.has(PermissionFlagsBits.Administrator)) {
-								let roles = await guild.roles.cache.filter(role3 => (obj.joinroles.indexOf(role3.id) !== -1 && member2.roles.cache.find(role => role.id !== role3.id)));
-								roles = await roles.filter(role => role.editable);
-								member2.roles.add(roles);
+						} else {
+							if (obj?.joinroles?.length !== 0 && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles)) {
+								if ((guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) || (guild.members.me).permissions.has(PermissionFlagsBits.Administrator)) {
+									let roles = await guild.roles.cache.filter(role3 => (obj.joinroles.indexOf(role3.id) !== -1 && member2.roles.cache.find(role => role.id !== role3.id)));
+									roles = await roles.filter(role => role.editable);
+									member2.roles.add(roles);
+								}
 							}
 						}
 					}
