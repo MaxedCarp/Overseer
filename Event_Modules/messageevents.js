@@ -151,22 +151,14 @@ class messageEvents {
 					chan = msg.messageChannelID;
 					await global.msgcol.deleteOne({ "messageID": message.id });
 				}
-				/*	let resembed = "";
-				
-					if (msg.messageAttachments.length < 1 || (msg.messageAttachments[0]?.fileType !== "image/png" && msg.messageAttachments[0]?.fileType !== "image/jpeg"))
-						resembed = await EmbedCreator.Create(`Message BULK Deleted in: <#${message.channelId}>`, msg.messageContent || " ", false, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
-					else
-						resembed = await EmbedCreator.Create(`Image BULK Deleted in: <#${message.channelId}>`, msg.messageContent || " ", msg.messageAttachments[0].attachurl, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
-					*/
-					let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guild.name, guild.iconURL(), `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
-					let obj = await global.srvcol.findOne({ "srv": guild.id });
-					if (obj.delete === "none" || !obj)
-						return;
-					if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator))
-						await client.channels.cache.get(obj.delete).send({ embeds: [resembed] });
-					else
-						return;
-				//};
+				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guild.name, guild.iconURL(), `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
+				let obj = await global.srvcol.findOne({ "srv": guild.id });
+				if (obj.delete === "none" || !obj)
+					return;
+				if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator))
+					await client.channels.cache.get(obj.delete).send({ embeds: [resembed] });
+				else
+					return;
 				resolve(true);
 			})();
 		});
