@@ -34,9 +34,14 @@ class guildEvents {
 							if (obj.users[member.id] !== undefined && obj.users[member.id] !== null && !!(obj.users[member.id])) {
 								if (obj.users[member.id].nickname !== null)
 									member.setNickname(obj.users[member.id].nickname);
-								let finrole = obj.users[member.id].roles;
+								let finrole;
+								obj.users[member.id].roles.forEach(role => {
+									finrole.push(role);
+								})
 								if (obj?.joinroles?.length !== 0 ) {
-									finrole.push(obj.joinroles);
+									obj.joinroles.forEach(role => {
+										finrole.push(role);
+									})
 								}
 								let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
 								roles = await roles.filter(role => role.editable);
