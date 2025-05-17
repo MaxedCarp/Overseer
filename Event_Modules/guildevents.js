@@ -30,23 +30,21 @@ class guildEvents {
 							if ((member.guild.members.me).permissions.has(PermissionFlagsBits.ManageNicknames))
 								member.setNickname(obj.defaultnick);
 						}
-						if (obj.rolepersistence === true && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles)) {
-							if (obj.users[member.id] !== undefined && obj.users[member.id] !== null && !!(obj.users[member.id])) {
-								if (obj.users[member.id].nickname !== null)
-									member.setNickname(obj.users[member.id].nickname);
-								let finrole = [];
-								obj.users[member.id].roles.forEach(role => {
+						if (obj.rolepersistence === true && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) && (obj.users[member.id] !== undefined && obj.users[member.id] !== null && !!(obj.users[member.id]))) {
+							if (obj.users[member.id].nickname !== null)
+								member.setNickname(obj.users[member.id].nickname);
+							let finrole = [];
+							obj.users[member.id].roles.forEach(role => {
+								finrole.push(role);
+							})
+							if (obj?.joinroles?.length !== 0 ) {
+								obj.joinroles.forEach(role => {
 									finrole.push(role);
 								})
-								if (obj?.joinroles?.length !== 0 ) {
-									obj.joinroles.forEach(role => {
-										finrole.push(role);
-									})
-								}
-								let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
-								roles = await roles.filter(role => role.editable);
-								member2.roles.add(roles);
 							}
+							let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
+							roles = await roles.filter(role => role.editable);
+							member2.roles.add(roles);
 						} else {
 							if (obj?.joinroles?.length !== 0 && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles)) {
 								if ((guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) || (guild.members.me).permissions.has(PermissionFlagsBits.Administrator)) {
