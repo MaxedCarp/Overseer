@@ -34,7 +34,7 @@ class guildEvents {
 							if (obj.users[member.id] !== undefined && obj.users[member.id] !== null && !!(obj.users[member.id])) {
 								if (obj.users[member.id].nickname !== null)
 									member.setNickname(obj.users[member.id].nickname);
-								let finrole;
+								let finrole = [];
 								obj.users[member.id].roles.forEach(role => {
 									finrole.push(role);
 								})
