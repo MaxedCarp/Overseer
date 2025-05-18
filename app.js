@@ -238,7 +238,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setAuthor({
 					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
 				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{ name: 'Channels', value: "----------------" },
 					{ name: '/setlogchannel <type>', value: "Sets the specified logs channel to the channel the command is executed in." },
@@ -267,7 +267,7 @@ client.on(Events.InteractionCreate, async interaction => {
 					name: `Help Form`,
 					iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
 				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{name: 'Roles', value: "----------------"},
 					{name: '/togglepersistency', value: "Enables role persistence, which allows roles to be reacquired if a member leaves and then rejoins."},
@@ -299,10 +299,11 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setAuthor({
 					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
 				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{ name: 'Moderation', value: "----------------" },
 					{ name: '/ban <user> (<reason>)', value: "Bans a user (reason will be added to the user's notes)" },
+					{ name: '/tempban <user> <time> (<reason>)', value: "Bans a user for a specified duration(reason will be added to the user's notes)" },
 					{ name: '/timeout <user> <time> (<reason>)', value: "Times a user out for the specified duration (For example: 3 days 1h 10minutes and 32 s. Reason will be added to the user's notes)" },
 					{ name: '/userstats <user>', value: "Check detailed information about the target user." },
 					{ name: '/note add <user> <text>', value: "Assigns a note to a user." },
@@ -333,7 +334,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setAuthor({
 					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
 				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{ name: 'Administration', value: "----------------" },
 					{ name: '/setjoinmsg <text>', value: "Sets the join message for the server. Type {@user} to ping the user, {servername} for server name, {username} for the user's username and {user} for the user's global name." },
@@ -362,7 +363,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setAuthor({
 					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
 				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{ name: 'Misc', value: "----------------" },
 					{ name: '/help', value: "- Displays this help form" }

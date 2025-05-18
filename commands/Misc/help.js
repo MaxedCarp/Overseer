@@ -11,7 +11,7 @@ module.exports = {
 				.setAuthor({
 					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
 				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)")
+				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{ name: 'Channels', value: "----------------" },
 					{ name: '/setlogchannel <type>', value: "Sets the specified logs channel to the channel the command is executed in." },
