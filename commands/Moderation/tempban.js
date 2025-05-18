@@ -38,11 +38,11 @@ module.exports = {
 		const user = member.user;
 		await member.ban();
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});
-		const inttime = await essentials.parsetime(time, "ms");
-		const bandata = {id: user.id, expire: Math.floor((new Date().getTime() + inttime) / 1000), username: user.username, globalName: user.globalName}
+		const inttime = await essentials.parsetime(time, "s");
+		const bandata = {id: user.id, expire: Math.floor(new Date().getTime() / 1000) + inttime, username: user.username, globalName: user.globalName}
 		obj.banlist.push(bandata);
 		await global.srvcol.updateOne({srv: interaction.guild.id}, { $set: {banlist: obj.banlist} });
-		await interaction.reply({ content: `User: ${member.user}  temporarily banned for ${await essentials.parsetime(time, "s")} seconds.\nReason: ${reason || "No reason provided."}.`});
+		await interaction.reply({ content: `User: ${member.user} temporarily banned for ${await essentials.parsetime(time, "s")} seconds.\nReason: ${reason || "No reason provided."}.`});
 		const dt = await global.notecol.findOne({serial: {$gt: -1}});
 		const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "tempban", text: `${reason || "No reason provided."}.`, serial: dt.serial + 1};
 		await global.notecol.insertOne(msgobj);
