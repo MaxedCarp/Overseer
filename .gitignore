@@ -58,3 +58,8 @@ jspm_packages/
 Thumbs.db
 ehthumbs.db
 Desktop.ini
+/.idea/modules.xml
+/.idea/Overseer.iml
+/.idea/dictionaries/project.xml
+/.idea/inspectionProfiles/Project_Default.xml
+/.idea/vcs.xml
