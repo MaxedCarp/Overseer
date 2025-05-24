@@ -12,23 +12,33 @@ module.exports = {
 		await global.client.guilds.cache.forEach(guild => {
 			console.log(guild.name + " " + guild.id);
 			const look = {srv: guild.id};
-			global.srvcol.updateOne(look, {$unset: {users: ""}}).then();
-			let obj = global.srvcol.findOne(look).then();
-			let members = guild.members.fetch().then();
-			if (obj.rolepersistence) {
-				members.forEach(member => {
-					(async () => {
-						const look = {srv: interaction.guild.id, userid: member.id};
-						const duser = {srv: guild.id, userid: member.id, nickname: member.nickname, roles: member["_roles"]};
-						if (!!(await global.persistcol.find(look))) {
-							await global.persistcol.insertOne(duser);
-						}
-						else {
-							await global.persistcol.updateOne(look, {$set: {nickname: member.nickname, roles: member["_roles"]}})
-						}
-					})();
-				});
-			}
+			global.srvcol.findOne(look).then(obj => {
+				guild.members.fetch().then(members => {
+					if (obj.rolepersistence) {
+						members.forEach(member => {
+							(async () => {
+								const look = {srv: interaction.guild.id, userid: member.id};
+								const duser = {
+									srv: guild.id,
+									userid: member.id,
+									nickname: member.nickname,
+									roles: member["_roles"]
+								};
+								if (!!(await global.persistcol.find(look))) {
+									await global.persistcol.insertOne(duser);
+								} else {
+									await global.persistcol.updateOne(look, {
+										$set: {
+											nickname: member.nickname,
+											roles: member["_roles"]
+										}
+									})
+								}
+							})();
+						});
+					}
+				})
+			})
 		});
 		await interaction.reply({ content: `Role persistence lists updated successfully!`, ephemeral: true });
 	},
