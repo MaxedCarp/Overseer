@@ -1,5 +1,4 @@
-const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const srvcol2 = global.srvcol
+const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
 
@@ -9,6 +8,7 @@ class guildEvents {
 			(async () => {
 				var obj;
 				obj = await global.srvcol.findOne({ "srv": member.guild.id});
+				const usrdata = await global.persistcol.findOne({srv: member.guild.id, userid: member.id});
 				let shouldban = false;
 				if (obj.autobanlist.find(id => id === member.id))
 				{
@@ -28,13 +28,13 @@ class guildEvents {
 					if (!shouldban) {
 						if (obj.defaultnick !== "") {
 							if ((member.guild.members.me).permissions.has(PermissionFlagsBits.ManageNicknames))
-								member.setNickname(obj.defaultnick);
+								await member.setNickname(obj.defaultnick);
 						}
-						if (obj.rolepersistence === true && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) && (obj.users[member.id] !== undefined && obj.users[member.id] !== null && !!(obj.users[member.id]))) {
-							if (obj.users[member.id].nickname !== null)
-								member.setNickname(obj.users[member.id].nickname);
+						if (obj.rolepersistence === true && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) && (!!usrdata)) {
+							if (!!usrdata.nickname)
+								await member.setNickname(usrdata.nickname);
 							let finrole = [];
-							obj.users[member.id].roles.forEach(role => {
+							usrdata.roles.forEach(role => {
 								finrole.push(role);
 							})
 							if (obj?.joinroles?.length !== 0 ) {
@@ -44,13 +44,13 @@ class guildEvents {
 							}
 							let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
 							roles = await roles.filter(role => role.editable);
-							member2.roles.add(roles);
+							await member2.roles.add(roles);
 						} else {
 							if (obj?.joinroles?.length !== 0 && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles)) {
 								if ((guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) || (guild.members.me).permissions.has(PermissionFlagsBits.Administrator)) {
 									let roles = await guild.roles.cache.filter(role3 => (obj.joinroles.indexOf(role3.id) !== -1 && member2.roles.cache.find(role => role.id !== role3.id)));
 									roles = await roles.filter(role => role.editable);
-									member2.roles.add(roles);
+									await member2.roles.add(roles);
 								}
 							}
 						}
@@ -212,21 +212,16 @@ class guildEvents {
 	static MemberUpdate(oldMember, newMember) {
 		return new Promise((resolve, reject) => {
 			(async () => {
-				//console.log(oldMember);
-				//console.log(newMember);
 				if (oldMember["_roles"] !== newMember["_roles"] || oldMember.nickname !== newMember.nickname){
 					let flag = false;
 					const { guild } = oldMember;
 					let obj = await global.srvcol.findOne({ "srv": guild.id});
 					if ((parseInt(`${oldMember.joinedTimestamp}`) + 7500) < new Date().valueOf()) {
-						const datta = { nickname: newMember.nickname, roles: newMember["_roles"] };
-						const srvdata = await global.srvcol.findOne({ "srv": guild.id });
-						const look = { srv: guild.id };
-						const duser = { nickname: datta.nickname, roles: datta.roles };
-						srvdata.users[oldMember.id] = duser;
-						const test = { users: srvdata.users };
-						const upd = { $set: test };
-						const data = await global.srvcol.updateOne(look, upd);
+						const look = {srv: interaction.guild.id, userid: member.id};
+						if (!!(await global.persistcol.findOne(look))) {
+							const duser = {nickname: member.nickname, roles: member["_roles"]};
+							await global.persistcol.updateOne(look, {$set: duser});
+						}
 					}
 					const exampleEmbed = await EmbedCreator.Create(false, `**User Updated:**`, false, guild.name, guild.iconURL(), `${oldMember.user.globalName || oldMember.user.username} (${oldMember.user.username})`, oldMember.displayAvatarURL(), 0xff9900, []);
 					if (oldMember.nickname !== newMember.nickname) {
@@ -328,6 +323,7 @@ class guildEvents {
 		return new Promise((resolve, reject) => {
 			(async () => {
 				await global.srvcol.deleteOne({ srv: guild.id });
+				await global.persistcol.delete({srv: guild.id});
 				resolve(true);
 			})();
 		});

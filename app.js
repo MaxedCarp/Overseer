@@ -10,7 +10,7 @@ const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
 //const { REST, Routes } = require('discord.js');
-const { token, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol } = require('./config.json');
+const { token, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -32,6 +32,7 @@ client.once(Events.ClientReady, async c => {
 	global.srvcol = global.db.collection(srvcol);
 	global.fishcol = global.db.collection(fishcol);
 	global.notecol = global.db.collection(notecol);
+	global.persistcol = global.db.collection(persistcol);
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	eventEmitter.emit('keepAlive');
@@ -270,7 +271,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
 				.addFields(
 					{name: 'Roles', value: "----------------"},
-					{name: '/togglepersistency', value: "Enables role persistence, which allows roles to be reacquired if a member leaves and then rejoins."},
+					{name: '/togglepersistence', value: "Enables role persistence, which allows roles to be reacquired if a member leaves and then rejoins."},
 					{name: '/joinroles add <role>', value: "Adds a roles to be assigned to new members."},
 					{name: '/joinroles list', value: "Lists all roles added on join."}, {name: '/joinroles remove <index>', value: "Prevent a role from being added on join (use /joinroles list to get the index)"},
 					{name: '/secretkeys add <keyset> <role> <age requirement>', value: "Assigns a role to a user if they send a message that matches the specified keyset and have the proper time-since-join (in seconds)"},

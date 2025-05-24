@@ -9,19 +9,27 @@ module.exports = {
 	async execute(interaction) {
 		if (interaction.user.id !== "275305152842301440")
 			return;
-		/*const look = {};
-		test = {}
-		test[sub] = interaction.channel.id;
-		const upd = { $set: test };
-		const data = await global.srvcol.updateOne(look, upd);
-		await interaction.reply({ content: `${sub} channel successfully set to <#${interaction.channel.id}>!`, ephemeral: true });*/
-		//console.log(global.client.guilds.cache);
 		await global.client.guilds.cache.forEach(guild => {
 			console.log(guild.name + " " + guild.id);
 			const look = {srv: guild.id};
-			const upd = { $set: {name: guild.name} };
-			const data = global.srvcol.updateOne(look, upd);
+			global.srvcol.updateOne(look, {$unset: {users: ""}}).then();
+			let obj = global.srvcol.findOne(look).then();
+			let members = guild.members.fetch().then();
+			if (obj.rolepersistence) {
+				members.forEach(member => {
+					(async () => {
+						const look = {srv: interaction.guild.id, userid: member.id};
+						const duser = {srv: guild.id, userid: member.id, nickname: member.nickname, roles: member["_roles"]};
+						if (!!(await global.persistcol.find(look))) {
+							await global.persistcol.insertOne(duser);
+						}
+						else {
+							await global.persistcol.updateOne(look, {$set: {nickname: member.nickname, roles: member["_roles"]}})
+						}
+					})();
+				});
+			}
 		});
-		await interaction.reply({ content: `Server names updated successfully!`, ephemeral: true });
+		await interaction.reply({ content: `Role persistence lists updated successfully!`, ephemeral: true });
 	},
 };
