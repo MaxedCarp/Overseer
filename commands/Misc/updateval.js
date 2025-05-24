@@ -24,7 +24,7 @@ module.exports = {
 									nickname: member.nickname,
 									roles: member["_roles"]
 								};
-								if (!(await global.persistcol.find(look2))) {
+								if (await global.persistcol.find(look2) == null) {
 									await global.persistcol.insertOne(duser);
 								} else {
 									await global.persistcol.updateOne(look2, {
