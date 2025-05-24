@@ -217,7 +217,7 @@ class guildEvents {
 					const { guild } = oldMember;
 					let obj = await global.srvcol.findOne({ "srv": guild.id});
 					if ((parseInt(`${oldMember.joinedTimestamp}`) + 7500) < new Date().valueOf()) {
-						const look = {srv: interaction.guild.id, userid: member.id};
+						const look = {srv: guild.id, userid: member.id};
 						if (!!(await global.persistcol.findOne(look))) {
 							const duser = {nickname: member.nickname, roles: member["_roles"]};
 							await global.persistcol.updateOne(look, {$set: duser});
