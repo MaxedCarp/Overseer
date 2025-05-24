@@ -223,7 +223,7 @@ class guildEvents {
 							await global.persistcol.updateOne(look, {$set: duser});
 						}
 						else {
-							const duser = {nickname: newMember.nickname, roles: newMember["_roles"]};
+							const duser = {srv: guild.id, userid: newMember.id, nickname: newMember.nickname, roles: newMember["_roles"]};
 							await global.persistcol.insertOne(duser);
 						}
 					}
