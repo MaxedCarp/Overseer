@@ -17,10 +17,10 @@ module.exports = {
 		if (!persistence) {
 			members.forEach(member => {
 				(async () => {
-					const look = {srv: interaction.guild.id, userid: member.id};
+					const look2 = {srv: interaction.guild.id, userid: member.id};
 					const duser = {srv: guild.id, userid: member.id, nickname: member.nickname, roles: member["_roles"]};
 					//data.users[member.id] = duser;
-					if (!!(await global.persistcol.find(look))) {
+					if (!(await global.persistcol.findOne(look2))) {
 						await global.persistcol.insertOne(duser);
 					}
 					else {
@@ -32,9 +32,9 @@ module.exports = {
 		else {
 			members.forEach(member => {
 				(async () => {
-					const look = {srv: interaction.guild.id, userid: member.id};
-					if (!(await global.persistcol.find(look))) {
-						await global.persistcol.deleteOne(look);
+					const look2 = {srv: interaction.guild.id, userid: member.id};
+					if (!!(await global.persistcol.findOne(look2))) {
+						await global.persistcol.deleteOne(look2);
 					}
 				})();
 			});
