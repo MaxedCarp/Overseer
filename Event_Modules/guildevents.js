@@ -10,7 +10,7 @@ class guildEvents {
 				obj = await global.srvcol.findOne({ "srv": member.guild.id});
 				const usrdata = await global.persistcol.findOne({srv: member.guild.id, userid: member.id});
 				let shouldban = false;
-				if (!!(global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
+				if (!!(await global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
 				{
 					shouldban = true;
 					await member.ban();
@@ -102,7 +102,7 @@ class guildEvents {
 				let obj = await global.srvcol.findOne({ "srv": member.guild.id});
 				const usr = member.user;
 				let shouldban = false;
-				if (!!(global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
+				if (!!(await global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
 				{
 					shouldban = true;
 					await member.ban();
