@@ -17,17 +17,17 @@ module.exports = {
 					if (obj.rolepersistence) {
 						members.forEach(member => {
 							(async () => {
-								const look = {srv: interaction.guild.id, userid: member.id};
+								const look2 = {srv: interaction.guild.id, userid: member.id};
 								const duser = {
 									srv: guild.id,
 									userid: member.id,
 									nickname: member.nickname,
 									roles: member["_roles"]
 								};
-								if (!(await global.persistcol.find(look))) {
+								if (!(await global.persistcol.find(look2))) {
 									await global.persistcol.insertOne(duser);
 								} else {
-									await global.persistcol.updateOne(look, {
+									await global.persistcol.updateOne(look2, {
 										$set: {
 											nickname: member.nickname,
 											roles: member["_roles"]
