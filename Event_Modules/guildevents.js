@@ -341,7 +341,7 @@ class guildEvents {
 		return new Promise((resolve, reject) => {
 			(async () => {
 				if (!(await global.srvcol.findOne({ "srv": guild.id }))){
-					const obj = { srv: guild.id, name: guild.name, delete: "none", update: "none", join: "none", leave: "none", bans: "none", command: "none", joinstat: "none", leavestat: "none", banstat: "none", userupdate: "none", rolepersiustence: false, joinmsg: "Welcome {@user}!!!", leavemsg: "Goodbye!\n{@user} left the server. :(", banmsg: "{@user} has been banned from {servername}!", ismsgembed: false, defaultnick: "", autobanlist: [], autodelist: [], joinroles: [], editlog: [], banlist: [], secretkeys: [], fishmode: false, users: {} };
+					const obj = { srv: guild.id, name: guild.name, delete: "none", update: "none", join: "none", leave: "none", bans: "none", command: "none", joinstat: "none", leavestat: "none", banstat: "none", userupdate: "none", rolepersiustence: false, joinmsg: "Welcome {@user}!!!", leavemsg: "Goodbye!\n{@user} left the server. :(", banmsg: "{@user} has been banned from {servername}!", ismsgembed: false, defaultnick: "", autodelist: [], joinroles: [], editlog: [], banlist: [], secretkeys: [], fishmode: false };
 					await global.srvcol.insertOne(obj);
 				}
 				resolve(true);
