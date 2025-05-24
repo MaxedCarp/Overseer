@@ -222,6 +222,10 @@ class guildEvents {
 							const duser = {nickname: newMember.nickname, roles: newMember["_roles"]};
 							await global.persistcol.updateOne(look, {$set: duser});
 						}
+						else {
+							const duser = {nickname: newMember.nickname, roles: newMember["_roles"]};
+							await global.persistcol.insertOne(duser);
+						}
 					}
 					const exampleEmbed = await EmbedCreator.Create(false, `**User Updated:**`, false, guild.name, guild.iconURL(), `${oldMember.user.globalName || oldMember.user.username} (${oldMember.user.username})`, oldMember.displayAvatarURL(), 0xff9900, []);
 					if (oldMember.nickname !== newMember.nickname) {
