@@ -10,7 +10,7 @@ const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
 //const { REST, Routes } = require('discord.js');
-const { token, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol } = require('./config.json');
+const { token, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -33,6 +33,7 @@ client.once(Events.ClientReady, async c => {
 	global.fishcol = global.db.collection(fishcol);
 	global.notecol = global.db.collection(notecol);
 	global.persistcol = global.db.collection(persistcol);
+	global.autobancol = global.db.collection(autobancol);
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	eventEmitter.emit('keepAlive');

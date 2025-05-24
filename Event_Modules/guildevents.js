@@ -10,7 +10,7 @@ class guildEvents {
 				obj = await global.srvcol.findOne({ "srv": member.guild.id});
 				const usrdata = await global.persistcol.findOne({srv: member.guild.id, userid: member.id});
 				let shouldban = false;
-				if (obj.autobanlist.find(id => id === member.id))
+				if (!!(global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
 				{
 					shouldban = true;
 					await member.ban();
@@ -19,13 +19,13 @@ class guildEvents {
 				const { guild } = member;
 				const member2 = guild.members.cache.find(member2 => member2.id === member.id);
 				if (!usr.bot && !usr.system) {
-					const exampleEmbed = new EmbedBuilder()
-						.setColor(0x69FA04)
-						.setTitle(`USER JOINED!`)
-						.setAuthor({ name: `${member.user.username}`, iconURL: `${member.displayAvatarURL()}` })
-						.setDescription(obj.joinmsg.replace("{@user}", `<@${usr.id}>`).replace("{servername}", guild.name).replace("{username}", usr.username).replace("{user}", usr.globalName))
-						.setFooter({ text: member.guild.name, iconURL: member.guild.iconURL() });
 					if (!shouldban) {
+						const exampleEmbed = new EmbedBuilder()
+							.setColor(0x69FA04)
+							.setTitle(`USER JOINED!`)
+							.setAuthor({name: `${member.user.username}`, iconURL: `${member.displayAvatarURL()}`})
+							.setDescription(obj.joinmsg.replace("{@user}", `<@${usr.id}>`).replace("{servername}", guild.name).replace("{username}", usr.username).replace("{user}", usr.globalName))
+							.setFooter({text: member.guild.name, iconURL: member.guild.iconURL()});
 						if (obj.defaultnick !== "") {
 							if ((member.guild.members.me).permissions.has(PermissionFlagsBits.ManageNicknames))
 								await member.setNickname(obj.defaultnick);
@@ -37,7 +37,7 @@ class guildEvents {
 							usrdata.roles.forEach(role => {
 								finrole.push(role);
 							})
-							if (obj?.joinroles?.length !== 0 ) {
+							if (obj?.joinroles?.length !== 0) {
 								obj.joinroles.forEach(role => {
 									finrole.push(role);
 								})
@@ -54,19 +54,17 @@ class guildEvents {
 								}
 							}
 						}
-					}
-					if (obj.join === "none" || !obj) {
-						return;
-					}
-					else {
-						if ((guild.members.me).permissionsIn(obj.join).has(PermissionFlagsBits.SendMessages)) {
-							if (obj.ismsgembed)
-								await client.channels.cache.get(obj.join).send({ embeds: [exampleEmbed] });
-							else
-								await client.channels.cache.get(obj.join).send(obj.joinmsg.replace("{@user}", `<@${usr.id}>`).replace("{servername}", guild.name).replace("{username}", usr.username).replace("{user}", usr.globalName))
-						}
-						else
+						if (obj.join === "none" || !obj) {
 							return;
+						} else {
+							if ((guild.members.me).permissionsIn(obj.join).has(PermissionFlagsBits.SendMessages)) {
+								if (obj.ismsgembed)
+									await client.channels.cache.get(obj.join).send({embeds: [exampleEmbed]});
+								else
+									await client.channels.cache.get(obj.join).send(obj.joinmsg.replace("{@user}", `<@${usr.id}>`).replace("{servername}", guild.name).replace("{username}", usr.username).replace("{user}", usr.globalName))
+							} else
+								return;
+						}
 					}
 				}
 				const exampleEmbed2 = new EmbedBuilder()
@@ -103,7 +101,13 @@ class guildEvents {
 			(async () => {
 				let obj = await global.srvcol.findOne({ "srv": member.guild.id});
 				const usr = member.user;
-				if (!usr.bot && !usr.system) {
+				let shouldban = false;
+				if (!!(global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
+				{
+					shouldban = true;
+					await member.ban();
+				}
+				if (!usr.bot && !usr.system && !shouldban) {
 					const exampleEmbed = new EmbedBuilder()
 						.setColor(0xFA042A)
 						.setTitle(`USER LEFT!`)
