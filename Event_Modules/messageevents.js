@@ -10,7 +10,9 @@ class messageEvents {
 			(async () => {
 				if (!!message?.author?.bot)
 					return;
-				if (message.guild === null)
+				if (message.channel.type === 1)
+					console.log(message.author.globalName + ": " + message.content);
+				if (!message.guild)
 					return;
 				const { guild } = message
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
@@ -19,8 +21,6 @@ class messageEvents {
 					await message.delete();
 					return;
 				}
-				if (message.channel.type === 1)
-					console.log(message.author.globalName + ": " + message.content);
 				if (obj.fishmode === true) {
 					if (message.content.toLowerCase().includes("limbo") || message.content.toLowerCase().includes("limbible") || message.content.includes("<@528963161622052915>"))
 						await message.react("🎩");
