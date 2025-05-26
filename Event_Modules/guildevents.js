@@ -13,6 +13,7 @@ class guildEvents {
 				{
 					shouldban = true;
 					await member.ban();
+					await global.autobancol.deleteOne({srv: member.guild.id, userId: member.id});
 				}
 				const usr = member.user;
 				const { guild } = member;
@@ -105,6 +106,7 @@ class guildEvents {
 				{
 					shouldban = true;
 					await member.ban();
+					await global.autobancol.deleteOne({srv: member.guild.id, userId: member.id});
 				}
 				if (!usr.bot && !usr.system && !shouldban) {
 					const exampleEmbed = new EmbedBuilder()
