@@ -1,4 +1,4 @@
-const { EmbedBuilder } = require('discord.js');
+const { EmbedBuilder, ButtonBuilder, ButtonStyle} = require('discord.js');
 class embedcreator {
     static Create(title, description, image, footer, footericon, author, authoricon, color, fields) {
 		return new Promise((resolve) => {
@@ -39,5 +39,15 @@ class embedcreator {
 			resolve(embed);
 		});
     }
+	static Button(id, label, style, emoji) {
+		return new Promise((resolve) => {
+			const btn = new ButtonBuilder()
+			.setCustomId(id)
+			.setLabel(label)
+			.setStyle(style)
+			.setEmoji(emoji);
+			resolve(btn);
+		});
+	}
 }
 module.exports = embedcreator;

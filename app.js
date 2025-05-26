@@ -10,6 +10,7 @@ const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
 const guildEvents = require('./Event_Modules/guildevents.js');
 const messageEvents = require('./Event_Modules/messageevents.js');
+const forms = require('./commands/Command_Modules/forms.js');
 const client = new Client({ intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
 
 
@@ -214,164 +215,23 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     }
 	else if (interaction.isButton()) {
-		if (interaction.customId === "scibtn") {
-			const missionpool = ["Apollodorus, Mercury", "V Prime, Venus", "Malvaq, Venus","Wahiba, Mars", "Zeugma, Phobos", "Stickney, Phobos", "Gabii, Ceres", "Draco, Ceres", "Elara, Jupiter", "Piscina, Saturn", "Titan, Saturn", "Ophelia, Uranus", "Assur, Uranus", "Kelashin, Neptune", "Palus, Pluto", "Nimus, Eris", "Zabala, Eris", "Terrorem, Deimos", "Taveuni, KUVA", "Persto, Deimos (Sanctum)", "Tycho, Lua", "Yuvarium, Lua (Conjunction)", "Circulus, Lua (Conjunction)","Mot, Void", "Ani, Void", "Amarna, Sedna", "Selkie, Sedna"];
-
-
-			let index;
-			for (let i = 0; i < 10; i++){
-				index = await getRandomInt(0, missionpool.length - 1);
-			}
-			let mission = missionpool[index];
-			await interaction.reply({ content: (mission || "An error has occurred!"), ephemeral: true });
+		if (interaction.customId.startsWith("notes")) {
+			const args = interaction.customId.split(':');
 		}
-		if (interaction.customId === "help0") {
-			const helpChannels = new EmbedBuilder()
-				.setColor(0x00A012)
-				.setTitle(`Command List - Page 1: Channels`)
-				.setAuthor({
-					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
-				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
-				.addFields(
-					{ name: 'Channels', value: "----------------" },
-					{ name: '/setlogchannel <type>', value: "Sets the specified logs channel to the channel the command is executed in." },
-				)
-				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
-			const left = new ButtonBuilder()
-				.setCustomId('help4')
-				.setLabel('Miscellaneous')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('◀️');
-			const right = new ButtonBuilder()
-				.setCustomId('help1')
-				.setLabel('Roles')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('▶️');
-			const row = new ActionRowBuilder()
-				.addComponents(left, right);
-			await interaction.update({embeds: [helpChannels], components: [row]});
+		if (interaction.customId === "helpChan") {
+			await interaction.update({embeds: [await forms.GetForm(0, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(0)]});
 		}
-		if (interaction.customId === "help1") {
-			const helpRoles = new EmbedBuilder()
-				.setColor(0x00A012)
-				.setTitle(`Command List - Page 2: Roles`)
-				.setAuthor({
-					name: `Help Form`,
-					iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
-				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
-				.addFields(
-					{name: 'Roles', value: "----------------"},
-					{name: '/togglepersistence', value: "Enables role persistence, which allows roles to be reacquired if a member leaves and then rejoins."},
-					{name: '/joinroles add <role>', value: "Adds a roles to be assigned to new members."},
-					{name: '/joinroles list', value: "Lists all roles added on join."}, {name: '/joinroles remove <index>', value: "Prevent a role from being added on join (use /joinroles list to get the index)"},
-					{name: '/secretkeys add <keyset> <role> <age requirement>', value: "Assigns a role to a user if they send a message that matches the specified keyset and have the proper time-since-join (in seconds)"},
-					{name: '/secretkeys list', value: "Lists all secret keys"}, {name: '/secretkeys delete <index>', value: "Delete a secret keyset (use /secretkeys list list to get the index)"}
-					)
-				.setFooter({text: interaction.guild.name, iconURL: interaction.guild.iconURL()});
-			const left = new ButtonBuilder()
-				.setCustomId('help0')
-				.setLabel('Channels')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('◀️');
-			const right = new ButtonBuilder()
-				.setCustomId('help2')
-				.setLabel('Moderation')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('▶️');
-			const row = new ActionRowBuilder()
-				.addComponents(left, right);
-			await interaction.update({embeds: [helpRoles], components: [row]});
+		if (interaction.customId === "helpRole") {
+			await interaction.update({embeds: [await forms.GetForm(1, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(1)]});
 		}
-		if (interaction.customId === "help2") {
-			const helpMod = new EmbedBuilder()
-				.setColor(0x00A012)
-				.setTitle(`Command List - Page 3: Moderation`)
-				.setAuthor({
-					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
-				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
-				.addFields(
-					{ name: 'Moderation', value: "----------------" },
-					{ name: '/ban <user> (<reason>)', value: "Bans a user (reason will be added to the user's notes)" },
-					{ name: '/tempban <user> <time> (<reason>)', value: "Bans a user for a specified duration(reason will be added to the user's notes)" },
-					{ name: '/timeout <user> <time> (<reason>)', value: "Times a user out for the specified duration (For example: 3 days 1h 10minutes and 32 s. Reason will be added to the user's notes)" },
-					{ name: '/userstats <user>', value: "Check detailed information about the target user." },
-					{ name: '/note add <user> <text>', value: "Assigns a note to a user." },
-					{ name: '/note list <user>', value: "View a user's notes." },
-					{ name: '/note delete <ID>', value: "Delete a user's note by ID." },
-					{ name: '/purge any (<count>)', value: "Purges messages in a channel up to 100 messages." },
-				)
-				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
-			const left = new ButtonBuilder()
-				.setCustomId('help1')
-				.setLabel('Roles')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('◀️');
-			const right = new ButtonBuilder()
-				.setCustomId('help3')
-				.setLabel('Administration')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('▶️');
-			const row = new ActionRowBuilder()
-				.addComponents(left, right);
-			await interaction.update({embeds: [helpMod], components: [row]});
+		if (interaction.customId === "helpMod") {
+			await interaction.update({embeds: [await forms.GetForm(2, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(2)]});
 		}
-		if (interaction.customId === "help3") {
-			const helpAdmin = new EmbedBuilder()
-				.setColor(0x00A012)
-				.setTitle(`Command List - Page 4: Administration`)
-				.setAuthor({
-					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
-				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
-				.addFields(
-					{ name: 'Administration', value: "----------------" },
-					{ name: '/setjoinmsg <text>', value: "Sets the join message for the server. Type {@user} to ping the user, {servername} for server name, {username} for the user's username and {user} for the user's global name." },
-					{ name: '/setleavemsg <text>', value: "Sets the leave message for the server. Type {@user} to ping the user, {servername} for server name, {username} for the user's username and {user} for the user's global name." },
-				)
-				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
-			const left = new ButtonBuilder()
-				.setCustomId('help2')
-				.setLabel('Moderation')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('◀️');
-			const right = new ButtonBuilder()
-				.setCustomId('help4')
-				.setLabel('Miscellaneous')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('▶️');
-			const row = new ActionRowBuilder()
-				.addComponents(left, right);
-			await interaction.update({embeds: [helpAdmin], components: [row]});
+		if (interaction.customId === "helpAdmin") {
+			await interaction.update({embeds: [await forms.GetForm(3, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(3)]});
 		}
-		if (interaction.customId === "help4") {
-			const helpMisc = new EmbedBuilder()
-				.setColor(0x00A012)
-				.setTitle(`Command List - Page 5: Miscellaneous`)
-				.setAuthor({
-					name: `Help Form`, iconURL: `https://cdn.discordapp.com/avatars/1205253895258120304/117149e264b0a5624b74acd977dd3eb1.png`
-				})
-				.setDescription("< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second")
-				.addFields(
-					{ name: 'Misc', value: "----------------" },
-					{ name: '/help', value: "- Displays this help form" }
-				)
-				.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
-			const left = new ButtonBuilder()
-				.setCustomId('help3')
-				.setLabel('Administration')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('◀️');
-			const right = new ButtonBuilder()
-				.setCustomId('help0')
-				.setLabel('Channels')
-				.setStyle(ButtonStyle.Primary)
-				.setEmoji('▶️');
-			const row = new ActionRowBuilder()
-				.addComponents(left, right);
-			await interaction.update({embeds: [helpMisc], components: [row]});
+		if (interaction.customId === "helpMisc") {
+			await interaction.update({embeds: [await forms.GetForm(4, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(4)]});
 		}
 	}
 });
