@@ -1,5 +1,5 @@
 //Declaration
-const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonStyle} = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
@@ -210,9 +210,24 @@ client.on(Events.InteractionCreate, async interaction => {
         }
     }
 	else if (interaction.isButton()) {
+		if (interaction.customId.startsWith("ban")) {
+			const args = interaction.customId.split(':');
+			const member = interaction.guild.members.cache.get(args[1]);
+			const confirm = await EmbedCreator.Button(`confirmban:${args[1]}`,"CONFIRM", ButtonStyle.Danger);
+			const row = new ActionRowBuilder().addComponents(confirm);
+			await interaction.reply({content: `Are you sure you wish to ban ${member}?`, components: [row], ephemeral: true})
+		}
+		if (interaction.customId.startsWith("confirmban")) {
+			const args = interaction.customId.split(':');
+			const member = interaction.guild.members.cache.get(args[1]);
+			const dt = await global.notecol.findOne({serial: {$gt: -1}});
+			const msgobj = { srv: interaction.guild.id, userID: member.user.id, username: member.user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "ban", text: `Banned through Mod Menu.`, serial: dt.serial + 1};
+			await global.notecol.insertOne(msgobj);
+			await member.ban();
+		}
 		if (interaction.customId.startsWith("notes")) {
 			const args = interaction.customId.split(':');
-			const user = interaction.guild.members.cache.get(args[1]).user
+			const user = interaction.guild.members.cache.get(args[1]).user;
 			const notelist = new EmbedBuilder()
 				.setColor(0xfa8b2a)
 				.setTitle(`${user.username}'s notes`)
