@@ -1,6 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const fs2 = require('../../Event_Modules/fsfuncs')
-const path = require('node:path');
+const { SlashCommandBuilder } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('supersecretmsgcommand')

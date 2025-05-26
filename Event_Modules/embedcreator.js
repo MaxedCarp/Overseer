@@ -1,7 +1,7 @@
 const { EmbedBuilder } = require('discord.js');
 class embedcreator {
     static Create(title, description, image, footer, footericon, author, authoricon, color, fields) {
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			const embed = new EmbedBuilder();
 			if (color)
 				embed.setColor(color);

@@ -1,5 +1,4 @@
-const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
-const srvcol2 = global.srvcol
+const {  PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
 
@@ -193,7 +192,7 @@ class messageEvents {
 				const attachm = nmessage.attachments.map(attach => { return { fileName: attach.name, attachurl: attach.url, fileType: attach.contentType } });
 				const test = { messageContent: nmessage.content, messageAttachments: attachm, };
 				const upd = { $set: test };
-				const data = await global.msgcol.updateOne(look, upd);
+				await global.msgcol.updateOne(look, upd);
 				resolve(true);
 			})();
 		});		

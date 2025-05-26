@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('../../Event_Modules/embedcreator.js');
 
 module.exports = {
@@ -34,7 +34,7 @@ module.exports = {
 						await global.msgcol.deleteOne({ "messageID": msgs[i].messageID });
 					}
 				}
-				interaction.channel.bulkDelete(chatmsgs);
+				await interaction.channel.bulkDelete(chatmsgs);
 				await interaction.reply({ content: `Sucessfully deleted ${chatmsgs.length} messages!`, ephemeral: true })
 			break;
 		}

@@ -19,7 +19,6 @@ module.exports = {
 				(async () => {
 					const look2 = {srv: interaction.guild.id, userid: member.id};
 					const duser = {srv: guild.id, userid: member.id, nickname: member.nickname, roles: member["_roles"]};
-					//data.users[member.id] = duser;
 					if (!(await global.persistcol.findOne(look2))) {
 						await global.persistcol.insertOne(duser);
 					}

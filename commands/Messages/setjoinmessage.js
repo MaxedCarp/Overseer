@@ -1,6 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
-const fs2 = require('../../Event_Modules/fsfuncs')
-const path = require('node:path');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('setjoinmsg')
@@ -13,9 +11,9 @@ module.exports = {
 	async execute(interaction) {
 		const msg = interaction.options.getString('message');
 		const look = {srv: interaction.guild.id};
-		test = {joinmsg: msg};
+		let test = {joinmsg: msg};
 		const upd = { $set: test };
-		const data = await global.srvcol.updateOne(look, upd);
+		await global.srvcol.updateOne(look, upd);
 		await interaction.reply({ content: `Join Message successfully set to "${msg}"!`, ephemeral: true });
 	},
 };

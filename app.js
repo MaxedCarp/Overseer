@@ -1,23 +1,15 @@
 //Declaration
-const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits,
-	ButtonBuilder,
-	ButtonStyle,
-	ActionRowBuilder
-} = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
-//const { joinVoiceChannel } = require('@discordjs/voice');
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-//const { REST, Routes } = require('discord.js');
 const { token, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol } = require('./config.json');
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
 const guildEvents = require('./Event_Modules/guildevents.js');
 const messageEvents = require('./Event_Modules/messageevents.js');
-//const EmbedCreator = require('./Event_Modules/embedcreator.js');
-const essentials = require('./Event_Modules/essentials.js');
 const client = new Client({ intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
 
 
@@ -97,13 +89,12 @@ async function bancheck(){
 		global.srvcol.findOne({ "srv": guild.id }).then(obj => {
 			if (obj.banlist.length > 0){
 				obj.banlist.forEach(ban => {
-					//console.log(parseInt(ban.expire) + " " + parseInt(new Date().getTime() / 1000))
 					if (ban.expire !== "permanent" && parseInt(ban.expire) < parseInt(new Date().getTime() / 1000)) {
 						guild.members.unban(ban.id);
 						nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
 						const look = {srv: guild.id};
 						const upd = { $set: {banlist: nbanlist} };
-						/*const data = */global.srvcol.updateOne(look, upd);
+						global.srvcol.updateOne(look, upd).then();
 					}
 				});
 			}
@@ -114,13 +105,14 @@ async function UpdateKeep_Alive(){
 	global.mongo.db("global").collection("availability").updateOne({name: activedb}, { $set: {lastreported: Math.floor(Math.floor(new Date().valueOf() / 1000)), uptime: client.uptime } });
 }
 let banTimer = function () {
-  setInterval(bancheck, 3000);
+  setInterval(bancheck, 60000);
 }
 let keep_alive = function () {
 	setInterval(UpdateKeep_Alive, 5000);
 }
 eventEmitter.on('banTimer', banTimer);
 eventEmitter.on('keepAlive', keep_alive);
+
 //Interaction Event
 client.on(Events.InteractionCreate, async interaction => {
 	if (interaction.channel.type === 1) {
@@ -258,7 +250,6 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setEmoji('▶️');
 			const row = new ActionRowBuilder()
 				.addComponents(left, right);
-			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
 			await interaction.update({embeds: [helpChannels], components: [row]});
 		}
 		if (interaction.customId === "help1") {
@@ -291,7 +282,6 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setEmoji('▶️');
 			const row = new ActionRowBuilder()
 				.addComponents(left, right);
-			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
 			await interaction.update({embeds: [helpRoles], components: [row]});
 		}
 		if (interaction.customId === "help2") {
@@ -326,7 +316,6 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setEmoji('▶️');
 			const row = new ActionRowBuilder()
 				.addComponents(left, right);
-			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
 			await interaction.update({embeds: [helpMod], components: [row]});
 		}
 		if (interaction.customId === "help3") {
@@ -355,7 +344,6 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setEmoji('▶️');
 			const row = new ActionRowBuilder()
 				.addComponents(left, right);
-			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
 			await interaction.update({embeds: [helpAdmin], components: [row]});
 		}
 		if (interaction.customId === "help4") {
@@ -383,7 +371,6 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setEmoji('▶️');
 			const row = new ActionRowBuilder()
 				.addComponents(left, right);
-			//await interaction.reply({ embeds: [embeds[0]], components: [row], ephemeral: true });
 			await interaction.update({embeds: [helpMisc], components: [row]});
 		}
 	}
@@ -506,14 +493,12 @@ client.on(Events.MessageDelete, async (message) => {
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
-/*function logMapElements(value, key, map) {
-  console.log(`map.get('${key}') = ${value}`);
-}*/
 client.on(Events.MessageBulkDelete, async (messages) => {
 	try {
 		await messageEvents.MessageBulkDelete(messages);
 	} catch (err) {
         console.error(err);
+		console.log(messages[0]);
 		let dmChannel = await client.users.createDM("275305152842301440");
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }

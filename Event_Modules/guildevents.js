@@ -1,6 +1,5 @@
 const { EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
-const essentials = require('./essentials.js');
 
 class guildEvents {
     static MemberJoin(member){
@@ -266,8 +265,6 @@ class guildEvents {
 	static UserUpdate(oldUser, newUser) {
 		return new Promise((resolve, reject) => {
 			(async () => {
-				//console.log(oldUser);
-				//console.log(newUser);
 				let flag = false;
 				const Guilds = client.guilds.cache;
 				Guilds.forEach(async guild => {

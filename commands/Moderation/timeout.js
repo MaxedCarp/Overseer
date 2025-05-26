@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('../../Event_Modules/embedcreator.js');
 const essentials = require('../../Event_Modules/essentials.js');
 

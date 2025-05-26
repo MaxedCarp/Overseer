@@ -1,6 +1,4 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
-const fs2 = require('../../Event_Modules/fsfuncs')
-const path = require('node:path');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('note')
@@ -77,6 +75,5 @@ module.exports = {
 			break;
 			default: return;
 		}
-		//await interaction.reply({ content: `${sub} channel successfully set to <#${interaction.channel.id}>!`, ephemeral: true });
 	},
 };
