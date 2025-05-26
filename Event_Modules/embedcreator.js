@@ -13,7 +13,7 @@ class embedcreator {
 				embed.setAuthor({ name: author, iconURL: authoricon });
 			if (footer && footericon)
 				embed.setFooter({ text: footer, iconURL: footericon });
-			if (fields?.length > 0) {
+			if (!!fields && fields.length > 0) {
 				let newFields = []
 				fields.forEach(field => {
 					if (field.value.length > 2500)

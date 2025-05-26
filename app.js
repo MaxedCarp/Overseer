@@ -145,7 +145,7 @@ client.on(Events.InteractionCreate, async interaction => {
             args?.forEach(arg => argArr.push(getArgs(arg)));
         }
         const sub = (interaction.options["_subcommand"] ? " " + interaction.options["_subcommand"] : "");
-        const exampleEmbed = await EmbedCreator.Create(`Command Created: ${command.data.name}${sub}`,null,null, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName} (${interaction.user.username})`, interaction.member.displayAvatarURL(), 0xf7ef02, `https://discord.com/channels/${interaction.guild.id}/${interaction.channel.id}`);
+        const exampleEmbed = await EmbedCreator.Create(`Command Created: ${command.data.name}${sub}`,null,null, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName} (${interaction.user.username})`, interaction.member.displayAvatarURL(), 0xf7ef02, null, `https://discord.com/channels/${interaction.guild.id}/${interaction.channel.id}`);
         if (argArr.length > 0) {
             let str = ""
             for (i = 0; i < argArr.length; i++) {
@@ -248,20 +248,10 @@ client.on(Events.InteractionCreate, async interaction => {
 			else
 				await interaction.reply({ content: "The target user has no notes.", ephemeral: true })
 		}
-		if (interaction.customId === "helpChan") {
-			await interaction.update({embeds: [await forms.GetForm(0, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(0)]});
-		}
-		if (interaction.customId === "helpRole") {
-			await interaction.update({embeds: [await forms.GetForm(1, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(1)]});
-		}
-		if (interaction.customId === "helpMod") {
-			await interaction.update({embeds: [await forms.GetForm(2, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(2)]});
-		}
-		if (interaction.customId === "helpAdmin") {
-			await interaction.update({embeds: [await forms.GetForm(3, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(3)]});
-		}
-		if (interaction.customId === "helpMisc") {
-			await interaction.update({embeds: [await forms.GetForm(4, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(4)]});
+		if (interaction.customId.startsWith("help")) {
+			const args = interaction.customId.split(':');
+			const num = parseInt(args[1]);
+			await interaction.update({embeds: [await forms.GetForm(num, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(num)]});
 		}
 	}
 });

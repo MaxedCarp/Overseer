@@ -19,16 +19,16 @@ class forms {
 		return new Promise((resolve) => {
 			(async () => {
 				// Buttons
-				const leftChan = await EmbedCreator.Button("helpMisc",'Miscellaneous', ButtonStyle.Primary,'◀️');
-				const rightChan = await EmbedCreator.Button("helpRole",'Roles',ButtonStyle.Primary,'▶️');
-				const leftRole = await EmbedCreator.Button("helpChan",'Channels', ButtonStyle.Primary,'◀️');
-				const rightRole = await EmbedCreator.Button("helpMod",'Moderation',ButtonStyle.Primary,'▶️');
-				const leftMod = await EmbedCreator.Button("helpRole",'Roles', ButtonStyle.Primary,'◀️');
-				const rightMod = await EmbedCreator.Button("helpAdmin",'Administration',ButtonStyle.Primary,'▶️');
-				const leftAdmin = await EmbedCreator.Button("helpMod",'Moderation', ButtonStyle.Primary,'◀️');
-				const rightAdmin = await EmbedCreator.Button("helpMisc",'Miscellaneous',ButtonStyle.Primary,'▶️');
-				const leftMisc = await EmbedCreator.Button("helpAdmin",'Administration', ButtonStyle.Primary,'◀️');
-				const rightMisc = await EmbedCreator.Button("helpChan",'Channels',ButtonStyle.Primary,'▶️');
+				const leftChan = await EmbedCreator.Button("help:4",'Miscellaneous', ButtonStyle.Primary,'◀️');
+				const rightChan = await EmbedCreator.Button("help:1",'Roles',ButtonStyle.Primary,'▶️');
+				const leftRole = await EmbedCreator.Button("help:0",'Channels', ButtonStyle.Primary,'◀️');
+				const rightRole = await EmbedCreator.Button("help:2",'Moderation',ButtonStyle.Primary,'▶️');
+				const leftMod = await EmbedCreator.Button("help:1",'Roles', ButtonStyle.Primary,'◀️');
+				const rightMod = await EmbedCreator.Button("help:3",'Administration',ButtonStyle.Primary,'▶️');
+				const leftAdmin = await EmbedCreator.Button("help:2",'Moderation', ButtonStyle.Primary,'◀️');
+				const rightAdmin = await EmbedCreator.Button("help:4",'Miscellaneous',ButtonStyle.Primary,'▶️');
+				const leftMisc = await EmbedCreator.Button("help:3",'Administration', ButtonStyle.Primary,'◀️');
+				const rightMisc = await EmbedCreator.Button("help:0",'Channels',ButtonStyle.Primary,'▶️');
 
 				// Rows
 				const rowChan = new ActionRowBuilder().addComponents(leftChan, rightChan);
