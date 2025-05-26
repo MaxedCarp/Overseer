@@ -1,6 +1,6 @@
 const { EmbedBuilder, ButtonBuilder, ButtonStyle} = require('discord.js');
 class embedcreator {
-    static Create(title, description, image, footer, footericon, author, authoricon, color, fields) {
+    static Create(title, description, image, footer, footericon, author, authoricon, color, fields, url, thumbnail) {
 		return new Promise((resolve) => {
 			const embed = new EmbedBuilder();
 			if (color)
@@ -13,7 +13,7 @@ class embedcreator {
 				embed.setAuthor({ name: author, iconURL: authoricon });
 			if (footer && footericon)
 				embed.setFooter({ text: footer, iconURL: footericon });
-			if (fields.length > 0) {
+			if (fields?.length > 0) {
 				let newFields = []
 				fields.forEach(field => {
 					if (field.value.length > 2500)
@@ -36,16 +36,21 @@ class embedcreator {
 			}
 			if (image)
 				embed.setImage(image);
+			if (url)
+				embed.setURL(url);
+			if (thumbnail)
+				embed.setThumbnail(thumbnail);
 			resolve(embed);
 		});
     }
 	static Button(id, label, style, emoji) {
 		return new Promise((resolve) => {
 			const btn = new ButtonBuilder()
-			.setCustomId(id)
-			.setLabel(label)
-			.setStyle(style)
-			.setEmoji(emoji);
+			btn.setCustomId(id);
+			btn.setLabel(label);
+			btn.setStyle(style);
+			if (emoji)
+				btn.setEmoji(emoji);
 			resolve(btn);
 		});
 	}

@@ -1,10 +1,10 @@
 //Declaration
-const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits, ButtonBuilder, ButtonStyle, ActionRowBuilder } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits } = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-const { token, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol } = require('./config.json');
+const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol } = require('./config.json'); // These variables need to be defined in your config.json file!
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -12,7 +12,7 @@ const guildEvents = require('./Event_Modules/guildevents.js');
 const messageEvents = require('./Event_Modules/messageevents.js');
 const forms = require('./commands/Command_Modules/forms.js');
 const client = new Client({ intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions], partials: [Partials.Channel, Partials.Message, Partials.Reaction] });
-
+const EmbedCreator = require("./Event_Modules/embedcreator");
 
 //Initialization
 client.once(Events.ClientReady, async c => {
@@ -60,7 +60,7 @@ client.login(token);
 
 process.on('uncaughtException', async (err) => {
   console.error(`Caught exception: ${err.stack}`);
-  let dmChannel = await client.users.createDM("275305152842301440");
+  let dmChannel = await client.users.createDM(contact);
   await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 });
 
@@ -131,7 +131,7 @@ client.on(Events.InteractionCreate, async interaction => {
             await command.execute(interaction);
         } catch (err) {
             console.log(err);
-			let dmChannel = await client.users.createDM("275305152842301440");
+			let dmChannel = await client.users.createDM(contact);
 			await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({ content: 'There was an error while executing this command!', ephemeral: true });
@@ -145,12 +145,7 @@ client.on(Events.InteractionCreate, async interaction => {
             args?.forEach(arg => argArr.push(getArgs(arg)));
         }
         const sub = (interaction.options["_subcommand"] ? " " + interaction.options["_subcommand"] : "");
-        const exampleEmbed = new EmbedBuilder()
-            .setColor(0xf7ef02)
-            .setTitle(`Command Created: ${command.data.name}${sub}`)
-            .setAuthor({ name: `${interaction.user.globalName} (${interaction.user.username})`, iconURL: interaction.member.displayAvatarURL() })
-            .setURL(`https://discord.com/channels/${interaction.guild.id}/${interaction.channel.id}`)
-            .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+        const exampleEmbed = await EmbedCreator.Create(`Command Created: ${command.data.name}${sub}`,null,null, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName} (${interaction.user.username})`, interaction.member.displayAvatarURL(), 0xf7ef02, `https://discord.com/channels/${interaction.guild.id}/${interaction.channel.id}`);
         if (argArr.length > 0) {
             let str = ""
             for (i = 0; i < argArr.length; i++) {
@@ -187,7 +182,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
         if (!command) {
             console.error(clc.redBright(`No command matching ${interaction.commandName} was found.`));
-			let dmChannel = await client.users.createDM("275305152842301440");
+			let dmChannel = await client.users.createDM(contact);
 			await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
             return;
 
@@ -196,7 +191,7 @@ client.on(Events.InteractionCreate, async interaction => {
             await command.execute(interaction);
         } catch (err) {
             console.error(err);
-			let dmChannel = await client.users.createDM("275305152842301440");
+			let dmChannel = await client.users.createDM(contact);
 			await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
             if (interaction.replied || interaction.deferred) {
                 await interaction.followUp({ content: 'This interaction was already replied to!', ephemeral: true });
@@ -217,6 +212,26 @@ client.on(Events.InteractionCreate, async interaction => {
 	else if (interaction.isButton()) {
 		if (interaction.customId.startsWith("notes")) {
 			const args = interaction.customId.split(':');
+			const user = interaction.guild.members.cache.get(args[1]).user
+			const notelist = new EmbedBuilder()
+				.setColor(0xfa8b2a)
+				.setTitle(`${user.username}'s notes`)
+				.setThumbnail(user.displayAvatarURL())
+				.setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.member.displayAvatarURL()}` })
+				.setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() });
+			var list = "";
+			const data = await global.notecol.find({srv: interaction.guild.id, userID: user.id}).toArray();
+			if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
+				i = 1;
+				data.forEach(note => {
+					list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
+					i++;
+				});
+				notelist.setDescription(list);
+				await interaction.reply({ embeds: [notelist], ephemeral: true })
+			}
+			else
+				await interaction.reply({ content: "The target user has no notes.", ephemeral: true })
 		}
 		if (interaction.customId === "helpChan") {
 			await interaction.update({embeds: [await forms.GetForm(0, interaction.guild.name, interaction.guild.iconURL())], components: [await forms.GetComps(0)]});
@@ -235,12 +250,6 @@ client.on(Events.InteractionCreate, async interaction => {
 		}
 	}
 });
-async function getRandomInt(min, max) {
-	min = Math.ceil(min);
-	max = Math.floor(max);
-	resolve(Math.floor(Math.random() * (max - min + 1)) + min);
-}
-
 //Guild Events
 client.on(Events.GuildCreate, async (guild) => {
 	try {
@@ -248,7 +257,7 @@ client.on(Events.GuildCreate, async (guild) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -258,7 +267,7 @@ client.on(Events.GuildDelete, async (guild) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -268,7 +277,7 @@ client.on(Events.GuildUpdate, async (oGuild, nGuild) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -278,7 +287,7 @@ client.on(Events.GuildMemberAdd, async (member) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -288,7 +297,7 @@ client.on(Events.GuildMemberRemove, async (member) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -298,7 +307,7 @@ client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -308,7 +317,7 @@ client.on(Events.UserUpdate, async (oldUser, newUser) => {
 	}
 	catch(err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -318,7 +327,7 @@ client.on(Events.GuildBanAdd, async (ban) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -330,7 +339,7 @@ client.on(Events.MessageCreate, async (message) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -340,7 +349,7 @@ client.on(Events.MessageUpdate, async (omessage, nmessage) => {
 	}
 	catch (err) {
 		console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -349,7 +358,7 @@ client.on(Events.MessageDelete, async (message) => {
 		await messageEvents.MessageDelete(message);
     } catch (err) {
         console.error(err);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
 	}
 });
@@ -359,7 +368,7 @@ client.on(Events.MessageBulkDelete, async (messages) => {
 	} catch (err) {
         console.error(err);
 		console.log(messages[0]);
-		let dmChannel = await client.users.createDM("275305152842301440");
+		let dmChannel = await client.users.createDM(contact);
 		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
 });
