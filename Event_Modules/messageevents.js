@@ -1,7 +1,7 @@
 const {  PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
-
+const { StdioServerTransport }  = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { Anthropic } = require("@anthropic-ai/sdk");
 const {anthropicApiKey, anthropicBaseURL, contact} = require('../config.json');
 
