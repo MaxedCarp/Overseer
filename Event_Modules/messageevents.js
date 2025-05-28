@@ -41,17 +41,11 @@ class messageEvents {
 						content: [{type: "text", text: editedmsg}]});
 					await message.channel.sendTyping();
 					let resp = await mcpClient.submitQuery(message.guild.id);
-					let shouldloop = false;
 					console.log(resp);
-					if (resp.content === [])
-						shouldloop = !shouldloop;
 					try {
-						while (shouldloop) {
+						while (resp.content.length < 1) {
 							console.log(resp);
 							resp = await mcpClient.submitQuery(message.guild.id);
-							if (resp.content !== []){
-								shouldloop = false;
-							}
 						}
 					}
 					catch (err){
