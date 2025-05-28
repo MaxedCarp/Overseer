@@ -1,5 +1,8 @@
 //Declaration
 const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, EmbedBuilder, PermissionFlagsBits, ActionRowBuilder, ButtonStyle} = require('discord.js');
+const { Server } = require('@modelcontextprotocol/sdk/server/index.js');
+const { StdioServerTransport }  = require('@modelcontextprotocol/sdk/server/stdio.js');
+const {CallToolRequestSchema, ListResourcesRequestSchema, ListToolsRequestSchema, ReadResourceRequestSchema, ListPromptsRequestSchema, GetPromptRequestSchema} = require("@modelcontextprotocol/sdk/types.js");
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
@@ -28,6 +31,27 @@ client.once(Events.ClientReady, async c => {
 	global.persistcol = global.db.collection(persistcol);
 	global.autobancol = global.db.collection(autobancol);
 	global.secretkeyscol = global.db.collection(secretkeyscol);
+	global.aimsgs = [];
+	global.server = new Server({
+		name: "overseer-mcp",
+		version: "1.0.0"
+	}, {
+		capabilities: {
+			tools: {},
+			resources: {},
+			prompts: {},
+		}
+	});
+	global.server.setRequestHandler(ListResourcesRequestSchema, async () => {
+		return {
+			resources: Object.entries(notes).map(([id, note]) => ({
+				uri: `note:///"fish"`,
+				mimeType: "text/plain",
+				name: "fish",
+				description: `A fish`,
+			})),
+		};
+	});
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	eventEmitter.emit('keepAlive');

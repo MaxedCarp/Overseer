@@ -2,6 +2,9 @@ const {  PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
 
+const { Anthropic } = require("@anthropic-ai/sdk");
+const {anthropicApiKey, anthropicBaseURL, contact} = require('../config.json');
+
 class messageEvents {
 	
 	static MessageCreate(message) {
@@ -14,6 +17,40 @@ class messageEvents {
 				if (!message.guild)
 					return;
 				const { guild } = message
+				if ((message.content.startsWith("<@1366170194254364855> ") || message.content.startsWith("<@1205253895258120304> ") || (message.reference)) && message.author.id === contact) {
+					const MCPClient = await import('./MCPClient.js');
+					const mcpClient = new MCPClient.default({
+						anthropicApiKey: anthropicApiKey,
+						anthropicBaseURL: anthropicBaseURL || "https://api.anthropic.com"});
+					let str = message.content.replace("<@1366170194254364855> ", "").replace("<@1205253895258120304> ", "");
+					const regex = /<(?:@!?|@&|#)(\d{17,19})>/g;
+					const ids = [];
+					let match;
+					while ((match = regex.exec(str)) !== null) {
+						ids.push(match[1]); // match[1] contains just the ID.
+					}
+					let editedmsg = str;
+					for (let id of ids){
+						id = id.toString();
+						let member = await message.guild.members.cache.get(id);
+						let usr = member.user;
+						editedmsg = str.replaceAll(`<@${id}>`, usr.globalName || usr.username);
+					}
+					global.aimsgs.push({
+						role: "user",
+							content: [
+						{
+							type: "text",
+							text: editedmsg,
+						}
+					]
+					});
+					const resp = await mcpClient.submitQuery();
+					global.aimsgs.push({role: "assistant",
+						content: resp.content});
+					console.log(resp);
+					await message.reply(resp.content[0].text);
+				}
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
 				if (obj.autodelist.find(id => id === message.author.id))
 				{
