@@ -84,7 +84,7 @@ class MCPClient {
             const map = await arr.map(({ content, role }) => ({ content, role }))
             // Send the query to Claude using Anthropic's completion API.
             const response = await this.anthropic.messages.create({
-                model: 'claude-opus-4-20250514',
+                model: 'claude-sonnet-4-20250514',
                 max_tokens: 1000,
                 messages: map
             });
