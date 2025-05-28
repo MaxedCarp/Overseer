@@ -20,6 +20,7 @@ class messageEvents {
 				let aimsg = false;
 				if ((message.content.startsWith("<@1366170194254364855> ") || message.content.startsWith("<@1205253895258120304> ") || (message.reference)) && message.author.id === contact) {
 					if (message.reference && !message?.reference?.author?.id === "1366170194254364855" && !message?.reference?.author?.id === "1205253895258120304")
+						return
 					aimsg = true;
 					const MCPClient = await import('./MCPClient.js');
 					const mcpClient = new MCPClient.default({
