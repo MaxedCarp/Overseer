@@ -46,6 +46,7 @@ class messageEvents {
 						}
 					]
 					});
+					await message.channel.sendTyping();
 					const resp = await mcpClient.submitQuery();
 					global.aimsgs.push({role: "assistant",
 						content: resp.content});
