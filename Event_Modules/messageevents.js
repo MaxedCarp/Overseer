@@ -32,11 +32,10 @@ class messageEvents {
 						ids.push(match[1]); // match[1] contains just the ID.
 					}
 					let editedmsg = str;
-					for (let id of ids){
-						id = id.toString();
-						let member = await message.guild.members.cache.get(id);
-						let usr = member.user;
-						editedmsg = str.replaceAll(`<@${id}>`, usr.globalName || usr.username);
+					let id;
+					for (id of ids){
+						let usr = await message.guild.members.cache.get(id).user;
+						editedmsg = await editedmsg.replace(`<@${id}>`, usr.globalName || usr.username);
 					}
 					global.aimsgs.push({
 						role: "user",
@@ -50,7 +49,6 @@ class messageEvents {
 					const resp = await mcpClient.submitQuery();
 					global.aimsgs.push({role: "assistant",
 						content: resp.content});
-					console.log(resp);
 					await message.reply(resp.content[0].text);
 				}
 				let obj = await global.srvcol.findOne({ "srv": guild.id});

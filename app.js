@@ -31,7 +31,7 @@ client.once(Events.ClientReady, async c => {
 	global.persistcol = global.db.collection(persistcol);
 	global.autobancol = global.db.collection(autobancol);
 	global.secretkeyscol = global.db.collection(secretkeyscol);
-	global.aimsgs = [];
+	global.aimsgs = [{"role": "assistant", "content": "You are a helpful assistant. In your responses, do not use the following characters: <, >, /, @. Also, do not include any gestures or emoticons (such as shrugging, finger-pointing, or emoji)."}];
 	global.server = new Server({
 		name: "overseer-mcp",
 		version: "1.0.0"
