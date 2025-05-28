@@ -42,17 +42,14 @@ class messageEvents {
 					await message.channel.sendTyping();
 					let resp = await mcpClient.submitQuery(message.guild.id);
 					await essentials.sleep(5);
-					console.log(resp);
 					try {
 						while (resp.content.length < 1) {
-							console.log(resp);
 							resp = await mcpClient.submitQuery(message.guild.id);
 							await essentials.sleep(5);
 						}
 					}
 					catch (err){
 						console.error(err);
-						console.log(resp);
 					}
 					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
 						content: resp.content});
