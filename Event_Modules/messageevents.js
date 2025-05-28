@@ -37,18 +37,11 @@ class messageEvents {
 						let usr = await message.guild.members.cache.get(id).user;
 						editedmsg = await editedmsg.replace(`<@${id}>`, usr.globalName || usr.username);
 					}
-					global.aimsgs.push({
-						role: "user",
-							content: [
-						{
-							type: "text",
-							text: editedmsg,
-						}
-					]
-					});
+					await global.aicol.insertOne({srv: message.guild.id, role: "user",
+						content: [{type: "text", text: editedmsg}]});
 					await message.channel.sendTyping();
-					const resp = await mcpClient.submitQuery();
-					global.aimsgs.push({role: "assistant",
+					const resp = await mcpClient.submitQuery(message.guild.id);
+					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
 						content: resp.content});
 					await message.reply(resp.content[0].text);
 				}
