@@ -5,7 +5,7 @@ const essentials = require('./essentials.js');
 class messageEvents {
 	
 	static MessageCreate(message) {
-		return new Promise((resolve, reject) => {
+		return new Promise(() => {
 			(async () => {
 				if (!!message?.author?.bot)
 					return;
@@ -20,49 +20,60 @@ class messageEvents {
 					await message.delete();
 					return;
 				}
+				const attachm = message.attachments.map(attach => { return { fileName: attach.name, attachurl: attach.url, fileType: attach.contentType } });
+				const msgobj = { messageID: message.id, messageContent: message.content, messageAttachments: attachm, messageAuthor: { userID: message.author.id, userName: message.author.username, globalName: message.author.globalName, avatar: message.author.avatar, avatarURL: message.author.displayAvatarURL() }, messageChannelID: message.channel.id, messageServerID: message.guild.id, expire: new Date(Date.now() + 1209600000)};
+				await global.msgcol.insertOne(msgobj);
+				const msgcontlow = message.content.toLowerCase();
 				if (obj.fishmode === true) {
-					if (message.content.toLowerCase().includes("limbo") || message.content.toLowerCase().includes("limbible") || message.content.includes("<@528963161622052915>"))
+					if (guild.id === "1190516697174659182" && (msgcontlow.includes("limbo") || msgcontlow.includes("limbible") || message.content.includes("<@528963161622052915>")))
 						await message.react("🎩");
-					const msgsplit = message.content.toLowerCase().split(' ');
+					const msgsplit = msgcontlow.split(' ');
 					let flag = true;
-					msgsplit.forEach(async prt => {
+					for (let prt of msgsplit) {
 						let fishtest = await global.fishcol.findOne({ "name": prt })
-						if (!!fishtest || message.content.includes("🐟") || message.content.toLowerCase().includes("sci-fi freak")){
+						if (!!fishtest || message.content.includes("🐟") || msgcontlow.includes("sci-fi freak")){
 							if (flag){
 								await message.react("🐟");
 								flag = false;
 							}
 						}
-					});
-					if (message.content.toLowerCase().includes("you know what that means"))
+					}
+					if (msgcontlow.includes("you know what that means"))
 						await message.reply("🐟FISH!");
-					if (message.content.toLowerCase().includes("ghoti")){
+					if (msgcontlow.includes("ghoti")){
 						await message.reply("Sorry, not a real word...").then(async msg => {
 							await essentials.sleep(5);
 							msg.delete();
 							message.delete();
+							return -1;
 						})
 					}
 				}
 				if (message.content.includes("<@1205253895258120304>"))
 					await message.reply("Yes, how may I assist?");
-				
-				const attachm = message.attachments.map(attach => { return { fileName: attach.name, attachurl: attach.url, fileType: attach.contentType } });
-				const msgobj = { messageID: message.id, messageContent: message.content, messageAttachments: attachm, messageAuthor: { userID: message.author.id, userName: message.author.username, globalName: message.author.globalName, avatar: message.author.avatar, avatarURL: message.author.displayAvatarURL() }, messageChannelID: message.channel.id, messageServerID: message.guild.id, expire: new Date(Date.now() + 1209600000)};
-				await global.msgcol.insertOne(msgobj);
-				
+
 				const member = guild.members.cache.find(member => member.id === message.author.id);
-				const look = { srv: guild.id, 'secretkeys.key': message.content.toLowerCase() };
-				const data = await global.srvcol.aggregate([{ $unwind: '$secretkeys' }, { $match: { srv: guild.id, 'secretkeys.key': message.content.toLowerCase() } }]);
-				let test = [];
-				for await (const doc of data) {
-					test.push(doc);
-				}
 				if (!(guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles))
 					return;
-				if (test[0]) {
-					let role = guild.roles.cache.find(role => role.id === test[0].secretkeys.roleID);
-					if (!member.roles.cache.has(role) && role.editable && (parseInt(`${member.joinedTimestamp}`) + (parseInt(test[0].secretkeys.agereq) * 1000)) < new Date().valueOf()) {
+				const query = (await global.secretkeyscol.aggregate([
+					{
+						$match: {
+							srv: guild.id,
+							$text: { $search: msgcontlow },
+						}
+					},
+					{
+						$addFields: {
+							score: { $meta: "textScore" }
+						}
+					},
+					{
+						$sort: { score: -1 }
+					}
+				]).toArray())?.[0];
+				if (msgcontlow.includes(query?.key)) {
+					let role = guild.roles.cache.find(role => role.id === query.roleID);
+					if (!member.roles.cache.has(role) && role.editable && (parseInt(`${member.joinedTimestamp}`) + (parseInt(query.agereq) * 1000)) < new Date().valueOf()) {
 						member.roles.add(role);
 					}
 				}
@@ -71,7 +82,7 @@ class messageEvents {
 	};
 	
 	static MessageDelete(message){
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			(async () => {
 				if (message.guild === null)
 					return;
@@ -82,7 +93,7 @@ class messageEvents {
 				const { guild } = message;
 				if (!!obj.autodelist.find(id => id === message?.author?.id))
 				{
-					let resembed = "";
+					let resembed;
 					if (message.attachments.length < 1 || (message.attachments[0]?.contentType !== "image/png" && message.attachments[0]?.contentType !== "image/jpeg" && message.attachments[0]?.contentType !== "image/webp"))
 						resembed = await EmbedCreator.Create(`Message Deleted in: <#${message.channel.id}>`, message.content || " ", false, guild.name, guild.iconURL(), `${message.author.globalName || message.author.username} (${message.author.username})`,message.author.displayAvatarURL(), 0xFA042A, []);
 					else
@@ -98,7 +109,7 @@ class messageEvents {
 					if (!existmsg)
 						return;
 					const msg = await global.msgcol.findOne({ "messageID": message.id });
-					let resembed = "";
+					let resembed ;
 				
 					if (msg.messageAttachments.length < 1 || (msg.messageAttachments[0]?.fileType !== "image/png" && msg.messageAttachments[0]?.fileType !== "image/jpeg") && msg.messageAttachments[0]?.fileType !== "image/webp")
 						resembed = await EmbedCreator.Create(`Message Deleted in: <#${message.channelId}>`, msg.messageContent || " ", false, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
@@ -118,7 +129,7 @@ class messageEvents {
 	}
 
 	static MessageBulkDelete(messages){
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			(async () => {
 				const messages2 = messages.filter(msg => (!msg?.author?.bot || !msg.author) && !!msg.content);
 				
@@ -126,25 +137,19 @@ class messageEvents {
 					return;
 
 				let test = [];
-				let i = 0;
-				while (messages2.at(i)) {
-					if (messages2.at(i) != undefined)
+				for (let i =0; i < messages2.length; i++) {
+					if (!!messages2.at(i))
 						test.push(messages2.at(i));
-					i++;
 				}
 				let msg;
 				let guild;
 				let chan;
-				let msgcount;
+				let msgcount = test.length;
 				for (let i = test.length - 1; i >= 0; i--) {
-					msgcount = test.length;
 					let message = test[i];
-					if (message.guild === null)
-						return;
-					if (!!message?.author?.bot)
-						return;
 					if (!(await global.msgcol.findOne({"messageID": message.id})))
 						return;
+					message = await global.msgcol.findOne({"messageID": message.id});
 					guild = await client.guilds.fetch(message.guildId);
 					msg = await global.msgcol.findOne({"messageID": message.id});
 					chan = msg.messageChannelID;
@@ -164,7 +169,7 @@ class messageEvents {
 	}
 
 	static MessageUpdate(omessage, nmessage){
-		return new Promise((resolve, reject) => {
+		return new Promise((resolve) => {
 			(async () => {
 				if (omessage.guild === null)
 					return;
@@ -198,6 +203,6 @@ class messageEvents {
 		});		
 	}
 
-};
+}
 
 module.exports = messageEvents;

@@ -4,7 +4,7 @@ const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol } = require('./config.json'); // These variables need to be defined in your config.json file!
+const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol, secretkeyscol } = require('./config.json'); // These variables need to be defined in your config.json file!
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -27,6 +27,7 @@ client.once(Events.ClientReady, async c => {
 	global.notecol = global.db.collection(notecol);
 	global.persistcol = global.db.collection(persistcol);
 	global.autobancol = global.db.collection(autobancol);
+	global.secretkeyscol = global.db.collection(secretkeyscol);
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	eventEmitter.emit('keepAlive');
