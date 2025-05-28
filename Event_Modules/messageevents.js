@@ -59,11 +59,7 @@ class messageEvents {
 					let updres = resp.content[0].text;
 					if (resp.content[0].text.includes("{cetuscycle}") || resp.content[0].text.includes("{cetustime}")){
 						try {
-							const response = await fetch('https://api.warframestat.us/pc/cetusCycle', {
-								headers: {
-									'User-Agent': 'Overseer/1.0 (plavagame@gmail.com)'
-								}
-							});
+							const response = await fetch('https://api.warframestat.us/pc/en/cetusCycle/');
 							console.log(response);
 							await essentials.sleep(1);
 							const data = await response.json();
