@@ -82,7 +82,6 @@ class MCPClient {
                 max_tokens: 1000,
                 messages: global.aimsgs
             });
-            console.log("Response from Claude:", response);
             return response;
         } catch (error) {
             console.error("Failed to submit query:", error);
