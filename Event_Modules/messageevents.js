@@ -41,12 +41,14 @@ class messageEvents {
 						content: [{type: "text", text: editedmsg}]});
 					await message.channel.sendTyping();
 					let resp = await mcpClient.submitQuery(message.guild.id);
-					if (resp.content[0].text === "test") {
-						console.log(resp);
-						resp = await mcpClient.submitQuery(message.guild.id);
+					try {
+						while (!resp.content[0].text) {
+							console.log(resp);
+							resp = await mcpClient.submitQuery(message.guild.id);
+						}
 					}
-					else {
-						console.log(resp);
+					catch (err){
+						console.error(err);
 					}
 					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
 						content: resp.content});
