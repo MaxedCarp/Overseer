@@ -76,10 +76,12 @@ class MCPClient {
      */
     async submitQuery(srv) {
         try {
-            let arr = await global.aicol.find({srv: srv}).toArray();
+            let arr = [await global.aicol.findOne({srv: "ALL"})];
             const arr2 = await global.aicol.find({srv: srv}).toArray();
-            arr.push(arr2);
-            const map = await arr2.map(({ content, role }) => ({ content, role }))
+            for (let item of arr2){
+                await arr.push(item);
+            }
+            const map = await arr.map(({ content, role }) => ({ content, role }))
             // Send the query to Claude using Anthropic's completion API.
             const response = await this.anthropic.messages.create({
                 model: 'claude-opus-4-20250514',
