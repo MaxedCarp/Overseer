@@ -4,6 +4,7 @@ const essentials = require('./essentials.js');
 const { StdioServerTransport }  = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { Anthropic } = require("@anthropic-ai/sdk");
 const {anthropicApiKey, anthropicBaseURL, contact} = require('../config.json');
+const fetch = (url, init) => import('node-fetch').then(module => module.default(url, init));
 
 class messageEvents {
 	
@@ -55,7 +56,18 @@ class messageEvents {
 					}
 					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
 						content: resp.content});
-					await message.reply(resp.content[0].text);
+					let updres = resp.content[0].text;
+					if (resp.content[0].text.includes("{cetuscycle}") || resp.content[0].text.includes("{cetustime}")){
+						try {
+							const response = await fetch('https://api.warframestat.us/pc/cetusCycle');
+							const data = await response.json();
+
+							updres = resp.content[0].text.replaceAll("{cetuscycle}", data.state).replaceAll("{cetustime}", data.timeLeft);
+						} catch (error) {
+							console.error('Error fetching cycle data:', error);
+						}
+					}
+					await message.reply(updres);
 				}
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
 				if (obj.autodelist.find(id => id === message.author.id))
