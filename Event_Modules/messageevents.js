@@ -61,6 +61,7 @@ class messageEvents {
 						try {
 							const response = await fetch('https://api.warframestat.us/pc/cetusCycle');
 							console.log(response);
+							await essentials.sleep(1);
 							const data = await response.json();
 
 							updres = resp.content[0].text.replaceAll("{cetuscycle}", data.state).replaceAll("{cetustime}", data.timeLeft);
