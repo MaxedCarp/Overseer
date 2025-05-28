@@ -57,7 +57,7 @@ class messageEvents {
 					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
 						content: resp.content});
 					let updres = resp.content[0].text;
-					if (resp.content[0].text.includes("{cetuscycle}") || resp.content[0].text.includes("{cetustime}")){
+					/*if (resp.content[0].text.includes("{cetuscycle}") || resp.content[0].text.includes("{cetustime}")){
 						try {
 							const response = await fetch('https://api.warframestat.us/pc/en/cetusCycle/');
 							console.log(response);
@@ -68,7 +68,7 @@ class messageEvents {
 						} catch (error) {
 							console.error('Error fetching cycle data:', error);
 						}
-					}
+					}*/
 					await message.reply(updres);
 				}
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
