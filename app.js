@@ -224,6 +224,7 @@ client.on(Events.InteractionCreate, async interaction => {
 			const msgobj = { srv: interaction.guild.id, userID: member.user.id, username: member.user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "ban", text: `Banned through Mod Menu.`, serial: dt.serial + 1};
 			await global.notecol.insertOne(msgobj);
 			await member.ban();
+			await interaction.reply({content: `User "${member.user}" has been successfully banned!`, ephemeral: true});
 		}
 		if (interaction.customId.startsWith("notes")) {
 			const args = interaction.customId.split(':');
