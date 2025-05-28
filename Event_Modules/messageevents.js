@@ -42,6 +42,7 @@ class messageEvents {
 					await message.channel.sendTyping();
 					let resp = await mcpClient.submitQuery(message.guild.id);
 					let shouldloop = false;
+					console.log(resp);
 					if (resp.content === [])
 						shouldloop = !shouldloop;
 					try {
