@@ -77,7 +77,6 @@ class MCPClient {
     async submitQuery(srv) {
         try {
             // Send the query to Claude using Anthropic's completion API.
-            console.log(await global.aicol.find({$or: [{srv: "ALL"}, {srv: srv}]}).sort({_id: 1}).toArray());
             const response = await this.anthropic.messages.create({
                 model: 'claude-opus-4-20250514',
                 max_tokens: 1000,
