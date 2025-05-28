@@ -42,7 +42,7 @@ class messageEvents {
 					await message.channel.sendTyping();
 					let resp = await mcpClient.submitQuery(message.guild.id);
 					try {
-						while (!resp.content[0].text) {
+						while (resp.content === []) {
 							console.log(resp);
 							resp = await mcpClient.submitQuery(message.guild.id);
 						}
