@@ -17,7 +17,9 @@ class messageEvents {
 				if (!message.guild)
 					return;
 				const { guild } = message
+				let aimsg = false;
 				if ((message.content.startsWith("<@1366170194254364855> ") || message.content.startsWith("<@1205253895258120304> ") || (message.reference)) && message.author.id === contact) {
+					aimsg = true;
 					const MCPClient = await import('./MCPClient.js');
 					const mcpClient = new MCPClient.default({
 						anthropicApiKey: anthropicApiKey,
@@ -86,7 +88,7 @@ class messageEvents {
 						})
 					}
 				}
-				if (message.content.includes("<@1205253895258120304>"))
+				if (message.content.includes("<@1205253895258120304>") && !aimsg)
 					await message.reply("Yes, how may I assist?");
 
 				const member = guild.members.cache.find(member => member.id === message.author.id);
