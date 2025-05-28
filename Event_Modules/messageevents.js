@@ -41,6 +41,7 @@ class messageEvents {
 						content: [{type: "text", text: editedmsg}]});
 					await message.channel.sendTyping();
 					let resp = await mcpClient.submitQuery(message.guild.id);
+					console.log(resp);
 					await essentials.sleep(5);
 					try {
 						while (resp.content.length < 1) {
