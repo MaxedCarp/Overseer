@@ -49,6 +49,7 @@ class messageEvents {
 					}
 					catch (err){
 						console.error(err);
+						console.log(resp);
 					}
 					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
 						content: resp.content});
