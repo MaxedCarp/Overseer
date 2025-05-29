@@ -1,10 +1,10 @@
 const {  PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
-const { StdioServerTransport }  = require('@modelcontextprotocol/sdk/server/stdio.js');
+/*const { StdioServerTransport }  = require('@modelcontextprotocol/sdk/server/stdio.js');
 const { Anthropic } = require("@anthropic-ai/sdk");
 const {anthropicApiKey, anthropicBaseURL, contact} = require('../config.json');
-const fetch = (url, init) => import('node-fetch').then(module => module.default(url, init));
+const fetch = (url, init) => import('node-fetch').then(module => module.default(url, init));*/
 
 class messageEvents {
 	
