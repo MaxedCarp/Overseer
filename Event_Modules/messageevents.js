@@ -242,7 +242,7 @@ class messageEvents {
 				const exampleEmbed = await EmbedCreator.Create(false, `**Message Edited:** [Click to View](https://discord.com/channels/${nmessage.guild.id}/${nmessage.channel.id}/${nmessage.id})`, false, nmessage.guild.name, nmessage.guild.iconURL(), `${nmessage.author.globalName || nmessage.author.username} (${nmessage.author.username})`, nmessage.author.displayAvatarURL(), 0xf7ef02, [{ name: "Old Message:", value: `${noldmsg.messageContent}`, inline: false }, { name: "New Message:", value: `${nmessage.content}`, inline: false }]);
 				let obj = await global.srvcol.findOne({ "srv": nmessage.guild.id })
 				if (obj.fishmode === true) {
-					if (omessage.toLowerCase().includes("ghoti")){
+					if (nmessage.content.toLowerCase().includes("ghoti")){
 						await nmessage.reply("Sorry, not a real word...").then(async msg => {
 							await essentials.sleep(5);
 							msg.delete();
