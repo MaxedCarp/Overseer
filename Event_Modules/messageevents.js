@@ -18,7 +18,7 @@ class messageEvents {
 				if (!message.guild)
 					return;
 				const { guild } = message
-				let aimsg = false;
+				/*let aimsg = false;
 				if ((message.content.startsWith("<@1366170194254364855> ") || message.content.startsWith("<@1205253895258120304> ") || (message.reference)) && message.author.id === contact) {
 					if (message.reference && ((await message?.fetchReference())?.author?.id !== "1366170194254364855" && (await message?.fetchReference())?.author?.id !== "1205253895258120304"))
 						return;
@@ -68,9 +68,9 @@ class messageEvents {
 						} catch (error) {
 							console.error('Error fetching cycle data:', error);
 						}
-					}*/
+					}*//*
 					await message.reply(updres);
-				}
+				}*/
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
 				if (obj.autodelist.find(id => id === message.author.id))
 				{
