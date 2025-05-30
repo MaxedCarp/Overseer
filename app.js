@@ -4,7 +4,7 @@ const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol, secretkeyscol, /*aicol*/ } = require('./config.json'); // These variables need to be defined in your config.json file!
+const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol, secretkeyscol, botlistmetoken/*aicol*/ } = require('./config.json'); // These variables need to be defined in your config.json file!
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -32,6 +32,7 @@ client.once(Events.ClientReady, async c => {
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	eventEmitter.emit('keepAlive');
+	eventEmitter.emit('updateList');
 	while (true) {
 		await sleep(7);
 		let totalSeconds = (client.uptime / 1000);
@@ -113,8 +114,42 @@ let banTimer = function () {
 let keep_alive = function () {
 	setInterval(UpdateKeep_Alive, 5000);
 }
+let botlist_update = function () {
+	setInterval(UpdateKeep_Alive, 5000);
+}
 eventEmitter.on('banTimer', banTimer);
 eventEmitter.on('keepAlive', keep_alive);
+eventEmitter.on('updateList', async () => {
+	// Function to update bot stats
+	const updateBotStats = async () => {
+		if (client.user.id === "1205253895258120304") {
+			try {
+				const response = await fetch('https://api.botlist.me/api/v1/bots/1205253895258120304/stats', {
+					method: 'POST',
+					headers: {
+						'Authorization': botlistmetoken,
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({
+						server_count: client.guilds.cache.size,
+						shard_count: 1
+					})
+				});
+
+				const data = await response.json();
+				console.log(!data.error ? "Successfully updated botlist.me Server Count!" : "Failed to update botlist.me Server Count.");
+			} catch (error) {
+				console.error('Error updating bot stats:', error);
+			}
+		}
+	};
+
+	// Run immediately
+	await updateBotStats();
+
+	// Then run every 24 hours
+	setInterval(updateBotStats, 86400000);
+});
 
 //Interaction Event
 client.on(Events.InteractionCreate, async interaction => {
