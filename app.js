@@ -4,7 +4,7 @@ const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol, secretkeyscol, botlistmetoken/*aicol*/ } = require('./config.json'); // These variables need to be defined in your config.json file!
+const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol, secretkeyscol, botlistmetoken, botlistmeURL } = require('./config.json'); // These variables need to be defined in your config.json file!
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -28,38 +28,14 @@ client.once(Events.ClientReady, async c => {
 	global.persistcol = global.db.collection(persistcol);
 	global.autobancol = global.db.collection(autobancol);
 	global.secretkeyscol = global.db.collection(secretkeyscol);
-	//global.aicol = global.db.collection(aicol);
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
 	eventEmitter.emit('keepAlive');
 	eventEmitter.emit('updateList');
-	while (true) {
-		await sleep(7);
-		let totalSeconds = (client.uptime / 1000);
-		let days = Math.floor(totalSeconds / 86400);
-		totalSeconds %= 86400;
-		let hours = Math.floor(totalSeconds / 3600);
-		totalSeconds %= 3600;
-		let minutes = Math.floor(totalSeconds / 60);
-		let seconds = Math.floor(totalSeconds % 60);
-		await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
-		await sleep(7);
-		await client.user.setPresence({
-			activities: [{
-				name: `In ${client.guilds.cache.size} servers!`,
-				type: ActivityType.Custom
-			}]
-		});
-		await sleep(7);
-		await client.user.setPresence({
-			activities: [{
-				name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
-				type: ActivityType.Custom
-			}]
-		});
-	}
+	await sleep(5);
+	eventEmitter.emit('startPresence');
 });
-client.login(token);
+client.login(token).then();
 
 process.on('uncaughtException', async (err) => {
   console.error(`Caught exception: ${err.stack}`);
@@ -88,59 +64,103 @@ for (const folder of commandFolders) {
     }
 }
 //Timer Events
-async function bancheck(){
-	await client.guilds.cache.forEach(guild => {
-		global.srvcol.findOne({ "srv": guild.id }).then(obj => {
-			if (obj.banlist.length > 0){
-				obj.banlist.forEach(ban => {
-					if (ban.expire !== "permanent" && parseInt(ban.expire) < parseInt(new Date().getTime() / 1000)) {
-						guild.members.unban(ban.id);
-						nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
-						const look = {srv: guild.id};
-						const upd = { $set: {banlist: nbanlist} };
-						global.srvcol.updateOne(look, upd).then();
-					}
-				});
+eventEmitter.on('startPresence', async () => {
+	// Function to update bot stats
+	const PresenceUpdate = async () => {
+		while (true) {
+			let totalSeconds = (client.uptime / 1000);
+			let days = Math.floor(totalSeconds / 86400);
+			totalSeconds %= 86400;
+			let hours = Math.floor(totalSeconds / 3600);
+			totalSeconds %= 3600;
+			let minutes = Math.floor(totalSeconds / 60);
+			let seconds = Math.floor(totalSeconds % 60);
+			await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
+			await sleep(7);
+			await client.user.setPresence({
+				activities: [{
+					name: `In ${client.guilds.cache.size} servers!`,
+					type: ActivityType.Custom
+				}]
+			});
+			await sleep(7);
+			await client.user.setPresence({
+				activities: [{
+					name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
+					type: ActivityType.Custom
+				}]
+			});
+		}
+	};
+
+	// Run immediately
+	await PresenceUpdate();
+});
+eventEmitter.on('banTimer', async () => {
+	// Function to update bot stats
+	const BanCheck = async () => {
+		await client.guilds.cache.forEach(guild => {
+			global.srvcol.findOne({ "srv": guild.id }).then(obj => {
+				if (obj.banlist.length > 0){
+					obj.banlist.forEach(ban => {
+						if (ban.expire !== "permanent" && parseInt(ban.expire) < parseInt(new Date().getTime() / 1000)) {
+							guild.members.unban(ban.id);
+							nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
+							const look = {srv: guild.id};
+							const upd = { $set: {banlist: nbanlist} };
+							global.srvcol.updateOne(look, upd).then();
+						}
+					});
+				}
+			});
+		});
+	};
+
+	// Run immediately
+	await BanCheck();
+
+	// Then run every 24 hours
+	setInterval(BanCheck, 60000);
+});
+eventEmitter.on('keepAlive', async () => {
+	// Function to update bot stats
+	const UpdateKeep_Alive = async () => {
+		global.mongo.db("global").collection("availability").updateOne({name: activedb}, {
+			$set: {
+				lastreported: Math.floor(Math.floor(new Date().valueOf() / 1000)),
+				uptime: client.uptime
 			}
 		});
-	});
-}
-async function UpdateKeep_Alive(){
-	global.mongo.db("global").collection("availability").updateOne({name: activedb}, { $set: {lastreported: Math.floor(Math.floor(new Date().valueOf() / 1000)), uptime: client.uptime } });
-}
-let banTimer = function () {
-  setInterval(bancheck, 60000);
-}
-let keep_alive = function () {
+	};
+
+	// Run immediately
+	await UpdateKeep_Alive();
+
+	// Then run every 24 hours
 	setInterval(UpdateKeep_Alive, 5000);
-}
-let botlist_update = function () {
-	setInterval(UpdateKeep_Alive, 5000);
-}
-eventEmitter.on('banTimer', banTimer);
-eventEmitter.on('keepAlive', keep_alive);
+});
 eventEmitter.on('updateList', async () => {
 	// Function to update bot stats
 	const updateBotStats = async () => {
-		if (client.user.id === "1205253895258120304") {
-			try {
-				const response = await fetch('https://api.botlist.me/api/v1/bots/1205253895258120304/stats', {
-					method: 'POST',
-					headers: {
-						'Authorization': botlistmetoken,
-						'Content-Type': 'application/json'
-					},
-					body: JSON.stringify({
-						server_count: client.guilds.cache.size,
-						shard_count: 1
-					})
-				});
+		if (client.user.id !== "1205253895258120304")
+			return;
+		try {
+			const response = await fetch(botlistmeURL, {
+				method: 'POST',
+				headers: {
+					'Authorization': botlistmetoken,
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({
+					server_count: client.guilds.cache.size,
+					shard_count: 1
+				})
+			});
 
-				const data = await response.json();
-				console.log(!data.error ? "Successfully updated botlist.me Server Count!" : "Failed to update botlist.me Server Count.");
-			} catch (error) {
-				console.error('Error updating bot stats:', error);
-			}
+			const data = await response.json();
+			console.log(!data.error ? "Successfully updated botlist.me Server Count!" : "Failed to update botlist.me Server Count.");
+		} catch (error) {
+			console.error('Error updating bot stats:', error);
 		}
 	};
 

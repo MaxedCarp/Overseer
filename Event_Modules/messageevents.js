@@ -1,11 +1,6 @@
 const {  PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
-/*const { StdioServerTransport }  = require('@modelcontextprotocol/sdk/server/stdio.js');
-const { Anthropic } = require("@anthropic-ai/sdk");
-const {anthropicApiKey, anthropicBaseURL, contact} = require('../config.json');
-const fetch = (url, init) => import('node-fetch').then(module => module.default(url, init));*/
-
 class messageEvents {
 	
 	static MessageCreate(message) {
@@ -18,59 +13,6 @@ class messageEvents {
 				if (!message.guild)
 					return;
 				const { guild } = message
-				/*let aimsg = false;
-				if ((message.content.startsWith("<@1366170194254364855> ") || message.content.startsWith("<@1205253895258120304> ") || (message.reference)) && message.author.id === contact) {
-					if (message.reference && ((await message?.fetchReference())?.author?.id !== "1366170194254364855" && (await message?.fetchReference())?.author?.id !== "1205253895258120304"))
-						return;
-					aimsg = true;
-					const MCPClient = await import('./MCPClient.js');
-					const mcpClient = new MCPClient.default({
-						anthropicApiKey: anthropicApiKey,
-						anthropicBaseURL: anthropicBaseURL || "https://api.anthropic.com"});
-					let str = message.content.replace("<@1366170194254364855> ", "").replace("<@1205253895258120304> ", "");
-					const regex = /<(?:@!?|@&|#)(\d{17,19})>/g;
-					const ids = [];
-					let match;
-					while ((match = regex.exec(str)) !== null) {
-						ids.push(match[1]); // match[1] contains just the ID.
-					}
-					let editedmsg = str;
-					let id;
-					for (id of ids){
-						let usr = await message.guild.members.cache.get(id).user;
-						editedmsg = await editedmsg.replace(`<@${id}>`, usr.globalName || usr.username);
-					}
-					await global.aicol.insertOne({srv: message.guild.id, role: "user",
-						content: [{type: "text", text: editedmsg}]});
-					await message.channel.sendTyping();
-					let resp = await mcpClient.submitQuery(message.guild.id);
-					await essentials.sleep(5);
-					try {
-						while (resp.content.length < 1) {
-							resp = await mcpClient.submitQuery(message.guild.id);
-							await essentials.sleep(5);
-						}
-					}
-					catch (err){
-						console.error(err);
-					}
-					await global.aicol.insertOne({srv: message.guild.id, role: "assistant",
-						content: resp.content});
-					let updres = resp.content[0].text;
-					/*if (resp.content[0].text.includes("{cetuscycle}") || resp.content[0].text.includes("{cetustime}")){
-						try {
-							const response = await fetch('https://api.warframestat.us/pc/en/cetusCycle/');
-							console.log(response);
-							await essentials.sleep(1);
-							const data = await response.json();
-
-							updres = resp.content[0].text.replaceAll("{cetuscycle}", data.state).replaceAll("{cetustime}", data.timeLeft);
-						} catch (error) {
-							console.error('Error fetching cycle data:', error);
-						}
-					}*//*
-					await message.reply(updres);
-				}*/
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
 				if (obj.autodelist.find(id => id === message.author.id))
 				{
