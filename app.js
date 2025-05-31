@@ -101,7 +101,7 @@ eventEmitter.on('banTimer', async () => {
 		const guilds = (client.guilds);
 		await sleep(1);
 		for (let guild of guilds.cache) {
-			console.log(guild.name);
+			console.log(guild);
 			const obj = await global.srvcol.findOne({ "srv": guild.id });
 			if (obj.banlist.length > 0){
 				for (let ban of obj.banlist) {
