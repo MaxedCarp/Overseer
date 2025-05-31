@@ -99,6 +99,7 @@ eventEmitter.on('banTimer', async () => {
 	// Function to update bot stats
 	const BanCheck = async () => {
 		const guilds = await client.guilds.cache;
+		await sleep(1);
 		for (let guild of guilds) {
 			console.log(guild.name);
 			const obj = await global.srvcol.findOne({ "srv": guild.id });
