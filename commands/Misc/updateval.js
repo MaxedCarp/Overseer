@@ -10,10 +10,10 @@ module.exports = {
 		const db = global.mongo.db("overseer");
 		const col = db.collection("autoban");
 		const head = await col.findOne();
-		head.test.forEach(usr => {
-			col.insertOne({srv: head.srvs[0], userId: usr}).then();
-			col.insertOne({srv: head.srvs[1], userId: usr}).then();
-			col.insertOne({srv: head.srvs[2], userId: usr}).then();
-		});
+		for (let usr of head.test) {
+			await col.insertOne({srv: head.srvs[0], userId: usr});
+			await col.insertOne({srv: head.srvs[1], userId: usr});
+			await col.insertOne({srv: head.srvs[2], userId: usr});
+		}
 	},
 };

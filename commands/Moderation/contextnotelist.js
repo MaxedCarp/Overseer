@@ -17,10 +17,10 @@ module.exports = {
 		const data = await global.notecol.find({srv: interaction.guild.id, userID: user.id}).toArray();
 		if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
 			i = 1;
-			data.forEach(note => {
+			for (let note of data) {
 				list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
 				i++;
-			});
+			}
 			notelist.setDescription(list);
 			await interaction.reply({ embeds: [notelist], ephemeral: true })
 		}

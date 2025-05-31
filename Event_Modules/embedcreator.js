@@ -15,7 +15,7 @@ class embedcreator {
 				embed.setFooter({ text: footer, iconURL: footericon });
 			if (!!fields && fields.length > 0) {
 				let newFields = []
-				fields.forEach(field => {
+				for (let field of fields) {
 					if (field.value.length > 2500)
 						field.value = field.value.substring(0,2500);
 					if (field.value.length <= 1024 && field.value.length > 0)
@@ -31,7 +31,7 @@ class embedcreator {
 							newFields.push({name: " ", value: field2.substring(0,field2.length), inline: field.inline});
 						}
 					}
-				});
+				}
 				embed.addFields(newFields);
 			}
 			if (image)

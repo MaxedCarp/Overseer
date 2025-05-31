@@ -70,12 +70,12 @@ module.exports = {
 		if (inlines){
 			var ninlines = inlines.split(',');
 			var newinlines = [];
-			ninlines.forEach(v => {
+			for (let v of ninlines) {
 				if (v === 't')
 					newinlines.push(true);
 				else
 					newinlines.push(false);
-			});
+			}
 			console.log(newinlines);
 		}
 		if (fields){

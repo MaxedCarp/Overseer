@@ -65,9 +65,9 @@ module.exports = {
 				var list = "";
 				const data3 = await global.srvcol.findOne({srv: interaction.guild.id});
 				if (data3.joinroles.length > 0) {
-					data3.joinroles.forEach(eRole => {
+					for (let eRole of data3.joinroles) {
 						list += `(${data3.joinroles.indexOf(eRole)}). Role: <@&${eRole}>.\n\n`;
-					});
+					}
 					joinrolelist.setDescription(list);
 				}
 				else

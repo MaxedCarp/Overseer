@@ -67,30 +67,29 @@ for (const folder of commandFolders) {
 eventEmitter.on('startPresence', async () => {
 	// Function to update bot stats
 	const PresenceUpdate = async () => {
-		while (true) {
-			let totalSeconds = (client.uptime / 1000);
-			let days = Math.floor(totalSeconds / 86400);
-			totalSeconds %= 86400;
-			let hours = Math.floor(totalSeconds / 3600);
-			totalSeconds %= 3600;
-			let minutes = Math.floor(totalSeconds / 60);
-			let seconds = Math.floor(totalSeconds % 60);
-			await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
-			await sleep(7);
-			await client.user.setPresence({
-				activities: [{
-					name: `In ${client.guilds.cache.size} servers!`,
-					type: ActivityType.Custom
-				}]
-			});
-			await sleep(7);
-			await client.user.setPresence({
-				activities: [{
-					name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
-					type: ActivityType.Custom
-				}]
-			});
-		}
+		let totalSeconds = (client.uptime / 1000);
+		let days = Math.floor(totalSeconds / 86400);
+		totalSeconds %= 86400;
+		let hours = Math.floor(totalSeconds / 3600);
+		totalSeconds %= 3600;
+		let minutes = Math.floor(totalSeconds / 60);
+		let seconds = Math.floor(totalSeconds % 60);
+		await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
+		await sleep(7);
+		await client.user.setPresence({
+			activities: [{
+				name: `In ${client.guilds.cache.size} servers!`,
+				type: ActivityType.Custom
+			}]
+		});
+		await sleep(7);
+		await client.user.setPresence({
+			activities: [{
+				name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
+				type: ActivityType.Custom
+			}]
+		});
+		setTimeout(PresenceUpdate, 7000);
 	};
 
 	// Run immediately
@@ -99,45 +98,34 @@ eventEmitter.on('startPresence', async () => {
 eventEmitter.on('banTimer', async () => {
 	// Function to update bot stats
 	const BanCheck = async () => {
-		await client.guilds.cache.forEach(guild => {
-			global.srvcol.findOne({ "srv": guild.id }).then(obj => {
-				if (obj.banlist.length > 0){
-					obj.banlist.forEach(ban => {
-						if (ban.expire !== "permanent" && parseInt(ban.expire) < parseInt(new Date().getTime() / 1000)) {
-							guild.members.unban(ban.id);
-							nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
-							const look = {srv: guild.id};
-							const upd = { $set: {banlist: nbanlist} };
-							global.srvcol.updateOne(look, upd).then();
-						}
-					});
+		for (let guild of client.guilds.cache) {
+			const obj = await global.srvcol.findOne({ "srv": guild.id });
+			if (obj.banlist.length > 0){
+				for (let ban of obj.banlist) {
+					if (ban.expire !== "permanent" && parseInt(ban.expire) < parseInt(new Date().getTime() / 1000)) {
+						await guild.members.unban(ban.id);
+						nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
+						await global.srvcol.updateOne({srv: guild.id}, { $set: {banlist: nbanlist} });
+					}
 				}
-			});
-		});
+			}
+		}
+		setTimeout(BanCheck, 60000);
 	};
 
 	// Run immediately
 	await BanCheck();
 
-	// Then run every 24 hours
-	setInterval(BanCheck, 60000);
 });
 eventEmitter.on('keepAlive', async () => {
 	// Function to update bot stats
 	const UpdateKeep_Alive = async () => {
-		global.mongo.db("global").collection("availability").updateOne({name: activedb}, {
-			$set: {
-				lastreported: Math.floor(Math.floor(new Date().valueOf() / 1000)),
-				uptime: client.uptime
-			}
-		});
+		await global.mongo.db("global").collection("availability").updateOne({name: activedb}, {$set: {lastreported: Math.floor(Math.floor(new Date().valueOf() / 1000)), uptime: client.uptime}});
+		setTimeout(UpdateKeep_Alive, 5000);
 	};
 
 	// Run immediately
 	await UpdateKeep_Alive();
-
-	// Then run every 24 hours
-	setInterval(UpdateKeep_Alive, 5000);
 });
 eventEmitter.on('updateList', async () => {
 	// Function to update bot stats
@@ -145,30 +133,19 @@ eventEmitter.on('updateList', async () => {
 		if (client.user.id !== "1205253895258120304")
 			return;
 		try {
-			const response = await fetch(botlistmeURL, {
-				method: 'POST',
-				headers: {
-					'Authorization': botlistmetoken,
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify({
-					server_count: client.guilds.cache.size,
-					shard_count: 1
-				})
-			});
+			const response = await fetch(botlistmeURL, {method: 'POST', headers: {'Authorization': botlistmetoken, 'Content-Type': 'application/json'}, body: JSON.stringify({server_count: client.guilds.cache.size, shard_count: 1})});
 
 			const data = await response.json();
 			console.log(!data.error ? "Successfully updated botlist.me Server Count!" : "Failed to update botlist.me Server Count.");
 		} catch (error) {
 			console.error('Error updating bot stats:', error);
 		}
+		setTimeout(updateBotStats, 86400000);
 	};
 
 	// Run immediately
 	await updateBotStats();
 
-	// Then run every 24 hours
-	setInterval(updateBotStats, 86400000);
 });
 
 //Interaction Event
@@ -199,7 +176,8 @@ client.on(Events.InteractionCreate, async interaction => {
         const args = interaction.options["_hoistedOptions"];
         let argArr = []
         if (args.length > 0) {
-            args?.forEach(arg => argArr.push(getArgs(arg)));
+			for (let arg of args)
+            	argArr.push(getArgs(arg));
         }
         const sub = (interaction.options["_subcommand"] ? " " + interaction.options["_subcommand"] : "");
         const exampleEmbed = await EmbedCreator.Create(`Command Created: ${command.data.name}${sub}`,null,null, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName} (${interaction.user.username})`, interaction.member.displayAvatarURL(), 0xf7ef02, null, `https://discord.com/channels/${interaction.guild.id}/${interaction.channel.id}`);
@@ -296,10 +274,10 @@ client.on(Events.InteractionCreate, async interaction => {
 			const data = await global.notecol.find({srv: interaction.guild.id, userID: user.id}).toArray();
 			if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
 				i = 1;
-				data.forEach(note => {
+				for (let note of data) {
 					list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
 					i++;
-				});
+				}
 				notelist.setDescription(list);
 				await interaction.reply({ embeds: [notelist], ephemeral: true })
 			}

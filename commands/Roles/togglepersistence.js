@@ -15,8 +15,8 @@ module.exports = {
 		await interaction.reply({ content: `Role Persistence is now ${!persistence ? "enabled" : "disabled"}`, ephemeral: true });
 		const members = await guild.members.fetch();
 		if (!persistence) {
-			members.forEach(member => {
-				(async () => {
+			for (let member of members) {
+				await (async () => {
 					const look2 = {srv: interaction.guild.id, userid: member.id};
 					const duser = {srv: guild.id, userid: member.id, nickname: member.nickname, roles: member["_roles"]};
 					if (!(await global.persistcol.findOne(look2))) {
@@ -26,7 +26,7 @@ module.exports = {
 						await global.persistcol.updateOne(look, {$set: {nickname: member.nickname, roles: member["_roles"]}})
 					}
 				})();
-			});
+			}
 		}
 		else {
 			members.forEach(member => {

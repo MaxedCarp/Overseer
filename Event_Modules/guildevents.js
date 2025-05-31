@@ -34,13 +34,13 @@ class guildEvents {
 							if (!!usrdata.nickname)
 								await member.setNickname(usrdata.nickname);
 							let finrole = [];
-							usrdata.roles.forEach(role => {
+							for (let role of usrdata.roles) {
 								finrole.push(role);
-							})
+							}
 							if (obj?.joinroles?.length !== 0) {
-								obj.joinroles.forEach(role => {
+								for (let role of obj.joinroles) {
 									finrole.push(role);
-								})
+								}
 							}
 							let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
 							roles = await roles.filter(role => role.editable);
@@ -269,7 +269,7 @@ class guildEvents {
 			(async () => {
 				let flag = false;
 				const Guilds = client.guilds.cache;
-				Guilds.forEach(async guild => {
+				for  (const guild of Guilds) {
 					if (guild.members.cache.has(newUser.id)){
 						let obj = await global.srvcol.findOne({ "srv": guild.id});
 						const member = guild.members.cache.find(member => member.id === oldUser.id);
@@ -307,7 +307,7 @@ class guildEvents {
 							}
 						}
 					}
-				});
+				}
 				resolve(true);
 			})();
 		});
@@ -316,7 +316,7 @@ class guildEvents {
 	static GuildUpdate(oGuild, nGuild) {
 		return new Promise((resolve, reject) => {
 			(async () => {
-				if (oGuild.name != nGuild.name) {
+				if (oGuild.name !== nGuild.name) {
 					const look = {srv: oGuild.id};
 					const upd = { $set: {name: nGuild.name} };
 					await global.srvcol.updateOne(look, upd);
