@@ -100,6 +100,7 @@ eventEmitter.on('banTimer', async () => {
 	const BanCheck = async () => {
 		const guilds = (client.guilds);
 		await sleep(1);
+		console.log(guilds);
 		for (let guild of guilds.cache) {
 			console.log(guild);
 			const obj = await global.srvcol.findOne({ "srv": guild.id });
