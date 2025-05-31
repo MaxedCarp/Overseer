@@ -98,7 +98,8 @@ eventEmitter.on('startPresence', async () => {
 eventEmitter.on('banTimer', async () => {
 	// Function to update bot stats
 	const BanCheck = async () => {
-		const guilds = await client.guilds.cache;
+		let guilds;
+		client.guilds.cache.then(g => guilds = g);
 		await sleep(1);
 		for (let guild of guilds) {
 			console.log(guild.name);
