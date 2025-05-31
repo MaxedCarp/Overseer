@@ -268,46 +268,66 @@ class guildEvents {
 		return new Promise((resolve, reject) => {
 			(async () => {
 				let flag = false;
-				const Guilds = client.guilds.cache;
-				for  (const guild of Guilds) {
-					if (guild.members.cache.has(newUser.id)){
-						let obj = await global.srvcol.findOne({ "srv": guild.id});
-						const member = guild.members.cache.find(member => member.id === oldUser.id);
-						if (oldUser.username !== newUser.username || oldUser.globalName !== newUser.globalName || oldUser.avatar !== newUser.avatar || oldUser.system !== newUser.system || oldUser.bot){
-							const exampleEmbed = await EmbedCreator.Create(false, `**User Updated:**`, false, guild.name, guild.iconURL(), `${newUser.globalName || newUser.username} (${newUser.username})`, newUser.displayAvatarURL(), 0xff9900, []);
-							if (oldUser.username !== newUser.username) {
-								exampleEmbed.addFields([{ name: "Username Changed", value: `Old Username: ${oldUser.username}\nNew Username: ${newUser.username}`, inline: false }]);
-								flag = true;
-							}
-							if (oldUser.globalName !== newUser.globalName) {
-								exampleEmbed.addFields([{ name: "Global Name Changed", value: `Old Global Name: ${oldUser.globalName || "**None**"}\nNew Global Name: ${newUser.globalName || "**None**"}`, inline: false }]);
-								flag = true;
-							}
-							if (oldUser.avatar !== newUser.avatar) {
-								exampleEmbed.setThumbnail(newUser.displayAvatarURL());
-								exampleEmbed.addFields([{ name: "Avatar Changed", value: `Old Avatar: ${oldUser.displayAvatarURL()}\nNew Avatar: ${newUser.displayAvatarURL()}`, inline: false }]);
-								flag = true;
-							}
-							if (obj.userupdate === "none" || !obj || !flag) {
-								return;
-							}
-							if (oldUser.system !== newUser.system) {
-								exampleEmbed.addFields([{ name: "User \"System\" Status Changed", value: `Old \"System\" Status: ${oldUser.system}\nOld \"Bot\" Status: ${newUser.system}`, inline: false }]);
-								flag = true;
-							}
-							if (oldUser.bot !== newUser.bot) {
-								exampleEmbed.addFields([{ name: "User \"Bot\" Status Changed", value: `Old \"Bot\" Status: ${oldUser.bot}\nOld \"Bot\" Status: ${newUser.bot}`, inline: false }]);
-								flag = true;
-							}
-							else {
-								if (((guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.Administrator))
-									await client.channels.cache.get(obj.userupdate).send({ embeds: [exampleEmbed] });
-								else
+				await client.guilds.cache.forEach(guild => {
+					(async () => {
+						if (guild.members.cache.has(newUser.id)) {
+							let obj = await global.srvcol.findOne({"srv": guild.id});
+							const member = guild.members.cache.find(member => member.id === oldUser.id);
+							if (oldUser.username !== newUser.username || oldUser.globalName !== newUser.globalName || oldUser.avatar !== newUser.avatar || oldUser.system !== newUser.system || oldUser.bot) {
+								const exampleEmbed = await EmbedCreator.Create(false, `**User Updated:**`, false, guild.name, guild.iconURL(), `${newUser.globalName || newUser.username} (${newUser.username})`, newUser.displayAvatarURL(), 0xff9900, []);
+								if (oldUser.username !== newUser.username) {
+									exampleEmbed.addFields([{
+										name: "Username Changed",
+										value: `Old Username: ${oldUser.username}\nNew Username: ${newUser.username}`,
+										inline: false
+									}]);
+									flag = true;
+								}
+								if (oldUser.globalName !== newUser.globalName) {
+									exampleEmbed.addFields([{
+										name: "Global Name Changed",
+										value: `Old Global Name: ${oldUser.globalName || "**None**"}\nNew Global Name: ${newUser.globalName || "**None**"}`,
+										inline: false
+									}]);
+									flag = true;
+								}
+								if (oldUser.avatar !== newUser.avatar) {
+									exampleEmbed.setThumbnail(newUser.displayAvatarURL());
+									exampleEmbed.addFields([{
+										name: "Avatar Changed",
+										value: `Old Avatar: ${oldUser.displayAvatarURL()}\nNew Avatar: ${newUser.displayAvatarURL()}`,
+										inline: false
+									}]);
+									flag = true;
+								}
+								if (obj.userupdate === "none" || !obj || !flag) {
 									return;
+								}
+								if (oldUser.system !== newUser.system) {
+									exampleEmbed.addFields([{
+										name: "User \"System\" Status Changed",
+										value: `Old \"System\" Status: ${oldUser.system}\nOld \"Bot\" Status: ${newUser.system}`,
+										inline: false
+									}]);
+									flag = true;
+								}
+								if (oldUser.bot !== newUser.bot) {
+									exampleEmbed.addFields([{
+										name: "User \"Bot\" Status Changed",
+										value: `Old \"Bot\" Status: ${oldUser.bot}\nOld \"Bot\" Status: ${newUser.bot}`,
+										inline: false
+									}]);
+									flag = true;
+								} else {
+									if (((guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.Administrator))
+										await client.channels.cache.get(obj.userupdate).send({embeds: [exampleEmbed]});
+									else
+										return;
+								}
 							}
 						}
-					}
-				}
+					})();
+				});
 				resolve(true);
 			})();
 		});
