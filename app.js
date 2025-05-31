@@ -98,10 +98,9 @@ eventEmitter.on('startPresence', async () => {
 eventEmitter.on('banTimer', async () => {
 	// Function to update bot stats
 	const BanCheck = async () => {
-		let guilds;
-		client.guilds.cache.then(g => guilds = g);
+		const guilds = (client.guilds);
 		await sleep(1);
-		for (let guild of guilds) {
+		for (let guild of guilds.cache) {
 			console.log(guild.name);
 			const obj = await global.srvcol.findOne({ "srv": guild.id });
 			if (obj.banlist.length > 0){
