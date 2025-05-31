@@ -59,8 +59,8 @@ module.exports = {
 					.setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
 					var list = "";
 					const keys = await global.secretkeyscol.find({srv: interaction.guild.id}).toArray();
-					for (key of keys) {
-						list += `(${keys.indexOf(key)}) Key: ${key.key}. Role: <@&${key.roleID}>. Minimum Age: ${key.agereq} seconds.\n\n`;
+					for (let ikey of keys) {
+						list += `(${keys.indexOf(ikey)}) Key: ${ikey.key}. Role: <@&${ikey.roleID}>. Minimum Age: ${ikey.agereq} seconds.\n\n`;
 					}
 					secretkeylist.setDescription(list);
 					await interaction.reply({ embeds: [secretkeylist], ephemeral: true });
