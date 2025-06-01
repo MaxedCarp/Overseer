@@ -146,11 +146,10 @@ class messageEvents {
 				let msgcount = test.length;
 				for (let i = test.length - 1; i >= 0; i--) {
 					let message = test[i];
-					if (!(await global.msgcol.findOne({"messageID": message.id})))
+					if ((await global.msgcol.count({"messageID": message.id})) < 1)
 						return;
-					message = await global.msgcol.findOne({"messageID": message.id});
-					guild = await client.guilds.fetch(message.guildId);
 					msg = await global.msgcol.findOne({"messageID": message.id});
+					guild = await client.guilds.fetch(msg.messageServerID);
 					chan = msg.messageChannelID;
 					await global.msgcol.deleteOne({ "messageID": message.id });
 				}
