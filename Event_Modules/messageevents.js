@@ -142,18 +142,27 @@ class messageEvents {
 				}
 				let msg;
 				let guild;
+				let guildname;
 				let chan;
 				let msgcount = test.length;
+				let flag = true;
 				for (let i = test.length - 1; i >= 0; i--) {
 					let message = test[i];
-					if ((await global.msgcol.count({"messageID": message.id})) < 1)
-						return;
-					msg = await global.msgcol.findOne({"messageID": message.id});
-					guild = await client.guilds.fetch(msg.messageServerID);
-					chan = msg.messageChannelID;
-					await global.msgcol.deleteOne({ "messageID": message.id });
+					if (!!(await global.msgcol.findOne({"messageID": message.id}))) {
+						if (flag) {
+							msg = await global.msgcol.findOne({"messageID": message.id});
+							guild = await client.guilds.fetch(msg.messageServerID);
+							let guild2 = await global.srvcol.findOne({srv: message.id});
+							guildname = guild2.name;
+							chan = msg.messageChannelID;
+							flag = false;
+						}
+						await global.msgcol.deleteOne({"messageID": message.id});
+
+					}
 				}
-				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guild.name, guild.iconURL(), `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
+
+				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guild.iconURL(), `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
 				let obj = await global.srvcol.findOne({ "srv": guild.id });
 				if (obj.delete === "none" || !obj)
 					return;
