@@ -350,7 +350,7 @@ class guildEvents {
 		return new Promise((resolve, reject) => {
 			(async () => {
 				await global.srvcol.deleteOne({ srv: guild.id });
-				await global.persistcol.delete({srv: guild.id});
+				await global.persistcol.deleteMany({srv: guild.id});
 				resolve(true);
 			})();
 		});
