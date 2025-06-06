@@ -153,8 +153,8 @@ class messageEvents {
 						if (flag) {
 							msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
-							guildicon = guild.iconURL();
 							let guild2 = await global.srvcol.findOne({srv: message.id});
+							guildicon = guild2.icon;
 							guildname = guild2.name;
 							chan = msg.messageChannelID;
 							flag = false;
