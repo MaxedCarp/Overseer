@@ -143,6 +143,7 @@ class messageEvents {
 				let msg;
 				let guild;
 				let guildname;
+				let guildicon;
 				let chan;
 				let msgcount = test.length;
 				let flag = true;
@@ -152,6 +153,7 @@ class messageEvents {
 						if (flag) {
 							msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
+							guildicon = guild.iconURL();
 							let guild2 = await global.srvcol.findOne({srv: message.id});
 							guildname = guild2.name;
 							chan = msg.messageChannelID;
@@ -162,7 +164,7 @@ class messageEvents {
 					}
 				}
 
-				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guild.iconURL(), `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
+				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
 				let obj = await global.srvcol.findOne({ "srv": guild.id });
 				if (obj.delete === "none" || !obj)
 					return;
