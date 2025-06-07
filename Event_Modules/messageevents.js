@@ -48,7 +48,7 @@ class messageEvents {
 						})
 					}
 				}
-				if (message.content.includes("<@1205253895258120304>") && !aimsg)
+				if (message.content.includes("<@1205253895258120304>"))
 					await message.reply("Yes, how may I assist?");
 
 				const member = guild.members.cache.find(member => member.id === message.author.id);
