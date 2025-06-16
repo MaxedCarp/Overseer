@@ -7,7 +7,7 @@ module.exports = {
             option.setName('message')
                 .setDescription('Message to set')
 				.setRequired(true))
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageServer),
+		.setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
 	async execute(interaction) {
 		const msg = interaction.options.getString('message');
 		const look = {srv: interaction.guild.id};
