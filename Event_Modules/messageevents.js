@@ -142,6 +142,7 @@ class messageEvents {
 				}
 				let msg;
 				let guild;
+				let guildid;
 				let guildname;
 				let guildicon;
 				let chan;
@@ -153,6 +154,7 @@ class messageEvents {
 						if (flag) {
 							msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
+							guildid = guild.id;
 							let guild2 = await global.srvcol.findOne({srv: message.id});
 							guildicon = guild2.icon;
 							guildname = guild2.name;
@@ -165,7 +167,7 @@ class messageEvents {
 				}
 
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
-				let obj = await global.srvcol.findOne({ "srv": guild.id });
+				let obj = await global.srvcol.findOne({ "srv": guildid });
 				if (obj.delete === "none" || !obj)
 					return;
 				if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator))
