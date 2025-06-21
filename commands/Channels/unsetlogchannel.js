@@ -1,8 +1,8 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('setlogchannel')
-		.setDescription('Sets a log channel')
+		.setName('unsetlogchannel')
+		.setDescription('Unsets a log channel')
 		.addStringOption(option =>
 			option.setName('type')
 				.setDescription('Type of log channel to unset')
@@ -24,9 +24,9 @@ module.exports = {
 	async execute(interaction) {
 		const look = {srv: interaction.guild.id};
 		let test = {}
-		test[interaction.options.getString("type")] = interaction.channel.id;
+		test[interaction.options.getString("type")] = "none";
 		const upd = { $set: test };
 		await global.srvcol.updateOne(look, upd);
-		await interaction.reply({ content: `${interaction.options.getString("type")} channel successfully set to <#${interaction.channel.id}>!`, ephemeral: true });
+		await interaction.reply({ content: `${interaction.options.getString("type")} channel unset successfully!`, ephemeral: true });
 	},
 };
