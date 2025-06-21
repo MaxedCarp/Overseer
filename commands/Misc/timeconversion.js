@@ -22,8 +22,7 @@ module.exports = {
 		.addStringOption(option =>
             option.setName('time')
                 .setDescription('Time')
-                .setRequired(true))
-		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
+                .setRequired(true)),
 	async execute(interaction) {
 		const unit = interaction.options.getString('unit')
 		const time = await essentials.parsetime(interaction.options.getString('time'), unit);
