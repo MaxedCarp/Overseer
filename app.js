@@ -77,9 +77,10 @@ eventEmitter.on('startPresence', async () => {
 		});
 		await sleep(7);
 		let time = await countTime();
+		let ref = {days: (time.days > 1 ? "days" : "day"), hours: (time.hours > 1 ? "hours" : "hour"), minutes: (time.minutes > 1 ? "minutes" : "minute"), seconds: (time.seconds > 1 ? "seconds": "second")};
 		await client.user.setPresence({
 			activities: [{
-				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${(time.days > 0 || time.hours > 0? time.hours + " hours " : "" )}${(time.days > 0 || time.hours > 0 || time.minutes > 0 ? time.minutes + " minutes " : "" )}${time.seconds} seconds`,
+				name: `Uptime: ${(time.days > 0 ? time.days + " " + ref.days + " ": "")}${(time.days > 0 || time.hours > 0? time.hours + " " + ref.hours + " " : "" )}${(time.days > 0 || time.hours > 0 || time.minutes > 0 ? time.minutes + " " + ref.minutes + " " : "" )}${time.seconds} ${ref.seconds}`,
 				type: ActivityType.Custom
 			}]
 		});
