@@ -67,13 +67,6 @@ for (const folder of commandFolders) {
 eventEmitter.on('startPresence', async () => {
 	// Function to update bot stats
 	const PresenceUpdate = async () => {
-		let totalSeconds = (client.uptime / 1000);
-		let days = Math.floor(totalSeconds / 86400);
-		totalSeconds %= 86400;
-		let hours = Math.floor(totalSeconds / 3600);
-		totalSeconds %= 3600;
-		let minutes = Math.floor(totalSeconds / 60);
-		let seconds = Math.floor(totalSeconds % 60);
 		await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
 		await sleep(7);
 		await client.user.setPresence({
@@ -83,13 +76,46 @@ eventEmitter.on('startPresence', async () => {
 			}]
 		});
 		await sleep(7);
+		let time = await countTime();
 		await client.user.setPresence({
 			activities: [{
-				name: `Uptime: ${(days ? days + " days ": "")}${hours} hours ${minutes} minutes ${seconds} seconds`,
+				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${time.hours} hours ${time.minutes} minutes ${time.seconds} seconds`,
 				type: ActivityType.Custom
 			}]
 		});
-		setTimeout(PresenceUpdate, 7000);
+		await sleep(1);
+		time = await countTime();
+		await client.user.setPresence({
+			activities: [{
+				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${time.hours} hours ${time.minutes} minutes ${time.seconds} seconds`,
+				type: ActivityType.Custom
+			}]
+		});
+		await sleep(1);
+		time = await countTime();
+		await client.user.setPresence({
+			activities: [{
+				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${time.hours} hours ${time.minutes} minutes ${time.seconds} seconds`,
+				type: ActivityType.Custom
+			}]
+		});
+		await sleep(1);
+		time = await countTime();
+		await client.user.setPresence({
+			activities: [{
+				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${time.hours} hours ${time.minutes} minutes ${time.seconds} seconds`,
+				type: ActivityType.Custom
+			}]
+		});
+		await sleep(1);
+		time = await countTime();
+		await client.user.setPresence({
+			activities: [{
+				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${time.hours} hours ${time.minutes} minutes ${time.seconds} seconds`,
+				type: ActivityType.Custom
+			}]
+		});
+		setTimeout(PresenceUpdate, 1000);
 	};
 
 	// Run immediately
@@ -480,4 +506,14 @@ async function printLines() {
         }
     }
     return count;
+}
+async function countTime(){
+	let totalSeconds = (client.uptime / 1000);
+	let days = Math.floor(totalSeconds / 86400);
+	totalSeconds %= 86400;
+	let hours = Math.floor(totalSeconds / 3600);
+	totalSeconds %= 3600;
+	let minutes = Math.floor(totalSeconds / 60);
+	let seconds = Math.floor(totalSeconds % 60);
+	return {days: days, hours: hours, minutes: minutes, seconds: seconds};
 }
