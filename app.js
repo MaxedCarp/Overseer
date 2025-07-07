@@ -68,14 +68,14 @@ eventEmitter.on('startPresence', async () => {
 	// Function to update bot stats
 	const PresenceUpdate = async () => {
 		await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
-		await sleep(6);
+		await sleep(7);
 		await client.user.setPresence({
 			activities: [{
 				name: `In ${client.guilds.cache.size} servers!`,
 				type: ActivityType.Custom
 			}]
 		});
-		await sleep(6);
+		await sleep(7);
 		let time = await countTime();
 		await client.user.setPresence({
 			activities: [{
@@ -107,7 +107,7 @@ eventEmitter.on('startPresence', async () => {
 				type: ActivityType.Custom
 			}]
 		});
-		setTimeout(PresenceUpdate, 2500);
+		setTimeout(PresenceUpdate, 1500);
 	};
 
 	// Run immediately
