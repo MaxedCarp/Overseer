@@ -85,7 +85,7 @@ eventEmitter.on('startPresence', async () => {
 		await sleep(7);
 		await client.user.setPresence({
 			activities: [{
-				name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
+				name: `Uptime: ${(days ? days + " days ": "")}${hours} hours ${minutes} minutes ${seconds} seconds`,
 				type: ActivityType.Custom
 			}]
 		});
