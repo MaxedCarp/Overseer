@@ -83,31 +83,7 @@ eventEmitter.on('startPresence', async () => {
 				type: ActivityType.Custom
 			}]
 		});
-		await sleep(1);
-		time = await countTime();
-		await client.user.setPresence({
-			activities: [{
-				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${(time.days > 0 || time.hours > 0? time.hours + " hours " : "" )}${(time.days > 0 || time.hours > 0 || time.minutes > 0 ? time.minutes + " minutes " : "" )}${time.seconds} seconds`,
-				type: ActivityType.Custom
-			}]
-		});
-		await sleep(1);
-		time = await countTime();
-		await client.user.setPresence({
-			activities: [{
-				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${(time.days > 0 || time.hours > 0? time.hours + " hours " : "" )}${(time.days > 0 || time.hours > 0 || time.minutes > 0 ? time.minutes + " minutes " : "" )}${time.seconds} seconds`,
-				type: ActivityType.Custom
-			}]
-		});
-		await sleep(1);
-		time = await countTime();
-		await client.user.setPresence({
-			activities: [{
-				name: `Uptime: ${(time.days > 0 ? time.days + " days ": "")}${(time.days > 0 || time.hours > 0? time.hours + " hours " : "" )}${(time.days > 0 || time.hours > 0 || time.minutes > 0 ? time.minutes + " minutes " : "" )}${time.seconds} seconds`,
-				type: ActivityType.Custom
-			}]
-		});
-		setTimeout(PresenceUpdate, 1500);
+		setTimeout(PresenceUpdate, 7000);
 	};
 
 	// Run immediately
