@@ -167,7 +167,7 @@ class messageEvents {
 
 					}
 				}
-
+console.log(del);
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
 				if (del === "none" || !del)
 					return;
