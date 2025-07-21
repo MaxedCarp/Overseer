@@ -145,6 +145,7 @@ class messageEvents {
 				let guildid;
 				let guildname;
 				let guildicon;
+				let del;
 				let chan;
 				let msgcount = test.length;
 				let flag = true;
@@ -156,6 +157,7 @@ class messageEvents {
 							guild = await client.guilds.fetch(msg.messageServerID);
 							guildid = guild.id;
 							let guild2 = await global.srvcol.findOne({srv: message.id});
+							del = guild2.delete;
 							guildicon = guild2.icon;
 							guildname = guild2.name;
 							chan = msg.messageChannelID;
@@ -167,11 +169,10 @@ class messageEvents {
 				}
 
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
-				const obj = await global.srvcol.findOne({ "srv": guildid });
-				if (obj.delete === "none" || !obj)
+				if (del === "none" || !obj)
 					return;
-				if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator))
-					await client.channels.cache.get(obj.delete).send({ embeds: [resembed] });
+				if (((guild.members.me).permissionsIn(del).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.Administrator))
+					await client.channels.cache.get(del).send({ embeds: [resembed] });
 				else
 					return;
 				resolve(true);
