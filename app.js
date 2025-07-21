@@ -67,13 +67,6 @@ for (const folder of commandFolders) {
 eventEmitter.on('startPresence', async () => {
 	// Function to update bot stats
 	const PresenceUpdate = async () => {
-		let totalSeconds = (client.uptime / 1000);
-		let days = Math.floor(totalSeconds / 86400);
-		totalSeconds %= 86400;
-		let hours = Math.floor(totalSeconds / 3600);
-		totalSeconds %= 3600;
-		let minutes = Math.floor(totalSeconds / 60);
-		let seconds = Math.floor(totalSeconds % 60);
 		await client.user.setPresence({activities: [{name: `Overseeing...`, type: ActivityType.Custom}]});
 		await sleep(7);
 		await client.user.setPresence({
@@ -83,9 +76,11 @@ eventEmitter.on('startPresence', async () => {
 			}]
 		});
 		await sleep(7);
+		let time = await countTime();
+		let ref = {days: (time.days > 1 ? "days" : "day"), hours: (time.hours > 1 ? "hours" : "hour"), minutes: (time.minutes > 1 ? "minutes" : "minute"), seconds: (time.seconds > 1 ? "seconds": "second")};
 		await client.user.setPresence({
 			activities: [{
-				name: `Uptime: ${days}:${hours}:${minutes}:${seconds}`,
+				name: `Uptime: ${(time.days > 0 ? time.days + " " + ref.days + " ": "")}${(time.days > 0 || time.hours > 0? time.hours + " " + ref.hours + " " : "" )}${(time.days > 0 || time.hours > 0 || time.minutes > 0 ? time.minutes + " " + ref.minutes + " " : "" )}${time.seconds} ${ref.seconds}`,
 				type: ActivityType.Custom
 			}]
 		});
@@ -480,4 +475,14 @@ async function printLines() {
         }
     }
     return count;
+}
+async function countTime(){
+	let totalSeconds = (client.uptime / 1000);
+	let days = Math.floor(totalSeconds / 86400);
+	totalSeconds %= 86400;
+	let hours = Math.floor(totalSeconds / 3600);
+	totalSeconds %= 3600;
+	let minutes = Math.floor(totalSeconds / 60);
+	let seconds = Math.floor(totalSeconds % 60);
+	return {days: days, hours: hours, minutes: minutes, seconds: seconds};
 }
