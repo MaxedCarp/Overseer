@@ -152,6 +152,7 @@ class messageEvents {
 				let flag = true;
 				for (let i = test.length - 1; i >= 0; i--) {
 					let message = test[i];
+					console.log(message.id)
 					if (!!(await global.msgcol.findOne({"messageID": message.id}))) {
 						if (flag) {
 							console.log(message.id)
