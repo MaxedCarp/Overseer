@@ -148,6 +148,7 @@ class messageEvents {
 				let del;
 				let chan;
 				let msgcount = test.length;
+				let guild2;
 				let flag = true;
 				for (let i = test.length - 1; i >= 0; i--) {
 					let message = test[i];
@@ -156,7 +157,7 @@ class messageEvents {
 							msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
 							guildid = guild.id;
-							let guild2 = await global.srvcol.findOne({srv: message.id});
+							guild2 = await global.srvcol.findOne({srv: message.id});
 							del = guild2.delete;
 							guildicon = guild2.icon;
 							guildname = guild2.name;
