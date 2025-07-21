@@ -169,7 +169,7 @@ class messageEvents {
 				}
 
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
-				if (del === "none" || !obj)
+				if (del === "none" || !del)
 					return;
 				if (((guild.members.me).permissionsIn(del).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.Administrator))
 					await client.channels.cache.get(del).send({ embeds: [resembed] });
