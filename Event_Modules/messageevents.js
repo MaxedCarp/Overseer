@@ -130,37 +130,32 @@ class messageEvents {
 	static MessageBulkDelete(messages){
 		return new Promise((resolve) => {
 			(async () => {
-				const messages2 = messages.filter(msg => (!msg?.author?.bot || !msg.author) && !!msg.content);
-				
+				const messages2 = messages.filter(msg => (!msg?.author?.bot) && !!msg.content);
 				if (messages2.length < 1)
 					return;
 
 				let test = [];
-				for (let i =0; i < messages2.length; i++) {
-					if (!!messages2.at(i))
-						test.push(messages2.at(i));
-				}
+				await messages2.forEach(msg => {
+					test.push(msg);
+				});
+				console.log(test);
 				let msg;
 				let guild;
 				let guildid;
 				let guildname;
 				let guildicon;
-				let del;
 				let chan;
 				let msgcount = test.length;
 				let guild2;
 				let flag = true;
 				for (let i = test.length - 1; i >= 0; i--) {
 					let message = test[i];
-					console.log(message.id)
 					if (!!(await global.msgcol.findOne({"messageID": message.id}))) {
 						if (flag) {
-							console.log(message.id)
 							msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
 							guildid = guild.id;
-							guild2 = await global.srvcol.findOne({srv: message.id});
-							del = guild2.delete;
+							guild2 = await global.srvcol.findOne({srv: message.guild.id});
 							guildicon = guild2.icon;
 							guildname = guild2.name;
 							chan = msg.messageChannelID;
@@ -170,8 +165,9 @@ class messageEvents {
 
 					}
 				}
-console.log(del);
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
+				const obj = await srvcol.findOne({srv: guildid});
+				const del = obj.delete;
 				if (del === "none" || !del)
 					return;
 				if (((guild.members.me).permissionsIn(del).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.Administrator))
