@@ -154,6 +154,7 @@ class messageEvents {
 					let message = test[i];
 					if (!!(await global.msgcol.findOne({"messageID": message.id}))) {
 						if (flag) {
+							console.log(message.id)
 							msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
 							guildid = guild.id;
