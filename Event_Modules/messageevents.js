@@ -138,7 +138,6 @@ class messageEvents {
 				await messages2.forEach(msg => {
 					test.push(msg);
 				});
-				console.log(test);
 				let msg;
 				let guild;
 				let guildid;
