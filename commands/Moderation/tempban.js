@@ -44,7 +44,7 @@ module.exports = {
 		await global.srvcol.updateOne({srv: interaction.guild.id}, { $set: {banlist: obj.banlist} });
 		await interaction.reply({ content: `User: ${member.user} temporarily banned for ${await essentials.parsetime(time, "s")} seconds.\nReason: ${reason || "No reason provided."}.`});
 		const dt = await global.notecol.findOne({serial: {$gt: -1}});
-		const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "tempban", text: `${reason || "No reason provided."}.`, serial: dt.serial + 1, time: (new Date().valueOf() / 1000)};
+		const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "tempban", text: `${reason || "No reason provided."}.`, serial: dt.serial + 1, time: Math.floor(new Date().valueOf() / 1000)};
 		await global.notecol.insertOne(msgobj);
 		let resembed = await EmbedCreator.Create(`Moderation Command executed in: <#${interaction.channel.id}>`, `Command: /tempban\nTarget User: ${member.user}.\nTime: ${time}`, false, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName || interaction.user.username} (${interaction.user.username})`, `https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}`, 0xff9900, []);
 		if (obj.delete === "none" || !obj)

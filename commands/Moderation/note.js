@@ -40,7 +40,7 @@ module.exports = {
 		switch(sub) {
 			case "add":
 				const dt = await global.notecol.findOne({serial: {$gt: -1}});
-				const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "note", text: note.replace("\\n","\n"), serial: dt.serial + 1, time: (new Date().valueOf() / 1000)};
+				const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "note", text: note.replace("\\n","\n"), serial: dt.serial + 1, time: Math.floor(new Date().valueOf() / 1000)};
 				await global.notecol.insertOne(msgobj);
 				await interaction.reply({ content: `Successfully added note to user: ${user.username}`, ephemeral: true });
 			break;
