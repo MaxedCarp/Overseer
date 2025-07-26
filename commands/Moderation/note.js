@@ -64,7 +64,7 @@ module.exports = {
 				if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
 					i = 1;
 					for (let note of data) {
-						list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n-------------------\n\n<t:${note.time}:f>`;
+						list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n-------------------\n<t:${note.time}:f>\n\n`;
 						i++;
 					}
 					notelist.setDescription(list);
