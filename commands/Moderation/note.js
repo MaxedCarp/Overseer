@@ -40,7 +40,7 @@ module.exports = {
 		switch(sub) {
 			case "add":
 				const dt = await global.notecol.findOne({serial: {$gt: -1}});
-				const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "note", text: note.replace("\\n","\n"), serial: dt.serial + 1};
+				const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "note", text: note.replace("\\n","\n"), serial: dt.serial + 1, time: (new Date().valueOf() / 1000)};
 				await global.notecol.insertOne(msgobj);
 				await interaction.reply({ content: `Successfully added note to user: ${user.username}`, ephemeral: true });
 			break;
@@ -64,7 +64,7 @@ module.exports = {
 				if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
 					i = 1;
 					for (let note of data) {
-						list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
+						list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n-------------------\n\n<t:${note.time}:f>`;
 						i++;
 					}
 					notelist.setDescription(list);
