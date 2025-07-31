@@ -10,9 +10,10 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
 	async execute(interaction) {
 		const role = interaction.options.getRole('role');
-		for (let member of interaction.guild.members.cache) {
+		const members = interaction.guild.members.cache;
+		members.forEach(async (member) => {
 			await member.roles.add(role);
-		}
+		});
 		await interaction.reply("Done!");
 	},
 };
