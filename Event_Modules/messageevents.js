@@ -133,42 +133,46 @@ class messageEvents {
 		});
 	}
 
+	static async #getSampleMessage(msgs) {
+		let guild;
+		let guildid;
+		let guild2;
+		let guildicon;
+		let guildname;
+		let chan;
+		let flag = true;
+		for (let i = msgs.length - 1; i >= 0; i--) {
+			let message = msgs[i];
+			const msg = await global.msgcol.findOne({"messageID": message.id})
+			if (msg) {
+				if (flag) {
+					guild = await client.guilds.fetch(msg.messageServerID);
+					guildid = guild.id;
+					guild2 = await global.srvcol.findOne({srv: message.guild.id});
+					guildicon = guild2.icon;
+					guildname = guild2.name;
+					chan = msg.messageChannelID;
+					flag = false;
+				}
+			}
+		}
+		return {guild, guildid, guild2, guildicon, guildname, chan};
+	}
+
 	static MessageBulkDelete(messages){
 		return new Promise((resolve) => {
 			(async () => {
 				const messages2 = messages.filter(msg => (!msg?.author?.bot) && !!msg.content);
 				if (messages2.length < 1)
 					return;
-
 				let test = [];
 				await messages2.forEach(msg => {
 					test.push(msg);
 				});
-				let msg;
-				let guild;
-				let guildid;
-				let guildname;
-				let guildicon;
-				let chan;
-				let msgcount = test.length;
-				let guild2;
-				let flag = true;
+				const messageIds = test.map(message => message.id);
+				const { guild, guildid, guild2, guildicon, guildname, chan } = await messageEvents.#getSampleMessage(test);
 				for (let i = test.length - 1; i >= 0; i--) {
-					let message = test[i];
-					if (!!(await global.msgcol.findOne({"messageID": message.id}))) {
-						if (flag) {
-							const msg = await global.msgcol.findOne({"messageID": message.id});
-							guild = await client.guilds.fetch(msg.messageServerID);
-							guildid = guild.id;
-							guild2 = await global.srvcol.findOne({srv: message.guild.id});
-							guildicon = guild2.icon;
-							guildname = guild2.name;
-							chan = msg.messageChannelID;
-							flag = false;
-						}
-						await global.msgcol.deleteOne({"messageID": message.id});
-
-					}
+					await global.msgcol.deleteMany({"messageID": { $in: messageIds }});
 				}
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
 				const obj = await srvcol.findOne({srv: guildid});
