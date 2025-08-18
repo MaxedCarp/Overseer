@@ -1,4 +1,5 @@
 const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('addroletoallusers')
@@ -9,10 +10,17 @@ module.exports = {
 			.setRequired(true))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageRoles),
 	async execute(interaction) {
+		const hasperms = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles);
+		if (!hasperms)
+		{
+			await interaction.reply({content: "My apologies. I don't have the required permissions to assign roles!", ephemeral: true});
+			return;
+		}
 		const role = interaction.options.getRole('role');
 		const members = interaction.guild.members.cache;
 		members.forEach(async (member) => {
-			await member.roles.add(role);
+			if (!member?.user?.bot)
+				await member.roles.add(role);
 		});
 		await interaction.reply("Done!");
 	},

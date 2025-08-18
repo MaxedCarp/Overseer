@@ -50,6 +50,12 @@ module.exports = {
 		const fieldesc = interaction.options.getString('fielddesc');
 		const inlines = interaction.options.getString('fieldinline');
 		const color = interaction.options.getInteger('color');
+		const hasperms = (interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.SendMessages);
+		if (!hasperms)
+		{
+			await interaction.reply({content: "My apologies. I don't have the required permissions to send messages in this channel!", ephemeral: true});
+			return;
+		}
 		const exampleEmbed = new EmbedBuilder();
 		if (color)
 			exampleEmbed.setColor(color);
