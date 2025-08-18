@@ -32,8 +32,14 @@ class messageEvents {
 						let fishtest = await global.fishcol.findOne({ "name": prt })
 						if (!!fishtest || message.content.includes("🐟") || msgcontlow.includes("sci-fi freak")){
 							if (flag){
-								await message.react("🐟");
-								flag = false;
+								try {
+									await message.react("🐟");
+								}
+								catch(err) {
+									console.log("Reaction failed in: " + message.guild.name + ": #" + message.channel.name)
+								}
+									flag = false;
+
 							}
 						}
 					}
@@ -151,7 +157,7 @@ class messageEvents {
 					let message = test[i];
 					if (!!(await global.msgcol.findOne({"messageID": message.id}))) {
 						if (flag) {
-							msg = await global.msgcol.findOne({"messageID": message.id});
+							const msg = await global.msgcol.findOne({"messageID": message.id});
 							guild = await client.guilds.fetch(msg.messageServerID);
 							guildid = guild.id;
 							guild2 = await global.srvcol.findOne({srv: message.guild.id});
@@ -166,13 +172,14 @@ class messageEvents {
 				}
 				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
 				const obj = await srvcol.findOne({srv: guildid});
-				const del = obj.delete;
-				if (del === "none" || !del)
+				if (obj?.delete === "none" || !obj?.delete) {
 					return;
-				if (((guild.members.me).permissionsIn(del).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(del).has(PermissionFlagsBits.Administrator))
-					await client.channels.cache.get(del).send({ embeds: [resembed] });
-				else
-					return;
+				} else {
+					if (((guild.members.me).permissionsIn(obj?.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj?.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj?.delete).has(PermissionFlagsBits.Administrator))
+						await client.channels.cache.get(obj?.delete).send({embeds: [resembed]});
+					else
+						return;
+				}
 				resolve(true);
 			})();
 		});
