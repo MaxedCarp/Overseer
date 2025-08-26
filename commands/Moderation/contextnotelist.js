@@ -1,4 +1,8 @@
-const { EmbedBuilder, ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits } = require('discord.js');
+const { EmbedBuilder, ContextMenuCommandBuilder, ApplicationCommandType, PermissionFlagsBits,
+	ButtonStyle,
+	ActionRowBuilder
+} = require('discord.js');
+const EmbedCreator = require("../../Event_Modules/embedcreator");
 module.exports = {
 	data: new ContextMenuCommandBuilder()
 		.setName('View User\'s Note List')
@@ -21,8 +25,11 @@ module.exports = {
 				list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n-------------------\n<t:${note.time}:f>\n\n`;
 				i++;
 			}
+			const prev = await EmbedCreator.Button(`note`,"Previous", ButtonStyle.Primary, '◀️',true);
+			const next = await EmbedCreator.Button(`notes:${user.id}:${data[data.length - 1].serial}:${i}:false`,"Next", ButtonStyle.Primary,'▶️');
+			const row = new ActionRowBuilder().addComponents(prev, next);
 			notelist.setDescription(list);
-			await interaction.reply({ embeds: [notelist], ephemeral: true })
+			await interaction.reply({ embeds: [notelist], components: [row], ephemeral: true })
 		}
 		else 
 			await interaction.reply({ content: "The target user has no notes.", ephemeral: true })

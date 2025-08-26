@@ -281,7 +281,7 @@ client.on(Events.InteractionCreate, async interaction => {
 					serial: {$gt: parseInt(args[2])}
 				}).sort({serial: 1}).limit(5).toArray();
 			}
-				if (await global.notecol.count({srv: interaction.guild.id, userID: user.id, serial: {$gt: parseInt(args[2])}}) > 0){
+			if ((await global.notecol.count({srv: interaction.guild.id, userID: user.id, serial: {$gt: parseInt(args[2])}}) > 0) && data[0]?.serial){
 				i = parseInt(args[3]);
 				for (let note of data) {
 					list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
