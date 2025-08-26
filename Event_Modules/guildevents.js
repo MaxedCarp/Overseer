@@ -9,11 +9,11 @@ class guildEvents {
 				obj = await global.srvcol.findOne({ "srv": member.guild.id});
 				const usrdata = await global.persistcol.findOne({srv: member.guild.id, userid: member.id});
 				let shouldban = false;
-				if (!!(await global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
+				if (!!(await global.bancol.findOne({srv: member.guild.id, userId: member.id})))
 				{
 					shouldban = true;
 					await member.ban();
-					await global.autobancol.deleteOne({srv: member.guild.id, userId: member.id});
+					await global.bancol.deleteOne({srv: member.guild.id, userId: member.id});
 				}
 				const usr = member.user;
 				const { guild } = member;
@@ -102,11 +102,11 @@ class guildEvents {
 				let obj = await global.srvcol.findOne({ "srv": member.guild.id});
 				const usr = member.user;
 				let shouldban = false;
-				if (!!(await global.autobancol.findOne({srv: member.guild.id, userId: member.id})))
+				if (!!(await global.bancol.findOne({srv: member.guild.id, userId: member.id})))
 				{
 					shouldban = true;
 					await member.ban();
-					await global.autobancol.deleteOne({srv: member.guild.id, userId: member.id});
+					await global.bancol.deleteOne({srv: member.guild.id, userId: member.id});
 				}
 				if (!usr.bot && !usr.system && !shouldban) {
 					const exampleEmbed = new EmbedBuilder()

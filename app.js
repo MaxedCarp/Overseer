@@ -4,7 +4,7 @@ const events = require('events');
 const eventEmitter = new events.EventEmitter();
 const { MongoClient } = require('mongodb');
 const clc = require('cli-color');
-const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, autobancol, secretkeyscol, botlistmetoken, botlistmeURL } = require('./config.json'); // These variables need to be defined in your config.json file!
+const { token, contact, dbusr, dbpwd, addr, activedb, msgcol, srvcol, fishcol, notecol, persistcol, bancol, secretkeyscol, botlistmetoken, botlistmeURL } = require('./config.json'); // These variables need to be defined in your config.json file!
 const fs = require('node:fs');
 const fs2 = require('./Event_Modules/fsfuncs');
 const path = require('node:path');
@@ -26,7 +26,7 @@ client.once(Events.ClientReady, async c => {
 	global.fishcol = global.db.collection(fishcol);
 	global.notecol = global.db.collection(notecol);
 	global.persistcol = global.db.collection(persistcol);
-	global.autobancol = global.db.collection(autobancol);
+	global.bancol = global.db.collection(bancol);
 	global.secretkeyscol = global.db.collection(secretkeyscol);
 	await client.user.setPresence({ activities: [{ name: `Bot started up!`, type: ActivityType.Custom }] });
 	eventEmitter.emit('banTimer');
@@ -95,14 +95,11 @@ eventEmitter.on('banTimer', async () => {
 	const BanCheck = async () => {
 		client.guilds.cache.forEach(guild => {
 			(async () => {
-				const obj = await global.srvcol.findOne({"srv": guild.id});
-				if (obj.banlist.length > 0) {
-					for (let ban of obj.banlist) {
-						if (ban.expire !== "permanent" && parseInt(ban.expire) < parseInt(new Date().getTime() / 1000)) {
-							await guild.members.unban(ban.id);
-							nbanlist = obj.banlist.filter(cban => cban.id !== ban.id)
-							await global.srvcol.updateOne({srv: guild.id}, {$set: {banlist: nbanlist}});
-						}
+				const bans = await global.bancol.find({"srv": guild.id, "type": "temp", expire: {$lt: parseInt(new Date().getTime() / 1000)}}).toArray();
+				if (bans.length > 0) {
+					for (let ban of bans) {
+						await guild.members.unban(ban.user.id);
+						await global.bancol.deleteOne({srv: guild.id, user: ban.user});
 					}
 				}
 			})();
