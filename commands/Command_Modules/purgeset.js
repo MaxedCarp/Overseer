@@ -102,6 +102,9 @@ class purgeset {
         if (!locale)
         	await interaction.reply({content: `Sucessfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
     }
+    static async attach(interaction, lim) {
+
+    }
 
 }
 

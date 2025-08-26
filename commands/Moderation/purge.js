@@ -24,6 +24,13 @@ module.exports = {
 				.addIntegerOption(option =>
 					option.setName('limit')
 						.setDescription('Amount of messages to fetch')))
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('any')
+				.setDescription('Deletes messages without any filters.')
+				.addIntegerOption(option =>
+					option.setName('limit')
+						.setDescription('Amount of messages to fetch')))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	async execute(interaction) {
 		if (!((interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages) || (interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.Administrator))) {
@@ -39,6 +46,9 @@ module.exports = {
 			case "user":
 				const user = interaction.options.getUser("user");
 				await purgeset.user(interaction, user, lim);
+			break;
+			case "attachments":
+				await purgeset.attach(interaction, user, lim);
 			break;
 		}
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});
