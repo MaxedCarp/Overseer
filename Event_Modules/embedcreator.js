@@ -43,7 +43,7 @@ class embedcreator {
 			resolve(embed);
 		});
     }
-	static Button(id, label, style, emoji) {
+	static Button(id, label, style, emoji, disabled) {
 		return new Promise((resolve) => {
 			const btn = new ButtonBuilder()
 			btn.setCustomId(id);
@@ -51,6 +51,8 @@ class embedcreator {
 			btn.setStyle(style);
 			if (emoji)
 				btn.setEmoji(emoji);
+			if (disabled)
+				btn.setDisabled(disabled);
 			resolve(btn);
 		});
 	}

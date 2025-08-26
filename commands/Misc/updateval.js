@@ -7,6 +7,7 @@ module.exports = {
 	async execute(interaction) {
 		if (interaction.user.id !== "275305152842301440")
 			return;
+		const obj = await global.bancol.find()
 		client.guilds.cache.forEach(guild => {
 			(async () => {
 				await global.srvcol.updateOne({srv: guild.id}, {$set: {icon: guild.iconURL()}});

@@ -265,15 +265,33 @@ client.on(Events.InteractionCreate, async interaction => {
 				.setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.member.displayAvatarURL()}` })
 				.setFooter({ text: `${interaction.guild.name}`, iconURL: interaction.guild.iconURL() });
 			var list = "";
-			const data = await global.notecol.find({srv: interaction.guild.id, userID: user.id}).toArray();
-			if (await global.notecol.count({srv: interaction.guild.id, userID: user.id}) > 0){
-				i = 1;
+			let data;
+			if (args[4] === "true") {
+				data = await global.notecol.find({
+					srv: interaction.guild.id,
+					userID: user.id,
+					serial: {$lt: parseInt(args[2])}
+				}).sort({serial: -1}).limit(5).toArray();
+				data.sort((a, b)=>a.serial - b.serial);
+			}
+			else {
+				data = await global.notecol.find({
+					srv: interaction.guild.id,
+					userID: user.id,
+					serial: {$gt: parseInt(args[2])}
+				}).sort({serial: 1}).limit(5).toArray();
+			}
+				if (await global.notecol.count({srv: interaction.guild.id, userID: user.id, serial: {$gt: parseInt(args[2])}}) > 0){
+				i = parseInt(args[3]);
 				for (let note of data) {
 					list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
 					i++;
 				}
+				const next = await EmbedCreator.Button(`notes:${user.id}:${data[data.length - 1].serial}:${i}:false`,"Next", ButtonStyle.Primary);
+				const prev = await EmbedCreator.Button(`notes:${user.id}:${data[0].serial}:${i - 5}:true`,"Previous", ButtonStyle.Primary);
+				const row = new ActionRowBuilder().addComponents(prev, next);
 				notelist.setDescription(list);
-				await interaction.reply({ embeds: [notelist], ephemeral: true })
+				await interaction.reply({ embeds: [notelist], components: [row], ephemeral: true })
 			}
 			else
 				await interaction.reply({ content: "The target user has no notes.", ephemeral: true })
