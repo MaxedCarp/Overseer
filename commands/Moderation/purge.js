@@ -1,17 +1,29 @@
 const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('../../Event_Modules/embedcreator.js');
+const purgeset = require('../Command_Modules/purgeset.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('purge')
 		.setDescription('Deletes multiple messages at once')
 		.addSubcommand(subcommand =>
-		subcommand
+			subcommand
 			.setName('any')
 			.setDescription('Deletes messages without any filters.')
 			.addIntegerOption(option =>
 				option.setName('limit')
-				.setDescription('Amount of messages to fetch')))
+					.setDescription('Amount of messages to fetch')))
+		.addSubcommand(subcommand =>
+			subcommand
+				.setName('user')
+				.setDescription('Deletes messages sent by a specific user.')
+				.addUserOption(option =>
+					option.setName('user')
+						.setDescription('User to delete from')
+						.setRequired(true))
+				.addIntegerOption(option =>
+					option.setName('limit')
+						.setDescription('Amount of messages to fetch')))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	async execute(interaction) {
 		if (!((interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages) || (interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.Administrator))) {
@@ -22,20 +34,11 @@ module.exports = {
 		const lim = interaction.options.getInteger("limit") || 100;
 		switch(sub) {
 			case "any": 
-				const look = { "messageChannelID": interaction.channel.id };
-				let msgs = await global.msgcol.find(look).sort({"_id": -1}).limit(lim).toArray();
-				let chatmsgs = [];
-				for (let i = 0;i < msgs.length;i++){
-					try {
-						let chatmsg = await interaction.channel.messages.fetch(msgs[i].messageID);
-						await chatmsgs.push(chatmsg);
-					}
-					catch(err) {
-						await global.msgcol.deleteOne({ "messageID": msgs[i].messageID });
-					}
-				}
-				await interaction.channel.bulkDelete(chatmsgs);
-				await interaction.reply({ content: `Sucessfully deleted ${chatmsgs.length} messages!`, ephemeral: true })
+				await purgeset.any(interaction, lim)
+			break;
+			case "user":
+				const user = interaction.options.getUser("user");
+				await purgeset.user(interaction, user, lim);
 			break;
 		}
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});

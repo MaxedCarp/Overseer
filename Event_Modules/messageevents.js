@@ -174,7 +174,7 @@ class messageEvents {
 				for (let i = test.length - 1; i >= 0; i--) {
 					await global.msgcol.deleteMany({"messageID": { $in: messageIds }});
 				}
-				let resembed = await EmbedCreator.Create(`Message${msgcount > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${msgcount} Message${msgcount > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
+				let resembed = await EmbedCreator.Create(`Message${test.length > 1 ? "s **BULK**" : ""} Deleted in: <#${chan}>`, `${test.length} Message${test.length > 1 ? "s" : ""} Deleted`, false, guildname, guildicon, `Overseer`, `https://maxedcarp.net/imgs/overseer.png`, 0xFA042A, []);
 				const obj = await srvcol.findOne({srv: guildid});
 				if (obj?.delete === "none" || !obj?.delete) {
 					return;

@@ -1,5 +1,6 @@
 const { SlashCommandBuilder,  PermissionFlagsBits } = require('discord.js');
 const EmbedCreator = require('../../Event_Modules/embedcreator.js');
+const purgeset = require('../Command_Modules/purgeset.js');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -9,6 +10,14 @@ module.exports = {
             option.setName('user')
                 .setDescription('User to ban')
 				.setRequired(true))
+		.addBooleanOption(option =>
+			option.setName('delete')
+				.setDescription('Whether messages from this user should be deleted or not')
+				.setRequired(true))
+		.addBooleanOption(option =>
+			option.setName('ephemeral')
+				.setDescription('Whether the ban prompt should be publicly visible or not')
+				.setRequired(true))
 		.addStringOption(option =>
             option.setName('reason')
                 .setDescription('Reason'))
@@ -16,6 +25,8 @@ module.exports = {
 	async execute(interaction) {
 		const member = interaction.options.getMember('user');
 		const reason = interaction.options.getString('reason');
+		const deletemsg = interaction.options.getBoolean('delete');
+		const ephemeral = interaction.options.getBoolean('ephemeral');
 		const isadmin = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator);
 		const ismod = (interaction.guild.members.me).permissions.has(PermissionFlagsBits.BanMembers)
 		if (!(isadmin || ismod)) {
@@ -31,8 +42,11 @@ module.exports = {
 			return;
 		}
 		const user = member.user;
+		if (deletemsg) {
+			await purgeset.user(interaction,user,100,true);
+		}
 		await member.ban();
-		await interaction.reply({ content: `User: <@${member.id}> banned successfully for: ${reason || "No reason provided."}.`});
+		await interaction.reply({ content: `User: <@${member.id}> banned successfully for: ${reason || "No reason provided."}.`, ephemeral: ephemeral});
 		const dt = await global.notecol.findOne({serial: {$gt: -1}});
 		const msgobj = { srv: interaction.guild.id, userID: user.id, username: user.username, noteAuthor: { userID: interaction.user.id, userName: interaction.user.username, globalName: interaction.user.globalName, avatar: interaction.user.avatar, avatarURL: interaction.user.displayAvatarURL() }, type: "ban", text: `${reason || "No reason provided."}.`, serial: dt.serial + 1, time: Math.floor(new Date().valueOf() / 1000)};
 		await global.notecol.insertOne(msgobj);
