@@ -392,8 +392,8 @@ client.on(Events.InteractionCreate, async interaction => {
                     list += `-# \\|\\|NOTE ID:${note.serial}\\|\\|\n- Note Type: ${note.type}.\n- Issued by: <@${note.noteAuthor.userID}>.\n${note.text}.\n\n`;
                     i++;
                 }
-                const next = await EmbedCreator.Button(`notes:${user.id}:${data[data.length - 1].serial}:${i}:false`, "Next", ButtonStyle.Primary);
-                const prev = await EmbedCreator.Button(`notes:${user.id}:${data[0].serial}:${i - 5}:true`, "Previous", ButtonStyle.Primary);
+                const next = await EmbedCreator.Button(`notes:${user.id}:${data[data.length - 1].serial}:${i}:false`, "Next", ButtonStyle.Primary, '▶️');
+                const prev = await EmbedCreator.Button(`notes:${user.id}:${data[0].serial}:${i - 10}:true`, "Previous", ButtonStyle.Primary, '◀️', (i - 5 < 5));
                 const row = new ActionRowBuilder().addComponents(prev, next);
                 notelist.setDescription(list);
                 await interaction.update({embeds: [notelist], components: [row], ephemeral: true})
