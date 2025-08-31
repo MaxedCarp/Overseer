@@ -26,11 +26,14 @@ module.exports = {
 						.setDescription('Amount of messages to fetch')))
 		.addSubcommand(subcommand =>
 			subcommand
-				.setName('any')
-				.setDescription('Deletes messages without any filters.')
+				.setName('attachments')
+				.setDescription('Deletes messages containing attachments.')
 				.addIntegerOption(option =>
 					option.setName('limit')
-						.setDescription('Amount of messages to fetch')))
+						.setDescription('Amount of messages to fetch'))
+				.addUserOption(option =>
+					option.setName('user')
+						.setDescription('Specify a user to filter by (leave blank to filter by attachments from any user)')))
 		.setDefaultMemberPermissions(PermissionFlagsBits.ManageMessages),
 	async execute(interaction) {
 		if (!((interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.ManageMessages) || (interaction.guild.members.me).permissionsIn(interaction.channel).has(PermissionFlagsBits.Administrator))) {
@@ -40,15 +43,19 @@ module.exports = {
 		const sub = interaction.options.getSubcommand();
 		const lim = interaction.options.getInteger("limit") || 100;
 		switch(sub) {
-			case "any": 
+			case "any": {
 				await purgeset.any(interaction, lim)
+			}
 			break;
-			case "user":
+			case "user": {
 				const user = interaction.options.getUser("user");
 				await purgeset.user(interaction, user, lim);
+			}
 			break;
-			case "attachments":
-				await purgeset.attach(interaction, user, lim);
+			case "attachments": {
+				const user = interaction.options.getUser("user");
+				await purgeset.attach(interaction, user.id, lim);
+			}
 			break;
 		}
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});

@@ -75,14 +75,14 @@ class purgeset {
                     }
                 }
                 await interaction.channel.bulkDelete(chatmsgs);
-                await interaction.reply({content: `Sucessfully deleted ${chatmsgs.length} messages!`, ephemeral: true})
+                await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true})
                 resolve(true);
             })();
         });
     }
 
     static async user(interaction, user, lim, locale = false) {
-        let look
+        let look;
         if (locale) {
             look = {"messageServerID": interaction.guild.id, "messageAuthor.userID": user.id};
         } else {
@@ -100,12 +100,30 @@ class purgeset {
         }
         await interaction.channel.bulkDelete(chatmsgs);
         if (!locale)
-        	await interaction.reply({content: `Sucessfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
+        	await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
     }
-    static async attach(interaction, lim) {
-
+    static async attach(interaction, lim, user) {
+        let look;
+        if (!user) {
+            look = {messageChannelID: interaction.channel.id, messageAttachments: {$exists: true, $ne: []}}
+        } else {
+            look = {messageChannelID: interaction.channel.id, "messageAuthor.userID": user, messageAttachments: {$exists: true, $ne: []}
+            }
+        }
+        let msgs = await global.msgcol.find(look).sort({"_id": -1}).limit(lim).toArray();
+        let chatmsgs = [];
+        for (let i = 0; i < msgs.length; i++) {
+            try {
+                let chatmsg = await interaction.channel.messages.fetch(msgs[i].messageID);
+                chatmsgs.push(chatmsg);
+            } catch (err) {
+                await global.msgcol.deleteOne({"messageID": msgs[i].messageID});
+            }
+        }
+        await interaction.channel.bulkDelete(chatmsgs);
+        if (!locale)
+            await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
     }
-
 }
 
 module.exports = purgeset;
