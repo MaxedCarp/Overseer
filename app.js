@@ -291,7 +291,7 @@ client.on(Events.InteractionCreate, async interaction => {
 				const prev = await EmbedCreator.Button(`notes:${user.id}:${data[0].serial}:${i - 5}:true`,"Previous", ButtonStyle.Primary);
 				const row = new ActionRowBuilder().addComponents(prev, next);
 				notelist.setDescription(list);
-				await interaction.reply({ embeds: [notelist], components: [row], ephemeral: true })
+				await interaction.update({ embeds: [notelist], components: [row], ephemeral: true })
 			}
 			else
 				await interaction.reply({ content: "The target user has no notes.", ephemeral: true })
