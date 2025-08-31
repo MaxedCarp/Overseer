@@ -121,8 +121,7 @@ class purgeset {
             }
         }
         await interaction.channel.bulkDelete(chatmsgs);
-        if (!locale)
-            await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
+        await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
     }
 }
 

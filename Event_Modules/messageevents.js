@@ -162,7 +162,7 @@ class messageEvents {
 	static MessageBulkDelete(messages){
 		return new Promise((resolve) => {
 			(async () => {
-				const messages2 = messages.filter(msg => (!msg?.author?.bot) && !!msg.content);
+				const messages2 = messages.filter(msg => (!msg?.author?.bot));
 				if (messages2.length < 1)
 					return;
 				let test = [];

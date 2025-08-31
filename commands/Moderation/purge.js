@@ -54,7 +54,7 @@ module.exports = {
 			break;
 			case "attachments": {
 				const user = interaction.options.getUser("user");
-				await purgeset.attach(interaction, user.id, lim);
+				await purgeset.attach(interaction, lim, user?.id);
 			}
 			break;
 		}
