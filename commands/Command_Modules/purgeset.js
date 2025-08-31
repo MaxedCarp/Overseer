@@ -100,33 +100,22 @@ class purgeset {
         }
         await interaction.channel.bulkDelete(chatmsgs);
         if (!locale)
-        	await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
+            await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
     }
+
     static async attach(interaction, lim, type, user) {
-        let look;
-        if (!user) {
-            if (type === "any") {
-                look = {messageChannelID: interaction.channel.id, messageAttachments: {$exists: true, $ne: []}}
-            }
-            else if (type !== "other") {
-                look = {messageChannelID: interaction.channel.id, "messageAttachments.fileType": (new RegExp(type, "i"))}
-            }
-            else {
-                look = {messageChannelID: interaction.channel.id, "messageAttachments.fileType": {$in: [/application/i, null]}}
-            }
-        } else {
-            if (type === "any") {
-            look = {
-                messageChannelID: interaction.channel.id, "messageAuthor.userID": user, messageAttachments: {$exists: true, $ne: []}}
-            }
-            else if (type !== "other") {
-                look = {messageChannelID: interaction.channel.id, "messageAuthor.userID": user, "messageAttachments.fileType": (new RegExp(type, "i"))}
-            }
-            else {
-                look = {messageChannelID: interaction.channel.id, "messageAuthor.userID": user, "messageAttachments.fileType": {$in: [/application/i, null]}}
-            }
+        const query = {messageChannelID: interaction.channel.id}
+        if (!!user) {
+            query["messageAuthor.userID"] = user;
         }
-        let msgs = await global.msgcol.find(look).sort({"_id": -1}).limit(lim).toArray();
+        if (type === "any") {
+            query["messageAttachments"] = {$exists: true, $ne: []};
+        } else {
+            query["messageAttachments.fileType"] =
+                (type !== "other" ?
+                    (new RegExp(type, "i")) : {$in: [/application/i, null]});
+        }
+        let msgs = await global.msgcol.find(query).sort({"_id": -1}).limit(lim).toArray();
         let chatmsgs = [];
         for (let i = 0; i < msgs.length; i++) {
             try {
