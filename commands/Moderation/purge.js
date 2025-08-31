@@ -9,28 +9,28 @@ module.exports = {
 		.addSubcommand(subcommand =>
 			subcommand
 			.setName('any')
-			.setDescription('Deletes messages without any filters.')
+			.setDescription('Purges messages without any filters.')
 			.addIntegerOption(option =>
 				option.setName('limit')
-					.setDescription('Amount of messages to fetch')))
+					.setDescription('Amount of messages to fetch (Up to 100)')))
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('user')
-				.setDescription('Deletes messages sent by a specific user.')
+				.setDescription('Purges messages sent by a specific user.')
 				.addUserOption(option =>
 					option.setName('user')
 						.setDescription('User to delete from')
 						.setRequired(true))
 				.addIntegerOption(option =>
 					option.setName('limit')
-						.setDescription('Amount of messages to fetch')))
+						.setDescription('Amount of messages to fetch (Up to 100)')))
 		.addSubcommand(subcommand =>
 			subcommand
 				.setName('attachments')
-				.setDescription('Deletes messages containing attachments.')
+				.setDescription('Purges messages containing attachments.')
 				.addIntegerOption(option =>
 					option.setName('limit')
-						.setDescription('Amount of messages to fetch'))
+						.setDescription('Amount of messages to fetch (Up to 100)'))
 				.addUserOption(option =>
 					option.setName('user')
 						.setDescription('Specify a user to filter by (leave blank to filter by attachments from any user)')))
