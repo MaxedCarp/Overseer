@@ -369,8 +369,6 @@ class guildEvents {
     static VoiceState(oldState, newState) {
         return new Promise((resolve, reject) => {
             (async () => {
-                console.log(newState);
-                console.log(newState.member.user);
                 const newChan = newState.channel;
                 const oldChan = oldState.channel;
                 if (oldChan?.id && !newChan?.id) {
