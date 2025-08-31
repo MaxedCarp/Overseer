@@ -102,12 +102,28 @@ class purgeset {
         if (!locale)
         	await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
     }
-    static async attach(interaction, lim, user) {
+    static async attach(interaction, lim, type, user) {
         let look;
         if (!user) {
-            look = {messageChannelID: interaction.channel.id, messageAttachments: {$exists: true, $ne: []}}
+            if (type === "any") {
+                look = {messageChannelID: interaction.channel.id, messageAttachments: {$exists: true, $ne: []}}
+            }
+            else if (type !== "other") {
+                look = {messageChannelID: interaction.channel.id, "messageAttachments.fileType": (new RegExp(type, "i"))}
+            }
+            else {
+                look = {messageChannelID: interaction.channel.id, "messageAttachments.fileType": {$in: [/application/i, null]}}
+            }
         } else {
-            look = {messageChannelID: interaction.channel.id, "messageAuthor.userID": user, messageAttachments: {$exists: true, $ne: []}
+            if (type === "any") {
+            look = {
+                messageChannelID: interaction.channel.id, "messageAuthor.userID": user, messageAttachments: {$exists: true, $ne: []}}
+            }
+            else if (type !== "other") {
+                look = {messageChannelID: interaction.channel.id, "messageAuthor.userID": user, "messageAttachments.fileType": (new RegExp(type, "i"))}
+            }
+            else {
+                look = {messageChannelID: interaction.channel.id, "messageAuthor.userID": user, "messageAttachments.fileType": {$in: [/application/i, null]}}
             }
         }
         let msgs = await global.msgcol.find(look).sort({"_id": -1}).limit(lim).toArray();

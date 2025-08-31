@@ -28,6 +28,18 @@ module.exports = {
 			subcommand
 				.setName('attachments')
 				.setDescription('Purges messages containing attachments.')
+				.addStringOption(option =>
+					option.setName('type')
+						.setDescription('Type of attachment to filter by')
+						.setRequired(true)
+						.addChoices(
+							{ name: 'Any', value: 'any' },
+							{ name: 'Images', value: 'image' },
+							{ name: 'Videos', value: 'video' },
+							{ name: 'Audio', value: 'audio' },
+							{ name: 'Text', value: 'text' },
+							{ name: 'Other', value: 'other' }
+						))
 				.addIntegerOption(option =>
 					option.setName('limit')
 						.setDescription('Amount of messages to fetch (Up to 100)'))
@@ -54,7 +66,8 @@ module.exports = {
 			break;
 			case "attachments": {
 				const user = interaction.options.getUser("user");
-				await purgeset.attach(interaction, lim, user?.id);
+				const type = interaction.options.getString("type");
+				await purgeset.attach(interaction, lim, type, user?.id);
 			}
 			break;
 		}
