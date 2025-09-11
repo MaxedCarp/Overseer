@@ -45,6 +45,7 @@ const client = new Client({
     partials: [Partials.Channel, Partials.Message, Partials.Reaction]
 });
 const EmbedCreator = require("./Event_Modules/embedcreator");
+const {overwrite} = require("zod/v4");
 
 //Initialization
 client.once(Events.ClientReady, async c => {
@@ -194,25 +195,27 @@ eventEmitter.on('updateList', async () => {
 
 });
 eventEmitter.on('channelsCheckStart', async () => {
-    // Function to update bot stats
+    // Check channels for unremoved one-time access permissions
     const ChannelsCheck = async () => {
         client.guilds.cache.forEach(guild => {
             guild.channels.cache.forEach(channel => {
                 (async () => {
-                    const overwrite = await global.channelscol.findOne({
+                    const overwrites = await global.channelscol.find({
                         "srv": guild.id,
                         "channelID": channel.id
-                    });
-                    if (!!overwrite) {
-                        if ((channel.permissionOverwrites.cache).find(exp => exp.id === overwrite.userID && exp.type === 1) && (channel.members.size === 0)) {
-                            const members = await guild.members.fetch();
-                            const member = members.find(m => m.id === overwrite.userID);
-                            await channel.permissionOverwrites.delete(member.user);
-                            await global.channelscol.deleteOne({
-                                "srv": guild.id,
-                                "channelID": channel.id,
-                                "userID": overwrite.userID
-                            })
+                    }).toArray();
+                    if (!!overwrites.length > 0) {
+                        if (channel.members.size < 1) {
+                            for (overwrite of overwrites) {
+                                const members = await guild.members.fetch();
+                                const member = members.find(m => m.id === overwrite.userID);
+                                await channel.permissionOverwrites.delete(member.user);
+                                await global.channelscol.deleteOne({
+                                    "srv": guild.id,
+                                    "channelID": channel.id,
+                                    "userID": overwrite.userID
+                                })
+                            }
                         }
                     }
                 })();

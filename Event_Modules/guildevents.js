@@ -1,5 +1,6 @@
 const {EmbedBuilder, PermissionFlagsBits} = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
+const {overwrite} = require("zod/v4");
 
 class guildEvents {
     static MemberJoin(member) {
@@ -372,20 +373,22 @@ class guildEvents {
                 const newChan = newState.channel;
                 const oldChan = oldState.channel;
                 if (oldChan?.id && !newChan?.id) {
-                    const overwrite = await global.channelscol.findOne({
+                    const overwrites = await global.channelscol.find({
                         "srv": oldState.guild.id,
                         "channelID": oldChan.id
-                    });
-                    if (!!overwrite) {
-                        if ((oldChan.permissionOverwrites.cache).find(exp => exp.id === overwrite.userID && exp.type === 1) && oldChan.members.size === 0) {
-                            const members = await oldState.guild.members.fetch();
-                            const member = members.find(m => m.id === overwrite.userID);
-                            await oldChan.permissionOverwrites.delete(member.user);
-                            await global.channelscol.deleteOne({
-                                "srv": oldState.guild.id,
-                                "channelID": oldChan.id,
-                                "userID": overwrite.userID
-                            })
+                    }).toArray();
+                    if (!!overwrites.length > 0) {
+                        if (newChan.members.size < 1) {
+                            for (overwrite of overwrites) {
+                                const members = await oldState.guild.members.fetch();
+                                const member = members.find(m => m.id === overwrite.userID);
+                                await newChan.permissionOverwrites.delete(member.user);
+                                await global.channelscol.deleteOne({
+                                    "srv": oldState.guild.id,
+                                    "channelID": oldChan.id,
+                                    "userID": overwrite.userID
+                                })
+                            }
                         }
                     }
                 } else {
