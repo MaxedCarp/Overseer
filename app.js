@@ -206,14 +206,14 @@ eventEmitter.on('channelsCheckStart', async () => {
                     }).toArray();
                     if (!!overwrites.length > 0) {
                         if (await (channel.permissionOverwrites.cache).find(exp => exp.type === 1) && channel.members.size < 1) {
-                            for (overwrite of overwrites) {
+                            for (o of overwrites) {
                                 const members = await guild.members.fetch();
-                                const member = await members.find(m => m.id === overwrite.userID);
+                                const member = await members.find(m => m.id === o.userID);
                                 await channel.permissionOverwrites.delete(member.user);
                                 await global.channelscol.deleteOne({
                                     "srv": guild.id,
                                     "channelID": channel.id,
-                                    "userID": overwrite.userID
+                                    "userID": o.userID
                                 })
                             }
                         }
