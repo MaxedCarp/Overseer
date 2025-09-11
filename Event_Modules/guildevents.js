@@ -379,14 +379,14 @@ class guildEvents {
                     }).toArray();
                     if (!!overwrites.length > 0) {
                         if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1) && oldChan.members.size < 1) {
-                            for (overwrite of overwrites) {
+                            for (o of overwrites) {
                                 const members = await oldState.guild.members.fetch();
-                                const member = await members.find(m => m.id === overwrite.userID);
+                                const member = await members.find(m => m.id === o.userID);
                                 await oldChan.permissionOverwrites.delete(member.user);
                                 await global.channelscol.deleteOne({
                                     "srv": oldState.guild.id,
                                     "channelID": oldChan.id,
-                                    "userID": overwrite.userID
+                                    "userID": o.userID
                                 })
                             }
                         }
