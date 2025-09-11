@@ -373,7 +373,7 @@ class guildEvents {
                 const newChan = newState.channel;
                 const oldChan = oldState.channel;
                 if (oldChan?.id && !newChan?.id) {
-                    const overwrites = await global.channelscol.find({
+                    let overwrites = await global.channelscol.find({
                         "srv": oldState.guild.id,
                         "channelID": oldChan.id
                     }).toArray();

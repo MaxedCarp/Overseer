@@ -200,7 +200,7 @@ eventEmitter.on('channelsCheckStart', async () => {
         client.guilds.cache.forEach(guild => {
             guild.channels.cache.forEach(channel => {
                 (async () => {
-                    const overwrites = await global.channelscol.find({
+                    let overwrites = await global.channelscol.find({
                         "srv": guild.id,
                         "channelID": channel.id
                     }).toArray();
