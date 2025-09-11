@@ -379,7 +379,7 @@ class guildEvents {
                     }).toArray();
                     if (!!overwrites.length > 0) {
                         console.log(newChan)
-                        if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1) && newChan.members.size < 1) {
+                        if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1) && oldChan.members.size < 1) {
                             for (overwrite of overwrites) {
                                 const members = await oldState.guild.members.fetch();
                                 const member = await members.find(m => m.id === overwrite.userID);
