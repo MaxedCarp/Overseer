@@ -20,7 +20,7 @@ module.exports = {
         const channel = interaction.options.getChannel('channel');
         console.log(channel.permissionOverwrites.cache);
         await interaction.member.voice.channel.members.forEach((member) => {
-            member.setChannel(channel);
+            member.voice.setChannel(channel);
         });
         await interaction.reply({content: `Successfully moved all users to channel: ${channel.name} `, ephemeral: true});
     },
