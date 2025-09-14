@@ -1,7 +1,7 @@
 const {SlashCommandBuilder, PermissionFlagsBits, ChannelType} = require('discord.js');
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName('movealltochannel')
+        .setName('hostmigration')
         .setDescription('Grant a user access to a channel for a limited time')
         .addChannelOption(option =>
             option.setName('channel')
