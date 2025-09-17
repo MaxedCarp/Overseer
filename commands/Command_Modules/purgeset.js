@@ -83,24 +83,25 @@ class purgeset {
 
     static async user(interaction, user, lim, locale = false) {
         let look;
-        if (locale) {
+       /* if (locale) {
             look = {"messageServerID": interaction.guild.id, "messageAuthor.userID": user.id};
-        } else {
+        } else {*/
             look = {"messageChannelID": interaction.channel.id, "messageAuthor.userID": user.id};
-        }
+        //}
         let msgs = await global.msgcol.find(look).sort({"_id": -1}).limit(lim).toArray();
         let chatmsgs = [];
         for (let i = 0; i < msgs.length; i++) {
             try {
-                let chatmsg = await interaction.channel.messages.fetch(msgs[i].messageID);
-                await chatmsgs.push(chatmsg);
+                const channel = await global.client.channels.fetch(msgs[i].messageChannelID);
+                let chatmsg = await channel.messages.fetch(msgs[i].messageID);
+                chatmsgs.push(chatmsg);
             } catch (err) {
                 await global.msgcol.deleteOne({"messageID": msgs[i].messageID});
             }
         }
         await interaction.channel.bulkDelete(chatmsgs);
         if (!locale)
-            await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
+            return chatmsgs;
     }
 
     static async attach(interaction, lim, type, user) {

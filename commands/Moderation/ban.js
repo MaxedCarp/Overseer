@@ -42,9 +42,6 @@ module.exports = {
 			return;
 		}
 		const user = member.user;
-		if (deletemsg) {
-			await purgeset.user(interaction,user,100,true);
-		}
 		await member.ban();
 		await interaction.reply({ content: `User: <@${member.id}> banned successfully for: ${reason || "No reason provided."}.`, ephemeral: ephemeral});
 		const dt = await global.notecol.findOne({serial: {$gt: -1}});
@@ -52,6 +49,9 @@ module.exports = {
 		await global.notecol.insertOne(msgobj);
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});
 		let resembed = await EmbedCreator.Create(`Moderation Command executed in: <#${interaction.channel.id}>`, `Command: /ban\nTarget User: <@${member.id}>.`, false, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName || interaction.user.username} (${interaction.user.username})`, `https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}`, 0xff9900, []);
+		if (deletemsg) {
+			await purgeset.user(interaction,user,100,true);
+		}
 		if (obj.delete === "none" || !obj)
 			return;
 		if (((interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.SendMessages) && (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.ViewChannel)) || (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.Administrator))
