@@ -149,7 +149,7 @@ class messageEvents {
 					guild = await client.guilds.fetch(msg.messageServerID);
 					guildid = guild.id;
 					guild2 = await global.srvcol.findOne({srv: message.guild.id});
-					guildicon = guild2.icon;
+					guildicon = guild.icon;
 					guildname = guild2.name;
 					chan = msg.messageChannelID;
 					flag = false;
