@@ -11,17 +11,25 @@ module.exports = {
             option.setName('channel')
                 .setDescription('Voice channel to grant access to')
                 .addChannelTypes(ChannelType.GuildVoice))
-        .setDefaultMemberPermissions(PermissionFlagsBits.ManageChannels),
+        .setDefaultMemberPermissions(PermissionFlagsBits.MoveMembers),
     async execute(interaction) {
+        const channel = interaction.options.getChannel('channel') || interaction?.member?.voice?.channel;
         const user = interaction.options.getUser('user');
-        if (!interaction.member.voice.channel && !interaction.options.getChannel('channel')) {
+        if (!((interaction.guild.members.me).permissionsIn(channel).has(PermissionFlagsBits.ViewChannel) || (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator)))
+        {
             await interaction.reply({
-                content: `You must be in a voice channel or specify one to use this command!`,
+                content: `My apologies, I do not have access to the specified channel. Please make sure I can see it first!`,
                 ephemeral: true
             });
             return;
         }
-        const channel = interaction.options.getChannel('channel') || interaction?.member?.voice?.channel;
+        if (!interaction.member.voice.channel && !interaction.options.getChannel('channel')) {
+            await interaction.reply({
+                content: `My apologies, you must be in a voice channel or specify one to use this command!`,
+                ephemeral: true
+            });
+            return;
+        }
         const exists = (channel.permissionOverwrites.cache).find(overwrite => overwrite.id === user.id && overwrite.type === 1);
         if (!exists) {
             await channel.permissionOverwrites.create(user, {ViewChannel: true, Connect: true, Speak: true});
