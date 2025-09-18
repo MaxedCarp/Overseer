@@ -22,7 +22,6 @@ module.exports = {
             return;
         }
         const channel = interaction.options.getChannel('channel') || interaction?.member?.voice?.channel;
-        console.log(channel.permissionOverwrites.cache);
         const exists = (channel.permissionOverwrites.cache).find(overwrite => overwrite.id === user.id && overwrite.type === 1);
         if (!exists) {
             await channel.permissionOverwrites.create(user, {ViewChannel: true, Connect: true, Speak: true});
