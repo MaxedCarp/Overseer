@@ -30,7 +30,7 @@ Additional features currently available:
 - Ban a specific user when they join the server (auto / pre bans).
 - A note system, similar to a warning system except it is designed to provide information rather than a punishment.
 
-*Model Panel:
+*Mod Panel:
 
 - Includes the total number of notes given to the user.
 - Includes the number of punishments (notes marked for temp bans, bans and timeouts).
