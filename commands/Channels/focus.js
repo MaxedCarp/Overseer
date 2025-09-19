@@ -1,4 +1,5 @@
 const {SlashCommandBuilder, PermissionFlagsBits, ChannelType} = require('discord.js');
+const essentials = require("../../Event_Modules/essentials.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('focus')
@@ -15,6 +16,11 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
         const user = interaction.options.getUser('user');
+        if (await essentials.checkFocus(user.id, interaction.guild.id)){
+            const obj = await global.focuscol.findOne({userid: user.id, srv: interaction.guild.id});
+            await interaction.reply({content: `My apologies. This user is already focused. Please see <#${obj.ch}>.`})
+            return;
+        }
         const newChannel = await interaction.guild.channels.create({
             name: `focus-${user.username}`,
             type: ChannelType.GuildText,
