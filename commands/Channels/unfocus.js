@@ -11,7 +11,7 @@ module.exports = {
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
         const user = interaction.options.getUser('user');
-        if (!(await essentials.checkFocus(user.id, interaction.guild.id))) {
+        if (!(await (essentials.checkFocus(user.id, interaction.guild.id)))) {
             await interaction.reply({content: "My apologies, but this user is not currently being focused!", ephemeral: true});
         } else {
             const obj = await global.focuscol.findOne({"userid": user.id, "srv": interaction.guild.id});
