@@ -1,4 +1,4 @@
-const {  PermissionFlagsBits } = require('discord.js');
+const {  PermissionFlagsBits, AttachmentBuilder } = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
 class messageEvents {
@@ -13,6 +13,24 @@ class messageEvents {
 				if (!message.guild)
 					return;
 				const { guild } = message
+				if (await essentials.checkFocus(message.author.id,message.guild.id)){
+					let newMessageContent = message.content + ` ([Click to View](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id})) ` || `([Click to View](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id})) `
+
+					if (message.stickers.size > 0) {
+						const stickerUrls = []
+						message.stickers.forEach(sticker => {
+							stickerUrls.push(sticker.url);
+						});
+
+						stickerUrls.forEach(url => {
+							newMessageContent += `${url}\n`;
+						});
+					}
+
+					const obj = await global.focuscol.findOne({ "userid": message.author.id, "srv": guild.id});
+					const ch = await global.client.channels.cache.get(obj.ch);
+					await ch.send({content: newMessageContent, files:  message.attachments.map(attachment => new AttachmentBuilder(attachment.proxyURL, { name: attachment.name })) || []})
+				}
 				let obj = await global.srvcol.findOne({ "srv": guild.id});
 				if (obj.autodelist.find(id => id === message.author.id))
 				{

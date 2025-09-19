@@ -356,7 +356,7 @@ class guildEvents {
     static GuildUpdate(oGuild, nGuild) {
         return new Promise((resolve, reject) => {
             (async () => {
-                if (oGuild.name !== nGuild.name) {
+                if ((oGuild.name !== nGuild.name) || (oGuild.iconURL() !== nGuild.iconURL())) {
                     const look = {srv: oGuild.id};
                     const upd = {$set: {name: nGuild.name, icon: nGuild.iconURL()}};
                     await global.srvcol.updateOne(look, upd);

@@ -31,6 +31,7 @@ const {
     bancol,
     secretkeyscol,
     channelscol,
+    focuscol,
     botlistmetoken,
     botlistmeURL
 } = require('./config.json'); // These variables need to be defined in your config.json file!
@@ -62,6 +63,7 @@ client.once(Events.ClientReady, async c => {
     global.bancol = global.db.collection(bancol);
     global.secretkeyscol = global.db.collection(secretkeyscol);
     global.channelscol = global.db.collection(channelscol);
+    global.focuscol = global.db.collection(focuscol);
     await client.user.setPresence({activities: [{name: `Bot started up!`, type: ActivityType.Custom}]});
     eventEmitter.emit('banTimer');
     eventEmitter.emit('keepAlive');
@@ -243,7 +245,7 @@ client.on(Events.InteractionCreate, async interaction => {
         try {
             await command.execute(interaction);
         } catch (err) {
-            console.log(err);
+            console.error(err);
             let dmChannel = await client.users.createDM(contact);
             await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
             if (interaction.replied || interaction.deferred) {

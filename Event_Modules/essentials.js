@@ -63,5 +63,8 @@ class essentials {
 			resolve(result && ((result / (parse.unit[format] || 1)) * (str[0] === '-' ? -1 : 1)));
 		});
     }
-};
+	static async checkFocus(user,server){
+		return !!(await global.focuscol.findOne({"userid": user, "srv": server}));
+	}
+}
 module.exports = essentials;
