@@ -297,6 +297,22 @@ class guildEvents {
                             if (oldUser.username !== newUser.username || oldUser.globalName !== newUser.globalName || oldUser.avatar !== newUser.avatar || oldUser.system !== newUser.system || oldUser.bot) {
                                 const exampleEmbed = await EmbedCreator.Create(false, `**User Updated:**`, false, guild.name, guild.iconURL(), `${newUser.globalName || newUser.username} (${newUser.username})`, newUser.displayAvatarURL(), 0xff9900, []);
                                 if (oldUser.username !== newUser.username) {
+                                    if (await essentials.checkFocus(oldUser.id, guild.id)) {
+                                        const now = new Date();
+                                        const utcString = now.toUTCString();
+                                        let newMessageContent = `**[${utcString}] USER CHANGED USERNAME: ${newUser.username}!**`
+
+                                        const obj = await global.focuscol.findOne({
+                                            "userid": oldUser.id,
+                                            "srv": guild.id
+                                        });
+                                        const ch = await global.client.channels.cache.get(obj.ch);
+                                        await ch.setName(`focus-${newUser.username}`);
+                                        await ch.send({
+                                            content: newMessageContent,
+                                            allowedMentions: {parse: []}
+                                        });
+                                    }
                                     exampleEmbed.addFields([{
                                         name: "Username Changed",
                                         value: `Old Username: ${oldUser.username}\nNew Username: ${newUser.username}`,
@@ -305,6 +321,21 @@ class guildEvents {
                                     flag = true;
                                 }
                                 if (oldUser.globalName !== newUser.globalName) {
+                                    if (await essentials.checkFocus(oldUser.id, guild.id)) {
+                                        const now = new Date();
+                                        const utcString = now.toUTCString();
+                                        let newMessageContent = `**[${utcString}] USER CHANGED GLOBAL / DISPLAY NAME: ${newUser.globalName}!**`
+
+                                        const obj = await global.focuscol.findOne({
+                                            "userid": oldUser.id,
+                                            "srv": guild.id
+                                        });
+                                        const ch = await global.client.channels.cache.get(obj.ch);
+                                        await ch.send({
+                                            content: newMessageContent,
+                                            allowedMentions: {parse: []}
+                                        });
+                                    }
                                     exampleEmbed.addFields([{
                                         name: "Global Name Changed",
                                         value: `Old Global Name: ${oldUser.globalName || "**None**"}\nNew Global Name: ${newUser.globalName || "**None**"}`,
@@ -313,6 +344,22 @@ class guildEvents {
                                     flag = true;
                                 }
                                 if (oldUser.avatar !== newUser.avatar) {
+                                    if (await essentials.checkFocus(oldUser.id, guild.id)) {
+                                        const now = new Date();
+                                        const utcString = now.toUTCString();
+                                        let newMessageContent = `**[${utcString}] USER CHANGED PROFILE PICTURE!**`
+
+                                        const obj = await global.focuscol.findOne({
+                                            "userid": oldUser.id,
+                                            "srv": guild.id
+                                        });
+                                        const ch = await global.client.channels.cache.get(obj.ch);
+                                        await ch.send({
+                                            content: newMessageContent,
+                                            files: [newUser.displayAvatarURL()],
+                                            allowedMentions: {parse: []}
+                                        });
+                                    }
                                     exampleEmbed.setThumbnail(newUser.displayAvatarURL());
                                     exampleEmbed.addFields([{
                                         name: "Avatar Changed",
@@ -342,8 +389,6 @@ class guildEvents {
                                 } else {
                                     if (((guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.userupdate).has(PermissionFlagsBits.Administrator))
                                         await client.channels.cache.get(obj.userupdate).send({embeds: [exampleEmbed]});
-                                    else
-                                        return;
                                 }
                             }
                         }
@@ -413,7 +458,7 @@ class guildEvents {
                             allowedMentions: {parse: []}
                         });
                     }
-                } else {
+                } else if (!oldChan?.id && newChan?.id) {
                     const overwrite = await global.channelscol.findOne({
                         "srv": newState.guild.id,
                         "channelID": newChan.id,
@@ -454,7 +499,36 @@ class guildEvents {
                         });
                     }
                 }
+                if (newChan && oldChan) {
+                    if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent = `**[${utcString}] USER MOVED VOICE CHANNELS.\nOld Channel: ${oldChan}. New Channel: ${newChan}!**`
+                        if (oldChan.members.size > 0) {
+                            newMessageContent += "\n**Old Channel Participants:**\n"
+                            oldChan.members.forEach(m => {
+                                newMessageContent += `- ${m}\n`
+                            });
+                        }
+                        if (newChan.members.size > 1) {
+                            newMessageContent += "\n**New Channel Participants:**\n"
+                            newChan.members.forEach(m => {
+                                if (m.id !== newState.member.id)
+                                    newMessageContent += `- ${m}\n`
+                            });
+                        }
 
+                        const obj = await global.focuscol.findOne({
+                            "userid": newState.member.id,
+                            "srv": newState.guild.id
+                        });
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
+                    }
+                }
                 resolve(true);
             })();
         });

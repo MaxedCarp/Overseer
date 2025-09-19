@@ -193,7 +193,6 @@ class messageEvents {
                                 allowedMentions: {parse: []}
                             })
                         }
-
                     }
                     await global.msgcol.deleteOne({"messageID": message.id});
                 }
