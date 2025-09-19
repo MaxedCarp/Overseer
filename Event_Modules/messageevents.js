@@ -15,6 +15,7 @@ class messageEvents {
 				const { guild } = message
 				if (await essentials.checkFocus(message.author.id,message.guild.id)){
 					const now = new Date();
+
 					const options = {
 						weekday: 'long',
 						year: 'numeric',
@@ -25,8 +26,9 @@ class messageEvents {
 						second: '2-digit',
 						timeZoneName: 'short'
 					};
+					const utcString = now.toUTCString();
 					const customLocalFormatted = now.toLocaleString('en-US', options);
-					let newMessageContent = `[${customLocalFormatted}] ` + (message.content || "") + ` ([Click to View](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id})) `
+					let newMessageContent = `**[${utcString}]** ` + (message.content || "") + ` **([Click to View](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}))** `
 
 					if (message.stickers.size > 0) {
 						const stickerUrls = []
