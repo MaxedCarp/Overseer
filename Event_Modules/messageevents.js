@@ -160,64 +160,37 @@ class messageEvents {
                         resembed = await EmbedCreator.Create(`Image Deleted in: <#${message.channelId}>`, msg.messageContent || " ", msg.messageAttachments[0].attachurl, guild.name, guild.iconURL(), `${msg.messageAuthor.globalName || msg.messageAuthor.userName} (${msg.messageAuthor.userName})`, `https://cdn.discordapp.com/avatars/${msg.messageAuthor.userID}/${msg.messageAuthor.avatar}`, 0xFA042A, []);
                     if (obj.delete === "none" || !obj)
                         return;
+                    let newMessageContent;
                     if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator)) {
                         const newmsg = await client.channels.cache.get(obj.delete).send({embeds: [resembed]});
-                        if (await essentials.checkFocus(message.author.id, message.guild.id)) {
-                            const now = new Date();
-                            const utcString = now.toUTCString();
-                            let newMessageContent = `**[${utcString}] MESSAGE FROM USER DELETED! ([Click to View](https://discord.com/channels/${message.guild.id}/${newmsg.channel.id}/${newmsg.id}))** `
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        newMessageContent = `**[${utcString}] MESSAGE FROM USER DELETED! ([Click to View Ref](https://discord.com/channels/${message.guild.id}/${newmsg.channel.id}/${newmsg.id}))**`
+                    }
+                    else
+                    {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        newMessageContent = `**[${utcString}] MESSAGE FROM USER DELETED!**`
+                    }
+                    if (await essentials.checkFocus(msg.messageAuthor.userID, guild.id)) {
+                        let replyTo = false;
+                        const obj = await global.focuscol.findOne({"userid": msg.messageAuthor.userID, "srv": guild.id});
+                        if (!!msg.focus) {
+                            const chan = await client.channels.cache.get(obj.ch)
+                            replyTo = await chan.messages.fetch(msg.focus);
+                        }
 
-                            if (message.stickers.size > 0) {
-                                const stickerUrls = []
-                                message.stickers.forEach(sticker => {
-                                    stickerUrls.push(sticker.url);
-                                });
 
-                                stickerUrls.forEach(url => {
-                                    newMessageContent += `${url}\n`;
-                                });
-                            }
-
-                            const obj = await global.focuscol.findOne({"userid": message.author.id, "srv": guild.id});
+                        if (!!replyTo) {
+                            await replyTo.reply(newMessageContent);
+                        } else {
                             const ch = await global.client.channels.cache.get(obj.ch);
                             await ch.send({
                                 content: newMessageContent,
-                                files: message.attachments.map(attachment => new AttachmentBuilder(attachment.proxyURL, {name: attachment.name})) || []
                             })
                         }
-                    } else {
-                        if (await essentials.checkFocus(message.author.id, message.guild.id)) {
-                            const now = new Date();
-                            const utcString = now.toUTCString();
-                            let replyTo = false;
-                            if (!!msg.focus) {
-                                replyTo = await client.channels.cache.get(message.channelId).messages.fetch(message.focus);
-                            }
-                            let newMessageContent = `**[${utcString}] MESSAGE FROM USER DELETED!**`
 
-                            if (message.stickers.size > 0) {
-                                const stickerUrls = []
-                                message.stickers.forEach(sticker => {
-                                    stickerUrls.push(sticker.url);
-                                });
-
-                                stickerUrls.forEach(url => {
-                                    newMessageContent += `${url}\n`;
-                                });
-                            }
-
-                            const obj = await global.focuscol.findOne({"userid": message.author.id, "srv": guild.id});
-                            if (!!replyTo) {
-                                await replyTo.reply(newMessageContent);
-                            } else {
-                                const ch = await global.client.channels.cache.get(obj.ch);
-                                await ch.send({
-                                    content: newMessageContent,
-                                })
-                            }
-
-                        }
-                        return;
                     }
                     await global.msgcol.deleteOne({"messageID": message.id});
                 }
