@@ -1,5 +1,5 @@
 const {SlashCommandBuilder, PermissionFlagsBits, ChannelType} = require('discord.js');
-const {essentials} = require('../../Event_Modules/essentials.js')
+const essentials = require("../../Event_Modules/essentials.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('unfocus')
