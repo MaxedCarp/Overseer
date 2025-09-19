@@ -1,6 +1,5 @@
 const {EmbedBuilder, PermissionFlagsBits} = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
-const {overwrite} = require("zod/v4");
 
 class guildEvents {
     static MemberJoin(member) {
