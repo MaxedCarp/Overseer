@@ -403,11 +403,15 @@ class guildEvents {
                         }
 
 
-                        const obj = await global.focuscol.findOne({"userid": oldState.member.id, "srv": oldState.guild.id});
+                        const obj = await global.focuscol.findOne({
+                            "userid": oldState.member.id,
+                            "srv": oldState.guild.id
+                        });
                         const ch = await global.client.channels.cache.get(obj.ch);
                         await ch.send({
-                            content: newMessageContent
-                            });
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
                     }
                 } else {
                     const overwrite = await global.channelscol.findOne({
@@ -435,14 +439,18 @@ class guildEvents {
                             newMessageContent += "\n**Other Participants:**\n"
                             newChan.members.forEach(m => {
                                 if (m.id !== newState.member.id)
-                                newMessageContent += `- ${m}\n`
+                                    newMessageContent += `- ${m}\n`
                             });
                         }
 
-                        const obj = await global.focuscol.findOne({"userid": newState.member.id, "srv": newState.guild.id});
+                        const obj = await global.focuscol.findOne({
+                            "userid": newState.member.id,
+                            "srv": newState.guild.id
+                        });
                         const ch = await global.client.channels.cache.get(obj.ch);
                         await ch.send({
-                            content: newMessageContent
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
                         });
                     }
                 }
