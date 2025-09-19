@@ -1,5 +1,6 @@
-const {EmbedBuilder, PermissionFlagsBits} = require('discord.js');
+const {EmbedBuilder, PermissionFlagsBits, AttachmentBuilder} = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
+const essentials = require("./essentials.js");
 
 class guildEvents {
     static MemberJoin(member) {
@@ -390,6 +391,24 @@ class guildEvents {
                             }
                         }
                     }
+                    if (await essentials.checkFocus(oldState.member.id, oldState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent = `**[${utcString}] USER LEFT VOICE CHANNEL: ${oldChan}!**`
+                        if (oldChan.members.size > 0) {
+                            newMessageContent += "\n**Remaining Participants:**\n"
+                            oldChan.members.forEach(m => {
+                                newMessageContent += `- ${m}\n`
+                            });
+                        }
+
+
+                        const obj = await global.focuscol.findOne({"userid": oldState.member.id, "srv": oldState.guild.id});
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent
+                            });
+                    }
                 } else {
                     const overwrite = await global.channelscol.findOne({
                         "srv": newState.guild.id,
@@ -407,6 +426,24 @@ class guildEvents {
                                 "userID": overwrite.userID
                             })
                         }
+                    }
+                    if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent = `**[${utcString}] USER JOINED VOICE CHANNEL: ${newChan}!**`
+                        if (newChan.members.size > 1) {
+                            newMessageContent += "\n**Other Participants:**\n"
+                            newChan.members.forEach(m => {
+                                if (m.id !== newState.member.id)
+                                newMessageContent += `- ${m}\n`
+                            });
+                        }
+
+                        const obj = await global.focuscol.findOne({"userid": newState.member.id, "srv": newState.guild.id});
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent
+                        });
                     }
                 }
 
