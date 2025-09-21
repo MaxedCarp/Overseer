@@ -294,14 +294,6 @@ class messageEvents {
                         })
                     }
                 }
-                if (obj.update === "none" || !obj) {
-                    return;
-                } else {
-                    if (((guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.Administrator))
-                        await client.channels.cache.get(obj.update).send({embeds: [exampleEmbed]});
-                    else
-                        return;
-                }
                 const look = {messageID: nmessage.id};
                 const attachm = nmessage.attachments.map(attach => {
                     return {fileName: attach.name, attachurl: attach.url, fileType: attach.contentType}
@@ -309,6 +301,37 @@ class messageEvents {
                 const test = {messageContent: nmessage.content, messageAttachments: attachm,};
                 const upd = {$set: test};
                 await global.msgcol.updateOne(look, upd);
+                let newMessageContent;
+                if ((obj.update !== "none" && !!obj) && (((guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.Administrator))) {
+                    const newmsg = await client.channels.cache.get(obj.update).send({embeds: [exampleEmbed]});
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    newMessageContent = `**[${utcString}] USER EDITED A MESSAGE! ([Click to View Ref](https://discord.com/channels/${nmessage.guild.id}/${newmsg.channel.id}/${newmsg.id}))**`
+                } else {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    newMessageContent = `**[${utcString}] USER EDITED A MESSAGE!**`
+                }
+                if (await essentials.checkFocus(noldmsg.messageAuthor.userID, guild.id)) {
+                    let replyTo = false;
+                    const obj = await global.focuscol.findOne({
+                        "userid": noldmsg.messageAuthor.userID,
+                        "srv": guild.id
+                    });
+                    if (!!noldmsg.focus) {
+                        const chan = await client.channels.cache.get(obj.ch)
+                        replyTo = await chan.messages.fetch(noldmsg.focus);
+                    }
+                    if (!!replyTo) {
+                        await replyTo.reply({content: newMessageContent, allowedMentions: {parse: []}});
+                    } else {
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        })
+                    }
+                }
                 resolve(true);
             })();
         });
