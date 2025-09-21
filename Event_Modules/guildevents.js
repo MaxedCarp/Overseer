@@ -523,6 +523,7 @@ class guildEvents {
                                 const now = new Date();
                                 const utcString = now.toUTCString();
                                 let newMessageContent = `**[${utcString}] VOICE CHANNEL PARTICIPANT LEFT: ${newState.member}!**`
+                                newMessageContent += `\n-# Voice Channel: ${oldChan.name}`;
 
                                 const obj = await global.focuscol.findOne({
                                     "userid": m.id,
@@ -582,6 +583,7 @@ class guildEvents {
                                 const now = new Date();
                                 const utcString = now.toUTCString();
                                 let newMessageContent = `**[${utcString}] NEW VOICE CHANNEL PARTICIPANT: ${newState.member}!**`
+                                newMessageContent += `\n-# Voice Channel: ${newChan.name}`;
 
                                 const obj = await global.focuscol.findOne({
                                     "userid": m.id,
@@ -636,6 +638,7 @@ class guildEvents {
                         } else {
                             newMessageContent = `**[${utcString}] USER HAS SELF UN-DEAFENED!**`
                         }
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
@@ -658,6 +661,7 @@ class guildEvents {
                             if (!oldState.selfDeaf)
                                 newMessageContent = `**[${utcString}] USER HAS SELF UN-MUTED!**`
                         }
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
@@ -679,6 +683,7 @@ class guildEvents {
                         } else {
                             newMessageContent = `**[${utcString}] USER WAS SERVER UN-MUTED!**`
                         }
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
@@ -700,6 +705,7 @@ class guildEvents {
                         } else {
                             newMessageContent = `**[${utcString}] USER WAS SERVER UN-DEAFENED!**`
                         }
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id

@@ -38,7 +38,7 @@ class messageEvents {
                             newMessageContent += `${url}\n`;
                         });
                     }
-
+                    newMessageContent += `\n-# Message ID: ${message.id}`;
                     const obj = await global.focuscol.findOne({"userid": message.author.id, "srv": guild.id});
                     const ch = await global.client.channels.cache.get(obj.ch);
                     foc = await ch.send({
@@ -182,7 +182,7 @@ class messageEvents {
                             const chan = await client.channels.cache.get(obj.ch)
                             replyTo = await chan.messages.fetch(msg.focus);
                         }
-
+                        newMessageContent += `\n-# Message ID: ${message.id}`;
 
                         if (!!replyTo) {
                             await replyTo.reply({content: newMessageContent, allowedMentions: {parse: []}});
@@ -322,6 +322,7 @@ class messageEvents {
                         const chan = await client.channels.cache.get(obj.ch)
                         replyTo = await chan.messages.fetch(noldmsg.focus);
                     }
+                    newMessageContent += `\n-# Message ID: ${nmessage.id}`;
                     if (!!replyTo) {
                         await replyTo.reply({content: newMessageContent, allowedMentions: {parse: []}});
                     } else {
@@ -343,11 +344,12 @@ class messageEvents {
                 if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    const newMessageContent = `**[${utcString}] USER ADDED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
+                    let newMessageContent = `**[${utcString}] USER ADDED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
                     const obj = await global.focuscol.findOne({
                         "userid": user.id,
                         "srv": reaction.message.guild.id
                     });
+                    newMessageContent += `\n-# Message ID: ${reaction.message.id}`;
                     const ch = await global.client.channels.cache.get(obj.ch);
                     await ch.send({
                         content: newMessageContent,
@@ -366,11 +368,12 @@ class messageEvents {
                 if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    const newMessageContent = `**[${utcString}] USER REMOVED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
+                    let newMessageContent = `**[${utcString}] USER REMOVED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
                     const obj = await global.focuscol.findOne({
                         "userid": user.id,
                         "srv": reaction.message.guild.id
                     });
+                    newMessageContent += `\n-# Message ID: ${reaction.message.id}`;
                     const ch = await global.client.channels.cache.get(obj.ch);
                     await ch.send({
                         content: newMessageContent,
