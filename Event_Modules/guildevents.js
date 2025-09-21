@@ -67,6 +67,19 @@ class guildEvents {
                         }
                     }
                 }
+                if (await essentials.checkFocus(member.id, member.guild.id)) {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    let newMessageContent = `# **[${utcString}] USER HAS JOINED / REJOINED THE SERVER!!!!**\n@everyone`
+                    const obj2 = await global.focuscol.findOne({
+                        "userid": member.id,
+                        "srv": member.guild.id
+                    });
+                    const ch = await global.client.channels.cache.get(obj2.ch);
+                    await ch.send({
+                        content: newMessageContent
+                    });
+                }
                 const exampleEmbed2 = new EmbedBuilder()
                     .setColor(0x69FA04)
                     .setTitle(`USER JOINED!`)
@@ -132,6 +145,19 @@ class guildEvents {
                             return;
                     }
                 }
+                if (await essentials.checkFocus(member.id, member.guild.id)) {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    let newMessageContent = `# **[${utcString}] USER HAS LEFT THE SERVER!!!!**\n@everyone`
+                    const obj2 = await global.focuscol.findOne({
+                        "userid": member.id,
+                        "srv": member.guild.id
+                    });
+                    const ch = await global.client.channels.cache.get(obj2.ch);
+                    await ch.send({
+                        content: newMessageContent
+                    });
+                }
                 const exampleEmbed2 = new EmbedBuilder()
                     .setColor(0xFA042A)
                     .setTitle(`USER LEFT!`)
@@ -181,6 +207,19 @@ class guildEvents {
                     .setAuthor({name: `${user.username}`, iconURL: `${user.displayAvatarURL()}`})
                     .setDescription(obj.banmsg.replace("{@user}", `<@${user.id}>`).replace("{servername}", guild.name).replace("{username}", user.username).replace("{user}", user.globalName))
                     .setFooter({text: guild.name, iconURL: guild.iconURL()});
+                if (await essentials.checkFocus(user.id, guild.id)) {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    let newMessageContent = `# **[${utcString}] USER HAS BEEN BANNED!!!**\n@everyone`
+                    const obj2 = await global.focuscol.findOne({
+                        "userid": user.id,
+                        "srv": guild.id
+                    });
+                    const ch = await global.client.channels.cache.get(obj2.ch);
+                    await ch.send({
+                        content: newMessageContent
+                    });
+                }
                 if (obj.bans === "none" || !obj) {
                     return;
                 } else {
