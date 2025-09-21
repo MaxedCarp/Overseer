@@ -26,7 +26,7 @@ class messageEvents {
                 if (await essentials.checkFocus(message.author.id, message.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `**[${utcString}]** ` + (message.content || "") + ` **([Click to View](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}))** `
+                    let newMessageContent = `${(message.content || "")} **([Click to View](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id}))** `
 
                     if (message.stickers.size > 0) {
                         const stickerUrls = []
@@ -38,7 +38,7 @@ class messageEvents {
                             newMessageContent += `${url}\n`;
                         });
                     }
-                    newMessageContent += `\n-# Message ID: ${message.id}`;
+                    newMessageContent += `\n-# Message ID: ${message.id}, Time: ${utcString}`;
                     const obj = await global.focuscol.findOne({"userid": message.author.id, "srv": guild.id});
                     const ch = await global.client.channels.cache.get(obj.ch);
                     foc = await ch.send({
@@ -164,15 +164,14 @@ class messageEvents {
                     let newMessageContent;
                     if (((guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.delete).has(PermissionFlagsBits.Administrator)) {
                         const newmsg = await client.channels.cache.get(obj.delete).send({embeds: [resembed]});
-                        const now = new Date();
-                        const utcString = now.toUTCString();
-                        newMessageContent = `**[${utcString}] MESSAGE FROM USER DELETED! ([Click to View Ref](https://discord.com/channels/${message.guild.id}/${newmsg.channel.id}/${newmsg.id}))**`
+                        newMessageContent = `**MESSAGE FROM USER DELETED! ([Click to View Ref](https://discord.com/channels/${message.guild.id}/${newmsg.channel.id}/${newmsg.id}))**`
                     } else {
-                        const now = new Date();
-                        const utcString = now.toUTCString();
-                        newMessageContent = `**[${utcString}] MESSAGE FROM USER DELETED!**`
+
+                        newMessageContent = `**MESSAGE FROM USER DELETED!**`
                     }
                     if (await essentials.checkFocus(msg.messageAuthor.userID, guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
                         let replyTo = false;
                         const obj = await global.focuscol.findOne({
                             "userid": msg.messageAuthor.userID,
@@ -182,7 +181,7 @@ class messageEvents {
                             const chan = await client.channels.cache.get(obj.ch)
                             replyTo = await chan.messages.fetch(msg.focus);
                         }
-                        newMessageContent += `\n-# Message ID: ${message.id}`;
+                        newMessageContent += `\n-# Message ID: ${message.id}, Time: ${utcString}`;
 
                         if (!!replyTo) {
                             await replyTo.reply({content: newMessageContent, allowedMentions: {parse: []}});
@@ -304,15 +303,13 @@ class messageEvents {
                 let newMessageContent;
                 if ((obj.update !== "none" && !!obj) && (((guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.SendMessages) && (guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(obj.update).has(PermissionFlagsBits.Administrator))) {
                     const newmsg = await client.channels.cache.get(obj.update).send({embeds: [exampleEmbed]});
-                    const now = new Date();
-                    const utcString = now.toUTCString();
-                    newMessageContent = `**[${utcString}] USER EDITED A MESSAGE! ([Click to View Ref](https://discord.com/channels/${nmessage.guild.id}/${newmsg.channel.id}/${newmsg.id}))**`
+                    newMessageContent = `**USER EDITED A MESSAGE! ([Click to View Ref](https://discord.com/channels/${nmessage.guild.id}/${newmsg.channel.id}/${newmsg.id}))**`
                 } else {
-                    const now = new Date();
-                    const utcString = now.toUTCString();
-                    newMessageContent = `**[${utcString}] USER EDITED A MESSAGE!**`
+                    newMessageContent = `**USER EDITED A MESSAGE!**`
                 }
                 if (await essentials.checkFocus(noldmsg.messageAuthor.userID, guild.id)) {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
                     let replyTo = false;
                     const obj = await global.focuscol.findOne({
                         "userid": noldmsg.messageAuthor.userID,
@@ -322,7 +319,7 @@ class messageEvents {
                         const chan = await client.channels.cache.get(obj.ch)
                         replyTo = await chan.messages.fetch(noldmsg.focus);
                     }
-                    newMessageContent += `\n-# Message ID: ${nmessage.id}`;
+                    newMessageContent += `\n-# Message ID: ${nmessage.id}, Time: ${utcString}`;
                     if (!!replyTo) {
                         await replyTo.reply({content: newMessageContent, allowedMentions: {parse: []}});
                     } else {
@@ -344,12 +341,12 @@ class messageEvents {
                 if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `**[${utcString}] USER ADDED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
+                    let newMessageContent = `**USER ADDED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
                     const obj = await global.focuscol.findOne({
                         "userid": user.id,
                         "srv": reaction.message.guild.id
                     });
-                    newMessageContent += `\n-# Message ID: ${reaction.message.id}`;
+                    newMessageContent += `\n-# Message ID: ${reaction.message.id}, Time: ${utcString}`;
                     const ch = await global.client.channels.cache.get(obj.ch);
                     await ch.send({
                         content: newMessageContent,
