@@ -70,7 +70,7 @@ class guildEvents {
                 if (await essentials.checkFocus(member.id, member.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `# **USER HAS JOINED / REJOINED THE SERVER!!!!**\n@everyone\n-# Time: ${utcString}`
+                    let newMessageContent = `# **USER HAS JOINED / REJOINED THE SERVER!!!!**\n@everyone\n-# **Time:** ${utcString}`
                     const obj2 = await global.focuscol.findOne({
                         "userid": member.id,
                         "srv": member.guild.id
@@ -148,7 +148,7 @@ class guildEvents {
                 if (await essentials.checkFocus(member.id, member.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `# **USER HAS LEFT THE SERVER!!!!**\n@everyone\n-# Time: ${utcString}`
+                    let newMessageContent = `# **USER HAS LEFT THE SERVER!!!!**\n@everyone\n-# **Time:** ${utcString}`
                     const obj2 = await global.focuscol.findOne({
                         "userid": member.id,
                         "srv": member.guild.id
@@ -210,7 +210,7 @@ class guildEvents {
                 if (await essentials.checkFocus(user.id, guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `# **USER HAS BEEN BANNED!!!**\n@everyone\n-# Time: ${utcString}`;
+                    let newMessageContent = `# **USER HAS BEEN BANNED!!!**\n@everyone\n-# **Time:** ${utcString}`;
                     const obj2 = await global.focuscol.findOne({
                         "userid": user.id,
                         "srv": guild.id
@@ -320,7 +320,7 @@ class guildEvents {
                         else {
                             newMessageContent = `**USER TIME-OUT EXPIRED!**`
                         }
-                        newMessageContent += `\n-# Time: ${utcString}`;
+                        newMessageContent += `\n-# **Time:** ${utcString}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newMember.id,
                             "srv": guild.id
@@ -361,7 +361,7 @@ class guildEvents {
                                         const now = new Date();
                                         const utcString = now.toUTCString();
                                         let newMessageContent = `**USER HAS CHANGED USERNAME: ${newUser.username}!**`
-                                        newMessageContent += `\n-# Time: ${utcString}`;
+                                        newMessageContent += `\n-# **Time:** ${utcString}`;
                                         const obj = await global.focuscol.findOne({
                                             "userid": oldUser.id,
                                             "srv": guild.id
@@ -408,7 +408,7 @@ class guildEvents {
                                         const now = new Date();
                                         const utcString = now.toUTCString();
                                         let newMessageContent = `**USER HAS CHANGED PROFILE PICTURE!**`
-                                        newMessageContent += `\n-# Time: ${utcString}`;
+                                        newMessageContent += `\n-# **Time:** ${utcString}`;
                                         const obj = await global.focuscol.findOne({
                                             "userid": oldUser.id,
                                             "srv": guild.id
@@ -506,7 +506,7 @@ class guildEvents {
                                 newMessageContent += `- ${m}\n`
                             });
                         }
-                        newMessageContent += `\n-# Time: ${utcString}`;
+                        newMessageContent += `\n-# **Time:** ${utcString}`;
 
                         const obj = await global.focuscol.findOne({
                             "userid": oldState.member.id,
@@ -524,7 +524,7 @@ class guildEvents {
                                 const now = new Date();
                                 const utcString = now.toUTCString();
                                 let newMessageContent = `**VOICE CHANNEL PARTICIPANT LEFT: ${newState.member}!**`
-                                newMessageContent += `\n-# Voice Channel: ${oldChan.name}, Time: ${utcString}`;
+                                newMessageContent += `\n-# Voice Channel: ${oldChan.name}, **Time:** ${utcString}`;
                                 const obj = await global.focuscol.findOne({
                                     "userid": m.id,
                                     "srv": newState.guild.id
@@ -559,7 +559,7 @@ class guildEvents {
                         const now = new Date();
                         const utcString = now.toUTCString();
                         let newMessageContent = `**USER HAS JOINED VOICE CHANNEL: ${newChan}!**`
-                        newMessageContent += `\n-# Time: ${utcString}`;
+                        newMessageContent += `\n-# **Time:** ${utcString}`;
                         if (newChan.members.size > 1) {
                             newMessageContent += "\n**Other Participants:**\n"
                             newChan.members.forEach(m => {
@@ -584,7 +584,7 @@ class guildEvents {
                                 const now = new Date();
                                 const utcString = now.toUTCString();
                                 let newMessageContent = `**NEW VOICE CHANNEL PARTICIPANT: ${newState.member}!**`
-                                newMessageContent += `\n-# Voice Channel: ${newChan.name}, Time: ${utcString}`;
+                                newMessageContent += `\n-# Voice Channel: ${newChan.name}, **Time:** ${utcString}`;
 
                                 const obj = await global.focuscol.findOne({
                                     "userid": m.id,
@@ -603,8 +603,8 @@ class guildEvents {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
                         const utcString = now.toUTCString();
-                        let newMessageContent = `**USER HAS MOVED VOICE CHANNELS.\nOld Channel: ${oldChan}. New Channel: ${newChan}!**`
-                        newMessageContent += `\n-# Time: ${utcString}`;
+                        let newMessageContent = `**USER HAS MOVED VOICE CHANNELS.**\nOld Channel: ${oldChan}. New Channel: ${newChan}!`
+                        newMessageContent += `\n-# **Time:** ${utcString}`;
                         if (oldChan.members.size > 0) {
                             newMessageContent += "\n**Old Channel Participants:**\n"
                             oldChan.members.forEach(m => {
@@ -640,7 +640,7 @@ class guildEvents {
                         } else {
                             newMessageContent = `**USER HAS SELF UN-DEAFENED!**`
                         }
-                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, Time: ${utcString}`;
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, **Time:** ${utcString}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
@@ -663,7 +663,7 @@ class guildEvents {
                             if (!oldState.selfDeaf)
                                 newMessageContent = `**USER HAS SELF UN-MUTED!**`
                         }
-                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, Time: ${utcString}`;
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, **Time:** ${utcString}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
@@ -685,7 +685,7 @@ class guildEvents {
                         } else {
                             newMessageContent = `**USER WAS SERVER UN-MUTED!**`
                         }
-                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, Time: ${utcString}`;
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, **Time:** ${utcString}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
@@ -707,7 +707,7 @@ class guildEvents {
                         } else {
                             newMessageContent = `**USER WAS SERVER UN-DEAFENED!**`
                         }
-                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, Time: ${utcString}`;
+                        newMessageContent += `\n-# Voice Channel: ${newChan.name}, **Time:** ${utcString}`;
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
