@@ -456,7 +456,7 @@ class guildEvents {
             (async () => {
                 const newChan = newState.channel;
                 const oldChan = oldState.channel;
-                if (oldChan?.id && !newChan?.id) {
+                if (oldChan?.id && !newChan?.id) { //leave
                     let overwrites = await global.channelscol.find({
                         "srv": oldState.guild.id,
                         "channelID": oldChan.id
@@ -497,7 +497,26 @@ class guildEvents {
                             allowedMentions: {parse: []}
                         });
                     }
-                } else if (!oldChan?.id && newChan?.id) {
+                    oldChan.members.forEach(m => {
+                        (async () => {
+                            if (await essentials.checkFocus(m.id, newState.guild.id)) {
+                                const now = new Date();
+                                const utcString = now.toUTCString();
+                                let newMessageContent = `**[${utcString}] VOICE CHANNEL PARTICIPANT LEFT: ${newState.member}!**`
+
+                                const obj = await global.focuscol.findOne({
+                                    "userid": m.id,
+                                    "srv": newState.guild.id
+                                });
+                                const ch = await global.client.channels.cache.get(obj.ch);
+                                await ch.send({
+                                    content: newMessageContent,
+                                    allowedMentions: {parse: []}
+                                });
+                            }
+                        })()
+                    })
+                } else if (!oldChan?.id && newChan?.id) { //join
                     const overwrite = await global.channelscol.findOne({
                         "srv": newState.guild.id,
                         "channelID": newChan.id,
@@ -537,6 +556,25 @@ class guildEvents {
                             allowedMentions: {parse: []}
                         });
                     }
+                    newChan.members.forEach(m => {
+                        (async () => {
+                            if (await essentials.checkFocus(m.id, newState.guild.id)) {
+                                const now = new Date();
+                                const utcString = now.toUTCString();
+                                let newMessageContent = `**[${utcString}] NEW VOICE CHANNEL PARTICIPANT: ${newState.member}!**`
+
+                                const obj = await global.focuscol.findOne({
+                                    "userid": m.id,
+                                    "srv": newState.guild.id
+                                });
+                                const ch = await global.client.channels.cache.get(obj.ch);
+                                await ch.send({
+                                    content: newMessageContent,
+                                    allowedMentions: {parse: []}
+                                });
+                            }
+                        })()
+                    })
                 }
                 if ((newChan && oldChan) && newChan !== oldChan) {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
