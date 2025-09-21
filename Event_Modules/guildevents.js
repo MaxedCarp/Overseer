@@ -499,7 +499,7 @@ class guildEvents {
                     }
                     oldChan.members.forEach(m => {
                         (async () => {
-                            if (await essentials.checkFocus(m.id, newState.guild.id)) {
+                            if (await essentials.checkFocus(m.id, newState.guild.id) && m.id !== newState.member.id) {
                                 const now = new Date();
                                 const utcString = now.toUTCString();
                                 let newMessageContent = `**[${utcString}] VOICE CHANNEL PARTICIPANT LEFT: ${newState.member}!**`
@@ -558,7 +558,7 @@ class guildEvents {
                     }
                     newChan.members.forEach(m => {
                         (async () => {
-                            if (await essentials.checkFocus(m.id, newState.guild.id)) {
+                            if (await essentials.checkFocus(m.id, newState.guild.id) && m.id !== newState.member.id) {
                                 const now = new Date();
                                 const utcString = now.toUTCString();
                                 let newMessageContent = `**[${utcString}] NEW VOICE CHANNEL PARTICIPANT: ${newState.member}!**`
