@@ -310,6 +310,26 @@ class guildEvents {
                         exampleEmbed.addFields([{name: "Removed Roles:", value: `${rolesrem}`, inline: false}]);
                         flag = true;
                     }
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    let newMessageContent ;
+                    if (!oldMember.communicationDisabledUntil && newMember.communicationDisabledUntil && newMember.communicationDisabledUntil !== oldMember.communicationDisabledUntil) {
+                        newMessageContent = `**[${utcString}] USER TIMED OUT UNTIL: ${newMember.communicationDisabledUntil.toUTCString()}!**`
+                    }
+                    else {
+                        newMessageContent = `**[${utcString}] USER TIME-OUT EXPIRED!**`
+                    }
+                    if (await essentials.checkFocus(newMember.id, guild.id)) {
+                        const obj = await global.focuscol.findOne({
+                            "userid": newMember.id,
+                            "srv": guild.id
+                        });
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
+                    }
                     if (obj.userupdate === "none" || !obj || !flag) {
                         return;
                     } else {
