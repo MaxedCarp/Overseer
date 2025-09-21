@@ -436,7 +436,7 @@ class guildEvents {
                             }
                         }
                     }
-                    if (await essentials.checkFocus(oldState.member.id, oldState.guild.id)) {
+                    if ((await essentials.checkFocus(oldState.member.id, oldState.guild.id))) {
                         const now = new Date();
                         const utcString = now.toUTCString();
                         let newMessageContent = `**[${utcString}] USER LEFT VOICE CHANNEL: ${oldChan}!**`
@@ -499,7 +499,7 @@ class guildEvents {
                         });
                     }
                 }
-                if (newChan && oldChan) {
+                if ((newChan && oldChan) && (oldState.member.id === newState.member.id)) {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
                         const utcString = now.toUTCString();

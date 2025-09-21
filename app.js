@@ -536,6 +536,26 @@ client.on(Events.MessageBulkDelete, async (messages) => {
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
 });
+client.on(Events.MessageReactionAdd, async (reaction, user) => {
+    try {
+        await messageEvents.ReactionAdd(reaction, user);
+    }
+    catch (err) {
+        console.error(err);
+        let dmChannel = await client.users.createDM(contact);
+        await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
+    }
+});
+client.on(Events.MessageReactionRemove, async (reaction, user) => {
+    try {
+        await messageEvents.ReactionRemove(reaction, user);
+    }
+    catch (err) {
+        console.error(err);
+        let dmChannel = await client.users.createDM(contact);
+        await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
+    }
+});
 
 //------------------------------------- Functions
 function sleep(seconds) {

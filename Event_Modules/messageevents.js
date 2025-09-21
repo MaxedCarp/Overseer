@@ -337,6 +337,51 @@ class messageEvents {
         });
     }
 
+    static ReactionAdd(reaction, user) {
+        return new Promise((resolve) => {
+            (async () => {
+                if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    const newMessageContent = `**[${utcString}] USER ADDED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
+                    const obj = await global.focuscol.findOne({
+                        "userid": user.id,
+                        "srv": reaction.message.guild.id
+                    });
+                    const ch = await global.client.channels.cache.get(obj.ch);
+                    await ch.send({
+                        content: newMessageContent,
+                        allowedMentions: {parse: []},
+                        files: [reaction.emoji.url]
+                    })
+                }
+                resolve(true);
+            })();
+        });
+    }
+
+    static ReactionRemove(reaction, user) {
+        return new Promise((resolve) => {
+            (async () => {
+                if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
+                    const now = new Date();
+                    const utcString = now.toUTCString();
+                    const newMessageContent = `**[${utcString}] USER REMOVED A REACTION! ([Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id}))**`
+                    const obj = await global.focuscol.findOne({
+                        "userid": user.id,
+                        "srv": reaction.message.guild.id
+                    });
+                    const ch = await global.client.channels.cache.get(obj.ch);
+                    await ch.send({
+                        content: newMessageContent,
+                        allowedMentions: {parse: []},
+                        files: [reaction.emoji.url]
+                    })
+                }
+                resolve(true);
+            })();
+        });
+    }
 }
 
 module.exports = messageEvents;
