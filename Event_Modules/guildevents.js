@@ -499,7 +499,7 @@ class guildEvents {
                         });
                     }
                 }
-                if ((newChan && oldChan) && (oldState.member.id === newState.member.id)) {
+                if ((newChan && oldChan && newChan !== oldChan) && (oldState.member.id === newState.member.id)) {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
                         const utcString = now.toUTCString();
