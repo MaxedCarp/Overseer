@@ -300,7 +300,7 @@ class guildEvents {
                                     if (await essentials.checkFocus(oldUser.id, guild.id)) {
                                         const now = new Date();
                                         const utcString = now.toUTCString();
-                                        let newMessageContent = `**[${utcString}] USER CHANGED USERNAME: ${newUser.username}!**`
+                                        let newMessageContent = `**[${utcString}] USER HAS CHANGED USERNAME: ${newUser.username}!**`
 
                                         const obj = await global.focuscol.findOne({
                                             "userid": oldUser.id,
@@ -324,7 +324,7 @@ class guildEvents {
                                     if (await essentials.checkFocus(oldUser.id, guild.id)) {
                                         const now = new Date();
                                         const utcString = now.toUTCString();
-                                        let newMessageContent = `**[${utcString}] USER CHANGED GLOBAL / DISPLAY NAME: ${newUser.globalName}!**`
+                                        let newMessageContent = `**[${utcString}] USER HAS CHANGED GLOBAL / DISPLAY NAME: ${newUser.globalName}!**`
 
                                         const obj = await global.focuscol.findOne({
                                             "userid": oldUser.id,
@@ -347,7 +347,7 @@ class guildEvents {
                                     if (await essentials.checkFocus(oldUser.id, guild.id)) {
                                         const now = new Date();
                                         const utcString = now.toUTCString();
-                                        let newMessageContent = `**[${utcString}] USER CHANGED PROFILE PICTURE!**`
+                                        let newMessageContent = `**[${utcString}] USER HAS CHANGED PROFILE PICTURE!**`
 
                                         const obj = await global.focuscol.findOne({
                                             "userid": oldUser.id,
@@ -439,7 +439,7 @@ class guildEvents {
                     if ((await essentials.checkFocus(oldState.member.id, oldState.guild.id))) {
                         const now = new Date();
                         const utcString = now.toUTCString();
-                        let newMessageContent = `**[${utcString}] USER LEFT VOICE CHANNEL: ${oldChan}!**`
+                        let newMessageContent = `**[${utcString}] USER HAS LEFT VOICE CHANNEL: ${oldChan}!**`
                         if (oldChan.members.size > 0) {
                             newMessageContent += "\n**Remaining Participants:**\n"
                             oldChan.members.forEach(m => {
@@ -479,7 +479,7 @@ class guildEvents {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
                         const utcString = now.toUTCString();
-                        let newMessageContent = `**[${utcString}] USER JOINED VOICE CHANNEL: ${newChan}!**`
+                        let newMessageContent = `**[${utcString}] USER HAS JOINED VOICE CHANNEL: ${newChan}!**`
                         if (newChan.members.size > 1) {
                             newMessageContent += "\n**Other Participants:**\n"
                             newChan.members.forEach(m => {
@@ -503,7 +503,7 @@ class guildEvents {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
                         const utcString = now.toUTCString();
-                        let newMessageContent = `**[${utcString}] USER MOVED VOICE CHANNELS.\nOld Channel: ${oldChan}. New Channel: ${newChan}!**`
+                        let newMessageContent = `**[${utcString}] USER HAS MOVED VOICE CHANNELS.\nOld Channel: ${oldChan}. New Channel: ${newChan}!**`
                         if (oldChan.members.size > 0) {
                             newMessageContent += "\n**Old Channel Participants:**\n"
                             oldChan.members.forEach(m => {
@@ -518,6 +518,91 @@ class guildEvents {
                             });
                         }
 
+                        const obj = await global.focuscol.findOne({
+                            "userid": newState.member.id,
+                            "srv": newState.guild.id
+                        });
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
+                    }
+                }
+                if (oldState.selfDeaf !== newState.selfDeaf && (newChan && oldChan)) {
+                    if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent;
+                        if (newState.selfDeaf) {
+                            newMessageContent = `**[${utcString}] USER HAS SELF DEAFENED!**`
+                        } else {
+                            newMessageContent = `**[${utcString}] USER HAS SELF UN-DEAFENED!**`
+                        }
+                        const obj = await global.focuscol.findOne({
+                            "userid": newState.member.id,
+                            "srv": newState.guild.id
+                        });
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
+                    }
+                }
+                if (oldState.selfMute !== newState.selfMute && (newChan && oldChan) && !newState.selfDeaf) {
+                    if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent;
+                        if (newState.selfMute) {
+                            newMessageContent = `**[${utcString}] USER HAS SELF MUTED!**`
+                        } else {
+                            if (!oldState.selfDeaf)
+                                newMessageContent = `**[${utcString}] USER HAS SELF UN-MUTED!**`
+                        }
+                        const obj = await global.focuscol.findOne({
+                            "userid": newState.member.id,
+                            "srv": newState.guild.id
+                        });
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
+                    }
+                }
+                if (oldState.serverMute !== newState.serverMute && (newChan && oldChan)) {
+                    if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent;
+                        if (newState.serverMute) {
+                            newMessageContent = `**[${utcString}] USER WAS SERVER MUTED!**`
+                        } else {
+                            newMessageContent = `**[${utcString}] USER WAS SERVER UN-MUTED!**`
+                        }
+                        const obj = await global.focuscol.findOne({
+                            "userid": newState.member.id,
+                            "srv": newState.guild.id
+                        });
+                        const ch = await global.client.channels.cache.get(obj.ch);
+                        await ch.send({
+                            content: newMessageContent,
+                            allowedMentions: {parse: []}
+                        });
+                    }
+                }
+                if (oldState.serverDeaf !== newState.serverDeaf && (newChan && oldChan)) {
+                    if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
+                        const now = new Date();
+                        const utcString = now.toUTCString();
+                        let newMessageContent;
+                        if (newState.serverDeaf) {
+                            newMessageContent = `**[${utcString}] USER WAS SERVER DEAFENED!**`
+                        } else {
+                            newMessageContent = `**[${utcString}] USER WAS SERVER UN-DEAFENED!**`
+                        }
                         const obj = await global.focuscol.findOne({
                             "userid": newState.member.id,
                             "srv": newState.guild.id
