@@ -13,16 +13,21 @@ module.exports = {
         const user = interaction.options.getUser('user');
         const isFocus = await essentials.checkFocus(user.id, interaction.guild.id);
         if (!isFocus) {
-            await interaction.reply({content: "My apologies, but this user is not currently being focused!", ephemeral: true});
+            await interaction.reply({
+                content: "My apologies, but this user is not currently being focused!",
+                ephemeral: true
+            });
         } else {
             const obj = await global.focuscol.findOne({"userid": user.id, "srv": interaction.guild.id});
             const ch = await global.client.channels.cache.get(obj.ch);
             await ch.delete();
             await global.focuscol.deleteOne({srv: interaction.guild.id, userid: user.id})
-            await interaction.reply({
-                content: `No longer focusing on user ${user}!`,
-                ephemeral: true
-            });
+            if (!!interaction.channel) {
+                await interaction.reply({
+                    content: `No longer focusing on user ${user}!`,
+                    ephemeral: true
+                });
+            }
         }
     },
 };
