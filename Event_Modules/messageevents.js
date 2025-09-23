@@ -343,18 +343,22 @@ class messageEvents {
                 if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `**USER ADDED A REACTION!**\n-# [[Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})]`
+                    let newMessageContent = `**USER ADDED A REACTION`
                     const obj = await global.focuscol.findOne({
                         "userid": user.id,
                         "srv": reaction.message.guild.id
                     });
-                    newMessageContent += ` **Message ID:** ${reaction.message.id}, **Time:** ${utcString}`;
+                    if (!reaction.emoji.url)
+                        newMessageContent += `: ${reaction.emoji}`;
+                    newMessageContent += `!**\n-# [[Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})] **Message ID:** ${reaction.message.id}, **Time:** ${utcString}`;
+                    let msg;
+                    if (reaction.emoji.url) {
+                        msg = {content: newMessageContent, allowedMentions: {parse: []}, files: [reaction.emoji.url]}
+                    } else {
+                        msg = {content: newMessageContent, allowedMentions: {parse: []}}
+                    }
                     const ch = await global.client.channels.cache.get(obj.ch);
-                    await ch.send({
-                        content: newMessageContent,
-                        allowedMentions: {parse: []},
-                        files: [reaction.emoji.url]
-                    })
+                    await ch.send(msg);
                 }
                 resolve(true);
             })();
@@ -367,18 +371,22 @@ class messageEvents {
                 if (await essentials.checkFocus(user.id, reaction.message.guild.id)) {
                     const now = new Date();
                     const utcString = now.toUTCString();
-                    let newMessageContent = `**[${utcString}] USER REMOVED A REACTION!**\n-# [[Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})]`
+                    let newMessageContent = `**[${utcString}] USER REMOVED A REACTION`
                     const obj = await global.focuscol.findOne({
                         "userid": user.id,
                         "srv": reaction.message.guild.id
                     });
-                    newMessageContent += ` **Message ID:** ${reaction.message.id}`;
+                    if (!reaction.emoji.url)
+                        newMessageContent += `: ${reaction.emoji}`;
+                    newMessageContent += `!**\n-# [[Click to View Message](https://discord.com/channels/${reaction.message.guild.id}/${reaction.message.channel.id}/${reaction.message.id})] **Message ID:** ${reaction.message.id}, **Time:** ${utcString}`;
+                    let msg;
+                    if (reaction.emoji.url) {
+                        msg = {content: newMessageContent, allowedMentions: {parse: []}, files: [reaction.emoji.url]}
+                    } else {
+                        msg = {content: newMessageContent, allowedMentions: {parse: []}}
+                    }
                     const ch = await global.client.channels.cache.get(obj.ch);
-                    await ch.send({
-                        content: newMessageContent,
-                        allowedMentions: {parse: []},
-                        files: [reaction.emoji.url]
-                    })
+                    await ch.send(msg);
                 }
                 resolve(true);
             })();
