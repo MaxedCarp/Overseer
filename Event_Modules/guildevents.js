@@ -727,7 +727,7 @@ class guildEvents {
         return new Promise((resolve, reject) => {
             (async () => {
                 if (!newPresence.user || newPresence.user.bot)
-                    return;
+                    resolve(false);
                 await client.guilds.cache.forEach(guild => {
                     (async () => {
                         if (guild.members.cache.has(newPresence.user.id)) {
