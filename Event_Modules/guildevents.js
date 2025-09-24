@@ -726,19 +726,21 @@ class guildEvents {
     static PresenceUpdate(oldPresence, newPresence) {
         return new Promise((resolve, reject) => {
             (async () => {
-                if (!!newPresence.member && newPresence.guild && !newPresence.member.user.bot) {
-                    if ((!!newPresence.status && !!oldPresence.status) && oldPresence.status !== newPresence.status) {
+                if (!!newPresence?.member && newPresence?.guild && !newPresence?.member?.user?.bot) {
+                    const oStatus = oldPresence?.status ?? 'UNKNOWN';
+                    const nStatus = newPresence?.status ?? 'UNKNOWN';
+                    if (oStatus !== nStatus) {
                         if (await essentials.checkFocus(newPresence.member.id, newPresence.guild.id)) {
                             const now = new Date();
                             const utcString = now.toUTCString();
                             let newMessageContent = `**USER `
-                            if (newPresence.status === "offline")
+                            if (nStatus === "offline")
                                 newMessageContent += `HAS GONE OFFLINE**!`;
-                            else if (oldPresence.status === "offline") {
+                            else if (oStatus === "offline") {
                                 newMessageContent += `HAS COME ONLINE**!`;
-                            } else if (newPresence.status === "idle") {
+                            } else if (nStatus === "idle") {
                                 newMessageContent += `IS NOW AWAY**!`;
-                            } else if (oldPresence.status === "idle" && (newPresence.status === "dnd" || newPresence.status === "online")) {
+                            } else if (oStatus === "idle" && (nStatus === "dnd" || nStatus === "online")) {
                                 newMessageContent += `IS NO LONGER AWAY**!`;
                             } else {
                                 return;
