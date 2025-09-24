@@ -726,10 +726,11 @@ class guildEvents {
     static PresenceUpdate(oldPresence, newPresence) {
         return new Promise((resolve, reject) => {
             (async () => {
-                if (!newPresence.user || newPresence.user.bot || oldPresence.status === null || newPresence.status === null)
+                /*if (!newPresence.user || newPresence.user.bot)
                 {
 
                 }else {
+                    if ()
                     await client.guilds.cache.forEach(guild => {
                         (async () => {
                             if (guild.members.cache.has(newPresence.user.id)) {
@@ -767,7 +768,7 @@ class guildEvents {
                         })();
                     });
                     resolve(true);
-                }
+                }*/
             })();
         });
     }
