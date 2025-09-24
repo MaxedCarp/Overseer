@@ -498,6 +498,15 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
 });
+client.on(Events.PresenceUpdate, async (oldPresence, newPresence) => {
+    try {
+        await guildEvents.PresenceUpdate(oldPresence, newPresence);
+    } catch (err) {
+        console.error(err);
+        let dmChannel = await client.users.createDM(contact);
+        await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
+    }
+});
 //Message Events
 client.on(Events.MessageCreate, async (message) => {
     try {

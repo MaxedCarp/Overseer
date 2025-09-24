@@ -313,11 +313,10 @@ class guildEvents {
                     const now = new Date();
                     const utcString = now.toUTCString();
                     if (await essentials.checkFocus(newMember.id, guild.id)) {
-                        let newMessageContent ;
+                        let newMessageContent;
                         if (!oldMember.communicationDisabledUntil && newMember.communicationDisabledUntil && newMember.communicationDisabledUntil !== oldMember.communicationDisabledUntil) {
                             newMessageContent = `**USER TIMED OUT UNTIL: ${newMember.communicationDisabledUntil.toUTCString()}!**`
-                        }
-                        else {
+                        } else {
                             newMessageContent = `**USER TIME-OUT EXPIRED!**`
                         }
                         newMessageContent += `\n-# **Time:** ${utcString}`;
@@ -723,6 +722,55 @@ class guildEvents {
             })();
         });
     };
+
+    static PresenceUpdate(oldPresence, newPresence) {
+        return new Promise((resolve, reject) => {
+            (async () => {
+                if (oldPresence.user.bot)
+                    return;
+                await client.guilds.cache.forEach(guild => {
+                    (async () => {
+                        if (guild.members.cache.has(newPresence.user.id)) {
+                            let obj = await global.srvcol.findOne({"srv": guild.id});
+                            const member = guild.members.cache.find(member => member.id === newPresence.user.id);
+                            if (oldPresence.status !== newPresence.status) {
+                                if (await essentials.checkFocus(member.id, guild.id)) {
+                                    const now = new Date();
+                                    const utcString = now.toUTCString();
+                                    let newMessageContent = `**USER `
+                                    if (newPresence.status === "offline")
+                                        newMessageContent += `HAS GONE OFFLINE**!`;
+                                    else if (oldPresence.status === "offline"){
+                                        newMessageContent += `HAS COME ONLINE**!`;
+                                    }
+                                    else if (newPresence.status === "idle"){
+                                        newMessageContent += `IS NOW AWAY**!`;
+                                    }
+                                    else if (oldPresence.status === "idle" && (newPresence.status === "dnd" || newPresence.status === "online")){
+                                        newMessageContent += `IS NO LONGER AWAY**!`;
+                                    }
+                                    else {
+                                        return;
+                                    }
+                                    newMessageContent += `\n-# **Time:** ${utcString}`;
+                                    const obj = await global.focuscol.findOne({
+                                        "userid": member.id,
+                                        "srv": guild.id
+                                    });
+                                    const ch = await global.client.channels.cache.get(obj.ch);
+                                    await ch.send({
+                                        content: newMessageContent,
+                                        allowedMentions: {parse: []}
+                                    });
+                                }
+                            }
+                        }
+                    })();
+                });
+                resolve(true);
+            })();
+        });
+    }
 
     static GuildDelete(guild) {
         return new Promise((resolve, reject) => {
