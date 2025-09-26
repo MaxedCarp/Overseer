@@ -482,16 +482,36 @@ class guildEvents {
                         "channelID": oldChan.id
                     }).toArray();
                     if (!!overwrites.length > 0) {
-                        if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1) && oldChan.members.size < 1) {
-                            for (const overwrite of overwrites) {
-                                const members = await oldState.guild.members.fetch();
-                                const member = await members.find(m => m.id === overwrite.userID);
-                                await oldChan.permissionOverwrites.delete(member.user);
-                                await global.channelscol.deleteOne({
-                                    "srv": oldState.guild.id,
-                                    "channelID": oldChan.id,
-                                    "userID": overwrite.userID
-                                })
+                        if (oldChan.members.size < 1) {
+                            if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1)) {
+                                for (const overwrite of overwrites) {
+                                    const members = await newState.guild.members.fetch();
+                                    const member = await members.find(m => m.id === overwrite.userID);
+                                    await oldChan.permissionOverwrites.delete(member.user);
+                                    await global.channelscol.deleteOne({
+                                        "srv": oldState.guild.id,
+                                        "channelID": oldChan.id,
+                                        "userID": overwrite.userID
+                                    })
+                                }
+                            }
+                        } else {
+                            const overwrite = await global.channelscol.findOne({
+                                "srv": newState.guild.id,
+                                "channelID": oldChan.id,
+                                "userID": newState.member.user.id
+                            });
+                            if (!!overwrite) {
+                                if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1 && exp.id === overwrite.userID)) {
+                                    const members = await newState.guild.members.fetch();
+                                    const member = await members.find(m => m.id === overwrite.userID);
+                                    await oldChan.permissionOverwrites.delete(member.user);
+                                    await global.channelscol.deleteOne({
+                                        "srv": oldState.guild.id,
+                                        "channelID": oldChan.id,
+                                        "userID": overwrite.userID
+                                    })
+                                }
                             }
                         }
                     }
@@ -542,7 +562,7 @@ class guildEvents {
                         "channelID": newChan.id,
                         "userID": newState.member.user.id
                     });
-                    if (!!overwrite) {
+                    /*if (!!overwrite) {
                         if ((newChan.permissionOverwrites.cache).find(exp => exp.id === overwrite.userID && exp.type === 1)) {
                             const members = await newState.guild.members.fetch();
                             const member = members.find(m => m.id === overwrite.userID);
@@ -553,7 +573,7 @@ class guildEvents {
                                 "userID": overwrite.userID
                             })
                         }
-                    }
+                    }*/
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
                         const utcString = now.toUTCString();
