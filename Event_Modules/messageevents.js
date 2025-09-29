@@ -117,6 +117,9 @@ class messageEvents {
                         $sort: {score: -1}
                     }
                 ]).toArray())?.[0];
+                if (!query){
+                    return;
+                }
                 if (msgcontlow.includes(query?.key)) {
                     let role = guild.roles.cache.find(role => role.id === query.roleID);
                     if (!member.roles.cache.has(role) && role.editable && (parseInt(`${member.joinedTimestamp}`) + (parseInt(query.agereq) * 1000)) < new Date().valueOf()) {
