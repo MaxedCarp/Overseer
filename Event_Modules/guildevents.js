@@ -476,6 +476,16 @@ class guildEvents {
             (async () => {
                 const newChan = newState.channel;
                 const oldChan = oldState.channel;
+                if (newChan?.id === "1422378190122385529") {
+                    const overwrite = await global.channelscol.findOne({
+                        "srv": newState.guild.id,
+                        "channelID": newChan.id,
+                        "userID": newState.member.user.id
+                    });
+                    if (!overwrite && newState.member.user.id !== "275305152842301440") {
+                        await newState.disconnect();
+                    }
+                }
                 if (oldChan?.id && !newChan?.id) { //leave
                     let overwrites = await global.channelscol.find({
                         "srv": oldState.guild.id,
