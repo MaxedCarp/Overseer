@@ -11,7 +11,7 @@ module.exports = {
             option.setName('channel')
                 .setDescription('Voice channel to grant access to')
                 .addChannelTypes(ChannelType.GuildVoice))
-        .setDefaultMemberPermissions(PermissionFlagsBits.MoveMembers),
+        .setDefaultMemberPermissions(PermissionFlagsBits.ManageServer),
     async execute(interaction) {
         const channel = interaction.options.getChannel('channel') || interaction?.member?.voice?.channel;
         const user = interaction.options.getUser('user');
