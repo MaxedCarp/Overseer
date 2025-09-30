@@ -484,6 +484,8 @@ class guildEvents {
                     });
                     if (!overwrite && newState.member.user.id !== "275305152842301440") {
                         await newState.disconnect();
+                        let dmChannel = await client.users.createDM(newState.member.user.id);
+                        await dmChannel.send(`Please message Carp before trying to join this channel!`);
                     }
                 }
                 if (oldChan?.id && !newChan?.id) { //leave

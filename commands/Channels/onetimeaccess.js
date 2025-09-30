@@ -15,12 +15,15 @@ module.exports = {
     async execute(interaction) {
         const channel = interaction.options.getChannel('channel') || interaction?.member?.voice?.channel;
         const user = interaction.options.getUser('user');
-
         if (!interaction?.member?.voice?.channel && !interaction.options.getChannel('channel')) {
             await interaction.reply({
                 content: `My apologies, you must be in a voice channel or specify one to use this command!`,
                 ephemeral: true
             });
+            return;
+        }
+        if (channel.id === "1422378190122385529") {
+            await interaction.reply({content: `Only Carp may grant access to this channel!`, ephemeral: true});
             return;
         }
         if (!((interaction.guild.members.me).permissionsIn(channel).has(PermissionFlagsBits.ViewChannel) || (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator)))
