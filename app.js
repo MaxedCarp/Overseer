@@ -647,6 +647,7 @@ const notlive = http.createServer((req, res) => {
         console.log("CHANNEL IS NO LONGER LIVE!");
         isLive = !isLive;
     }
+    console.log(new Date().toString());
 });
 notlive.listen(3111, () => {
     console.log('Live check initiated');
