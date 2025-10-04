@@ -11,7 +11,8 @@ const {
     PermissionFlagsBits,
     ActionRowBuilder,
     ButtonStyle,
-    ChannelType
+    ChannelType,
+    PermissionsBitField
 } = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
@@ -629,23 +630,35 @@ async function printLines() {
     }
     return count;
 }
-const live = http.createServer((req, res) => {
+const live = http.createServer(async (req, res) => {
     res.setHeader('Connection', 'close');
     res.end('OK');
     if (!isLive) {
         console.log("CHANNEL IS LIVE");
         isLive = !isLive;
+        const guild = await global.client.channels.cache.get(1190516697174659182);
+        const everyoneRole = guild.roles.everyone;
+        const currentPermissions = everyoneRole.permissions;
+        const newPermissions = new PermissionsBitField(currentPermissions)
+            .remove(PermissionsBitField.Flags.Connect);
+        await everyoneRole.setPermissions(newPermissions);
     }
 });
 live.listen(3110, () => {
     console.log('Live check initiated');
 });
-const notlive = http.createServer((req, res) => {
+const notlive = http.createServer(async (req, res) => {
     res.setHeader('Connection', 'close');
     res.end('OK');
     if (isLive) {
         console.log("CHANNEL IS NO LONGER LIVE!");
         isLive = !isLive;
+        const guild = await global.client.channels.cache.get(1190516697174659182);
+        const everyoneRole = guild.roles.everyone;
+        const currentPermissions = everyoneRole.permissions;
+        const newPermissions = new PermissionsBitField(currentPermissions)
+            .add(PermissionsBitField.Flags.Connect);
+        await everyoneRole.setPermissions(newPermissions);
     }
     console.log(new Date().toString());
 });
