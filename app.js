@@ -632,14 +632,14 @@ const live = http.createServer((req, res) => {
     res.writeHead(200);
     console.log("CHANNEL IS LIVE");
 });
-live.listen(3000, () => {
+live.listen(3110, () => {
     console.log('Live check initiated');
 });
 const notlive = http.createServer((req, res) => {
     res.writeHead(200);
     console.log("CHANNEL IS NO LONGER LIVE!");
 });
-notlive.listen(3001, () => {
+notlive.listen(3111, () => {
     console.log('Live check initiated');
 });
 async function countTime() {
