@@ -62,7 +62,7 @@ module.exports = {
 			case "user": {
 				const user = interaction.options.getUser("user");
 				const chatmsgs = await purgeset.user(interaction, user, lim);
-				await interaction.reply({content: `Successfully deleted ${chatmsgs.length} messages!`, ephemeral: true});
+				await interaction.reply({content: `Successfully deleted ${chatmsgs} messages!`, ephemeral: true});
 			}
 			break;
 			case "attachments": {

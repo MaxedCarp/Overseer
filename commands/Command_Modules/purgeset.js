@@ -90,28 +90,26 @@ class purgeset {
         }
         let msgs = await global.msgcol.find(look).sort({"_id": -1}).limit(lim).toArray();
         const comp = {};
-        let chatmsgs = [];
-        for (let i = 0; i < msgs.length; i++) {
+        let msgnum = 0;
+        for (let msg of msgs) {
             try {
-                const channel = await global.client.channels.fetch(msgs[i].messageChannelID);
-                let chatmsg = await channel.messages.fetch(msgs[i].messageID);
-                comp[chatmsg.channel.id] = {msgs: [], name: chatmsg.channel.id};
-                comp[chatmsg.channel.id].push(chatmsg);
-                chatmsgs.push(chatmsg);
+                const channel = await global.client.channels.fetch(msg.messageChannelID);
+                let chatmsg = await channel.messages.fetch(msg.messageID);
+                if (!comp[chatmsg.channel.id])
+                    comp[chatmsg.channel.id] = {msgs: [], name: chatmsg.channel.id};
+                comp[chatmsg.channel.id].msgs.push(chatmsg);
+                msgnum++;
             } catch (err) {
                 await global.msgcol.deleteOne({"messageID": msgs[i].messageID});
             }
         }
-        //await interaction.channel.bulkDelete(chatmsgs);
-        comp.forEach(c => {
-            (async () => {
-                const chan = await global.client.channels.fetch(c.name);
-                await chan.bulkDelete(c.msgs);
-            })();
-        });
+        for (let c in comp) {
+            const chan = await global.client.channels.fetch(comp[c].name);
+            await chan.bulkDelete(comp[c].msgs);
+        }
 
         if (!locale)
-            return chatmsgs;
+            return msgnum;
     }
 
     static async attach(interaction, lim, type, user) {
