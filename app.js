@@ -1,4 +1,5 @@
 //Declaration
+const http = require('http');
 const {
     Client,
     Collection,
@@ -627,7 +628,20 @@ async function printLines() {
     }
     return count;
 }
-
+const live = http.createServer((req, res) => {
+    res.writeHead(200);
+    console.log("CHANNEL IS LIVE");
+});
+live.listen(3000, () => {
+    console.log('Live check initiated');
+});
+const notlive = http.createServer((req, res) => {
+    res.writeHead(200);
+    console.log("CHANNEL IS NO LONGER LIVE!");
+});
+notlive.listen(3001, () => {
+    console.log('Live check initiated');
+});
 async function countTime() {
     let totalSeconds = (client.uptime / 1000);
     let days = Math.floor(totalSeconds / 86400);
