@@ -630,7 +630,11 @@ async function printLines() {
     return count;
 }
 const live = http.createServer((req, res) => {
-    res.writeHead(200);
+    res.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'Connection': 'close'  // Add this
+    });
+    res.end('Hello World');
     if (!isLive) {
         console.log("CHANNEL IS LIVE");
         isLive = !isLive;
@@ -640,7 +644,11 @@ live.listen(3110, () => {
     console.log('Live check initiated');
 });
 const notlive = http.createServer((req, res) => {
-    res.writeHead(200);
+    res.writeHead(200, {
+        'Content-Type': 'text/plain',
+        'Connection': 'close'  // Add this
+    });
+    res.end('Hello World');
     if (isLive) {
         console.log("CHANNEL IS NO LONGER LIVE!");
         isLive = !isLive;
