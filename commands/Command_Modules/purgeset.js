@@ -103,10 +103,13 @@ class purgeset {
             }
         }
         //await interaction.channel.bulkDelete(chatmsgs);
-        for (let c of comp) {
-            const chan = await global.client.channels.fetch(c.name);
-            await chan.bulkDelete(c.msgs);
-        }
+        comp.forEach(c => {
+            (async () => {
+                const chan = await global.client.channels.fetch(c.name);
+                await chan.bulkDelete(c.msgs);
+            })();
+        });
+
         if (!locale)
             return chatmsgs;
     }
