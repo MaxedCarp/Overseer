@@ -46,6 +46,7 @@ const client = new Client({
     intents: [GatewayIntentBits.DirectMessages, GatewayIntentBits.GuildBans, GatewayIntentBits.GuildInvites, GatewayIntentBits.GuildModeration, GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildPresences, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessageReactions, GatewayIntentBits.GuildVoiceStates],
     partials: [Partials.Channel, Partials.Message, Partials.Reaction]
 });
+let isLive = false;
 const EmbedCreator = require("./Event_Modules/embedcreator");
 const {overwrite} = require("zod/v4");
 
@@ -630,14 +631,20 @@ async function printLines() {
 }
 const live = http.createServer((req, res) => {
     res.writeHead(200);
-    console.log("CHANNEL IS LIVE");
+    if (!isLive) {
+        console.log("CHANNEL IS LIVE");
+        isLive = !isLive;
+    }
 });
 live.listen(3110, () => {
     console.log('Live check initiated');
 });
 const notlive = http.createServer((req, res) => {
     res.writeHead(200);
-    console.log("CHANNEL IS NO LONGER LIVE!");
+    if (isLive) {
+        console.log("CHANNEL IS NO LONGER LIVE!");
+        isLive = !isLive;
+    }
 });
 notlive.listen(3111, () => {
     console.log('Live check initiated');
