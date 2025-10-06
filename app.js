@@ -636,7 +636,7 @@ const live = http.createServer(async (req, res) => {
     if (!isLive) {
         console.log("CHANNEL IS LIVE");
         isLive = !isLive;
-        const guild = await global.client.channels.cache.get("1190516697174659182");
+        const guild = await global.client.guilds.cache.get("1190516697174659182");
         const everyoneRole = guild.roles.everyone;
         const currentPermissions = everyoneRole.permissions;
         const newPermissions = new PermissionsBitField(currentPermissions)
@@ -653,7 +653,7 @@ const notlive = http.createServer(async (req, res) => {
     if (isLive) {
         console.log("CHANNEL IS NO LONGER LIVE!");
         isLive = !isLive;
-        const guild = await global.client.channels.cache.get(1190516697174659182);
+        const guild = await global.client.guilds.cache.get("1190516697174659182");
         const everyoneRole = guild.roles.everyone;
         const currentPermissions = everyoneRole.permissions;
         const newPermissions = new PermissionsBitField(currentPermissions)
