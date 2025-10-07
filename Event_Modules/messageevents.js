@@ -65,7 +65,7 @@ class messageEvents {
                 };
                 await global.msgcol.insertOne(msgobj);
                 const msgcontlow = message.content.toLowerCase();
-                if (obj.fishmode === true) {
+                if (obj.fishmode === true && ((guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.AddReactions) && (guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.Administrator)) {
                     if (guild.id === "1190516697174659182" && (msgcontlow.includes("limbo") || msgcontlow.includes("limbible") || message.content.includes("<@528963161622052915>")))
                         await message.react("🎩");
                     const msgsplit = msgcontlow.split(' ');
