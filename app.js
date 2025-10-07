@@ -660,7 +660,6 @@ const notlive = http.createServer(async (req, res) => {
             .add(PermissionsBitField.Flags.Connect);
         await everyoneRole.setPermissions(newPermissions);
     }
-    console.log(new Date().toString());
 });
 notlive.listen(3111, () => {
     console.log('Live check initiated');
