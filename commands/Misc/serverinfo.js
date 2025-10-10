@@ -8,6 +8,7 @@ module.exports = {
         const guild = interaction.guild;
         const bots = guild.members.cache.filter(m => !!m.user.bot);
         const users = guild.members.cache.filter(m => !m.user.bot);
+        const sounds = await guild.soundboardSounds.fetch()
         const stats = new EmbedBuilder()
             .setColor(0xfa8b2a)
             .setTitle(guild.name)
@@ -22,7 +23,7 @@ module.exports = {
                 {name: "Total", value: guild.memberCount + "", inline: true},
                 {name: "Emojis", value: guild.emojis.cache.size + "", inline: true},
                 {name: "Stickers", value: guild.stickers.cache.size + "", inline: true},
-                {name: "Soundboards", value: guild.soundboardSounds.cache.size + "", inline: true}
+                {name: "Soundboards", value: sounds.size + "", inline: true}
             )
             .setFooter({text: guild.name, iconURL: guild.iconURL()});
         await interaction.reply({embeds: [stats], ephemeral: true});
