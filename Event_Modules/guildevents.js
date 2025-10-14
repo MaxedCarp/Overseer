@@ -297,6 +297,13 @@ class guildEvents {
                             inline: false
                         }]);
                         flag = true;
+                        if (newMember.nickname.toLowerCase().includes("ghoti") && !!obj.fishmode){
+                            await newMember.setNickname(newMember.user.globalName);
+                            let dmChannel = await client.users.createDM(newMember.user.id);
+                            const msg = await dmChannel.send("Sorry, not a real word!");
+                            await essentials.sleep(5);
+                            await msg.delete();
+                        }
                     }
                     let rolesadd = newMember["_roles"].filter(role => oldMember["_roles"].indexOf(role) === -1);
                     let rolesrem = oldMember["_roles"].filter(role => newMember["_roles"].indexOf(role) === -1);
