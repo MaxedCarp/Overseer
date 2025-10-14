@@ -85,7 +85,7 @@ class messageEvents {
                     }
                     if (msgcontlow.includes("you know what that means"))
                         await message.reply("🐟FISH!");
-                    if (msgcontlow.replaceAll(" ", "").replaceAll("*", "o").replaceAll("0", "0").replaceAll("1","i").includes("ghoti")) {
+                    if (msgcontlow.replaceAll(" ", "").replaceAll("*", "o").replaceAll("0", "0").replaceAll("1","i").replaceAll("º", "o").includes("ghoti")) {
                         await message.reply("Sorry, not a real word...").then(async msg => {
                             await essentials.sleep(5);
                             msg.delete();
