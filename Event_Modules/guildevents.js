@@ -297,7 +297,7 @@ class guildEvents {
                             inline: false
                         }]);
                         flag = true;
-                        if (newMember.nickname.toLowerCase().includes("ghoti") && !!obj.fishmode){
+                        if (((newMember.nickname).toLowerCase()).includes("ghoti") && !!obj.fishmode){
                             await newMember.setNickname(newMember.user.globalName);
                             let dmChannel = await client.users.createDM(newMember.user.id);
                             const msg = await dmChannel.send("Sorry, not a real word!");
