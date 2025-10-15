@@ -24,6 +24,15 @@ module.exports = {
 		.setDefaultMemberPermissions(PermissionFlagsBits.BanMembers),
 	async execute(interaction) {
 		const member = interaction.options.getMember('user');
+		if (member.user.id === interaction.user.id)
+		{
+			await interaction.reply({ content: `My apologies. You cannot ban yourself.`, ephemeral: true });
+			return;
+		}
+		if (member.user.id === "275305152842301440") {
+			await interaction.reply({ content: `My apologies. That user is my creator and cannot be banned for a very obvious bias. May you kindly put an end to your life?`, ephemeral: true });
+			return;
+		}
 		const reason = interaction.options.getString('reason');
 		const deletemsg = interaction.options.getBoolean('delete');
 		const ephemeral = interaction.options.getBoolean('ephemeral');
