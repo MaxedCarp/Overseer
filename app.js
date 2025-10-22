@@ -12,7 +12,10 @@ const {
     ActionRowBuilder,
     ButtonStyle,
     ChannelType,
-    PermissionsBitField
+    PermissionsBitField,
+    ModalBuilder,
+    TextInputBuilder,
+    TextInputStyle
 } = require('discord.js');
 const events = require('events');
 const eventEmitter = new events.EventEmitter();
@@ -50,6 +53,7 @@ const client = new Client({
 let isLive = false;
 const EmbedCreator = require("./Event_Modules/embedcreator");
 const {overwrite} = require("zod/v4");
+const essentials = require("./Event_Modules/essentials");
 
 //Initialization
 client.once(Events.ClientReady, async c => {
@@ -236,11 +240,11 @@ eventEmitter.on('channelsCheckStart', async () => {
 });
 //Interaction Event
 client.on(Events.InteractionCreate, async interaction => {
-    if (interaction.channel.type === 1) {
-        await interaction.reply("Commands can only be used in servers!");
-        return;
-    }
     if (interaction.isChatInputCommand()) {
+        if (interaction.channel.type === 1) {
+            await interaction.reply("Chat commands can only be used in servers!");
+            return;
+        }
 
         const command = interaction.client.commands.get(interaction.commandName);
         if (!command) {
@@ -343,8 +347,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 components: [row],
                 ephemeral: true
             })
-        }
-        if (interaction.customId.startsWith("confirmban")) {
+        } else if (interaction.customId.startsWith("confirmban")) {
             const args = interaction.customId.split(':');
             const member = interaction.guild.members.cache.get(args[1]);
             const dt = await global.notecol.findOne({serial: {$gt: -1}});
@@ -366,8 +369,7 @@ client.on(Events.InteractionCreate, async interaction => {
             await global.notecol.insertOne(msgobj);
             await member.ban();
             await interaction.reply({content: `User "${member.user}" has been successfully banned!`, ephemeral: true});
-        }
-        if (interaction.customId.startsWith("notes")) {
+        } else if (interaction.customId.startsWith("notes")) {
             const args = interaction.customId.split(':');
             const user = interaction.guild.members.cache.get(args[1]).user;
             const notelist = new EmbedBuilder()
@@ -409,14 +411,90 @@ client.on(Events.InteractionCreate, async interaction => {
                 await interaction.update({embeds: [notelist], components: [row], ephemeral: true})
             } else
                 await interaction.reply({content: "The target user has no notes.", ephemeral: true})
-        }
-        if (interaction.customId.startsWith("help")) {
+        } else if (interaction.customId.startsWith("help")) {
             const args = interaction.customId.split(':');
             const num = parseInt(args[1]);
             await interaction.update({
                 embeds: [await forms.GetForm(num, interaction.guild.name, interaction.guild.iconURL())],
                 components: [await forms.GetComps(num)]
             });
+        } else if (interaction.customId === "scinotify") {
+            const modal = new ModalBuilder().setCustomId('streamNotify').setTitle('Stream Alert Menu');
+            const pingCarp = new TextInputBuilder().setCustomId('pingCarp')
+                .setLabel("Shall I ping Carp? (y/n)")
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+            const pingStabs = new TextInputBuilder().setCustomId('pingStabs')
+                .setLabel("Shall I ping Stabs? (y/n)")
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+            const pingAtlas = new TextInputBuilder().setCustomId('pingAtlas')
+                .setLabel("Shall I ping Atlas? (y/n)")
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+            const howLong = new TextInputBuilder().setCustomId('howLong')
+                .setLabel("In how long is the stream? (e.g. 1h30m)")
+                .setStyle(TextInputStyle.Short)
+                .setRequired(true);
+            const firstActionRow = new ActionRowBuilder().addComponents(pingCarp);
+            const secondActionRow = new ActionRowBuilder().addComponents(pingStabs);
+            const thirdActionRow = new ActionRowBuilder().addComponents(pingAtlas);
+            const fourthActionRow = new ActionRowBuilder().addComponents(howLong);
+            modal.addComponents(firstActionRow, secondActionRow, thirdActionRow, fourthActionRow);
+
+            await interaction.showModal(modal);
+        } else if (interaction.customId.startsWith("cancel")) {
+            await interaction.message.delete();
+        }
+    } else if (interaction.isModalSubmit()) {
+        if (interaction.customId === "streamNotify") {
+            const pingCarp = interaction.fields.getTextInputValue('pingCarp');
+            const pingStabs = interaction.fields.getTextInputValue('pingStabs');
+            const pingAtlas = interaction.fields.getTextInputValue('pingAtlas');
+            const howLong = interaction.fields.getTextInputValue('howLong');
+            const time = await essentials.parsetime(howLong, 's');
+            let carp, stabs, atlas = false;
+            if (pingCarp.toLowerCase() === "y" || pingCarp.toLowerCase() === "n") {
+                if (pingCarp.toLowerCase() === "y") {
+                    carp = true;
+                    let dmChannel = await client.users.createDM("275305152842301440");
+                    await dmChannel.send(`Sci is streaming <t:${Math.floor(Date.now() / 1000) + time}:R> (<t:${Math.floor(Date.now() / 1000) + time}:f>)`);
+                }
+            } else {
+                if (!interaction.replied)
+                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n'");
+                return;
+            }
+            if (pingStabs.toLowerCase() === "y" || pingStabs.toLowerCase() === "n") {
+                if (pingStabs.toLowerCase() === "y") {
+                    stabs = true;
+                    let dmChannel = await client.users.createDM("401210999518265358");
+                    await dmChannel.send(`Sci is streaming <t:${Math.floor(Date.now() / 1000) + time}:R> (<t:${Math.floor(Date.now() / 1000) + time}:f>)`);
+                }
+            } else {
+                if (!interaction.replied)
+                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n'");
+                return;
+            }
+            if (pingAtlas.toLowerCase() === "y" || pingAtlas.toLowerCase() === "n") {
+                if (pingAtlas.toLowerCase() === "y") {
+                    atlas = true;
+                    let dmChannel = await client.users.createDM("800070620079456286");
+                    await dmChannel.send(`Sci is streaming <t:${Math.floor(Date.now() / 1000) + time}:R> (<t:${Math.floor(Date.now() / 1000) + time}:f>)`);
+                }
+            } else {
+                if (!interaction.replied)
+                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n'");
+                return;
+            }
+            if (!carp && !atlas && !stabs){
+                await interaction.reply("Error: Must select at least 1 person!");
+                return;
+            }
+            await interaction.message.delete();
+            if (!interaction.replied)
+            await interaction.reply({content: `Successfully sent stream notifications to ${carp ? "Carp" : ""}${(carp && stabs && atlas) ? ", " : `${carp && stabs && !atlas || carp && atlas && !stabs ? " and " : ""}`}${stabs ? "Stabs" : ""}${((stabs && atlas && !carp) || (carp && stabs && atlasz)) ? " and " : ""}${atlas ? "Atlas" : ""}`})
+            await global.srvcol.updateOne({srv: "1190516697174659182"}, {$set: {stream: Date.now()}})
         }
     }
 });
@@ -553,8 +631,7 @@ client.on(Events.MessageBulkDelete, async (messages) => {
 client.on(Events.MessageReactionAdd, async (reaction, user) => {
     try {
         await messageEvents.ReactionAdd(reaction, user);
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
@@ -563,8 +640,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
 client.on(Events.MessageReactionRemove, async (reaction, user) => {
     try {
         await messageEvents.ReactionRemove(reaction, user);
-    }
-    catch (err) {
+    } catch (err) {
         console.error(err);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
@@ -632,6 +708,7 @@ async function printLines() {
     }
     return count;
 }
+
 const live = http.createServer(async (req, res) => {
     res.setHeader('Connection', 'close');
     res.end('OK');
@@ -666,6 +743,7 @@ const notlive = http.createServer(async (req, res) => {
 notlive.listen(3111, () => {
     console.log('Live check initiated');
 });
+
 async function countTime() {
     let totalSeconds = (client.uptime / 1000);
     let days = Math.floor(totalSeconds / 86400);

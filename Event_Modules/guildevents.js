@@ -1,4 +1,4 @@
-const {EmbedBuilder, PermissionFlagsBits, AttachmentBuilder} = require('discord.js');
+const {EmbedBuilder, PermissionFlagsBits, AttachmentBuilder, ButtonStyle, ActionRowBuilder} = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require("./essentials.js");
 
@@ -493,6 +493,20 @@ class guildEvents {
                         await newState.disconnect();
                         let dmChannel = await client.users.createDM(newState.member.user.id);
                         await dmChannel.send(`Please message Carp before trying to join this channel!`);
+                    }
+                }
+                if (newChan?.id === "1345093720822775839" && newState?.member?.user?.id === "275305152842301440") {
+                    const obj = await global.srvcol.findOne({srv: "1190516697174659182"});
+                    const date = new Date(obj.stream);
+                    if (date.toLocaleString('en-US', { timeZone: 'America/New_York' }) > new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })) {
+                        const cancel = await EmbedCreator.Button(`cancel`, "Cancel", ButtonStyle.Danger);
+                        const confirm = await EmbedCreator.Button(`scinotify`, "Yes, please notify!", ButtonStyle.Primary);
+                        const rowModMenu = new ActionRowBuilder().addComponents(cancel, confirm);
+                        let dmChannel = await client.users.createDM(newState?.member?.user?.id);
+                        await dmChannel.send({
+                            content: `Shall I ping the others for stream?`,
+                            components: [rowModMenu]
+                        });
                     }
                 }
                 if (oldChan?.id && !newChan?.id) { //leave
