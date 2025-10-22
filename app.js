@@ -462,7 +462,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 }
             } else {
                 if (!interaction.replied)
-                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n'");
+                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n')");
                 return;
             }
             if (pingStabs.toLowerCase() === "y" || pingStabs.toLowerCase() === "n") {
@@ -473,7 +473,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 }
             } else {
                 if (!interaction.replied)
-                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n'");
+                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n')");
                 return;
             }
             if (pingAtlas.toLowerCase() === "y" || pingAtlas.toLowerCase() === "n") {
@@ -484,7 +484,7 @@ client.on(Events.InteractionCreate, async interaction => {
                 }
             } else {
                 if (!interaction.replied)
-                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n'");
+                    await interaction.reply("Error: Invalid Input at Carp Ping field! (Can only be 'y' or 'n')");
                 return;
             }
             if (!carp && !atlas && !stabs){
