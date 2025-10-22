@@ -495,7 +495,7 @@ class guildEvents {
                         await dmChannel.send(`Please message Carp before trying to join this channel!`);
                     }
                 }
-                if (newChan?.id === "1345093720822775839" && newState?.member?.user?.id === "275305152842301440") {
+                if (newChan?.id === "1345093720822775839" && newState?.member?.user?.id === "528963161622052915") {
                     const obj = await global.srvcol.findOne({srv: "1190516697174659182"});
                     const date = new Date(obj.stream);
                     if (date.toLocaleString('en-US', { timeZone: 'America/New_York' }) > new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })) {

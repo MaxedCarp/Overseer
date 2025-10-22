@@ -491,10 +491,10 @@ client.on(Events.InteractionCreate, async interaction => {
                 await interaction.reply("Error: Must select at least 1 person!");
                 return;
             }
-            await interaction.message.delete();
             if (!interaction.replied)
             await interaction.reply({content: `Successfully sent stream notifications to ${carp ? "Carp" : ""}${(carp && stabs && atlas) ? ", " : `${carp && stabs && !atlas || carp && atlas && !stabs ? " and " : ""}`}${stabs ? "Stabs" : ""}${((stabs && atlas && !carp) || (carp && stabs && atlasz)) ? " and " : ""}${atlas ? "Atlas" : ""}`})
             await global.srvcol.updateOne({srv: "1190516697174659182"}, {$set: {stream: Date.now()}})
+            await interaction.message.delete();
         }
     }
 });
