@@ -34,7 +34,7 @@ module.exports = {
             });
             return;
         }
-        const exists = (channel.permissionOverwrites.cache).find(overwrite => overwrite.id === user.id && overwrite.type === 1);
+        const exists = channel.permissionOverwrites.cache.find(overwrite => overwrite.id === user.id && overwrite.type === 1);
         if (!exists) {
             await channel.permissionOverwrites.create(user, {ViewChannel: true, Connect: true, Speak: true});
             await global.channelscol.insertOne({srv: interaction.guild.id, channelID: channel.id, userID: user.id})

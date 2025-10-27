@@ -214,7 +214,7 @@ eventEmitter.on('channelsCheckStart', async () => {
                         "channelID": channel.id
                     }).toArray();
                     if (!!overwrites.length > 0) {
-                        if (await (channel.permissionOverwrites.cache).find(exp => exp.type === 1) && channel.members.size < 1) {
+                        if (await channel.permissionOverwrites.cache.find(exp => exp.type === 1) && channel.members.size < 1) {
                             for (const overwrite of overwrites) {
                                 const members = await guild.members.fetch();
                                 const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);

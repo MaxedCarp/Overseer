@@ -517,7 +517,7 @@ class guildEvents {
                     }).toArray();
                     if (!!overwrites.length > 0) {
                         if (oldChan.members.size < 1) {
-                            if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1)) {
+                            if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1)) {
                                 for (const overwrite of overwrites) {
                                     const members = await newState.guild.members.fetch();
                                     const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
@@ -538,7 +538,7 @@ class guildEvents {
                                 "userID": newState.member.user.id
                             });
                             if (!!overwrite) {
-                                if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1 && exp.id === overwrite.userID)) {
+                                if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1 && exp.id === overwrite.userID)) {
                                     const members = await newState.guild.members.fetch();
                                     const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
                                     if (!!member) {
@@ -675,7 +675,7 @@ class guildEvents {
                     }).toArray();
                     if (!!overwrites.length > 0) {
                         if (oldChan.members.size < 1) {
-                            if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1)) {
+                            if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1)) {
                                 for (const overwrite of overwrites) {
                                     const members = await newState.guild.members.fetch();
                                     const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
@@ -696,7 +696,7 @@ class guildEvents {
                                 "userID": newState.member.user.id
                             });
                             if (!!overwrite) {
-                                if (await (oldChan.permissionOverwrites.cache).find(exp => exp.type === 1 && exp.id === overwrite.userID)) {
+                                if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1 && exp.id === overwrite.userID)) {
                                     const members = await newState.guild.members.fetch();
                                     const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
                                     if (!!member) {
