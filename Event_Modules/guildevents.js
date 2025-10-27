@@ -497,8 +497,8 @@ class guildEvents {
                 }
                 if (newChan?.id === "1345093720822775839" && newState?.member?.user?.id === "528963161622052915") {
                     const obj = await global.srvcol.findOne({srv: "1190516697174659182"});
-                    const date = new Date(obj.stream);
-                    if (date.toLocaleString('en-US', { timeZone: 'America/New_York' }) > new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })) {
+                    const date = new Date(obj.stream + 86400000);
+                    if (date.valueOf() < new Date().valueOf()) {
                         const cancel = await EmbedCreator.Button(`cancel`, "Cancel", ButtonStyle.Danger);
                         const confirm = await EmbedCreator.Button(`scinotify`, "Yes, please notify!", ButtonStyle.Primary);
                         const rowModMenu = new ActionRowBuilder().addComponents(cancel, confirm);
