@@ -305,26 +305,12 @@ class guildEvents {
                             await msg.delete();
                         }
                     }
-                    let rolesadd = newMember["_roles"].filter(role => oldMember["_roles"].indexOf(role) === -1);
-                    let rolesrem = oldMember["_roles"].filter(role => newMember["_roles"].indexOf(role) === -1);
-                    if (rolesadd.length > 0) {
-                        rolesadd = rolesadd.map(role => role = `<@&${role}>`);
-                        exampleEmbed.addFields([{name: "Added Roles:", value: `${rolesadd}`, inline: false}]);
-                        flag = true;
-                    }
-                    if (rolesrem.length > 0) {
-                        rolesrem = rolesrem.map(role => role = `<@&${role}>`);
-                        exampleEmbed.addFields([{name: "Removed Roles:", value: `${rolesrem}`, inline: false}]);
-                        flag = true;
-                    }
                     const now = new Date();
                     const utcString = now.toUTCString();
                     if (await essentials.checkFocus(newMember.id, guild.id)) {
                         let newMessageContent;
-                        if (!oldMember.communicationDisabledUntil && newMember.communicationDisabledUntil && newMember.communicationDisabledUntil !== oldMember.communicationDisabledUntil) {
-                            newMessageContent = `**USER TIMED OUT UNTIL: ${newMember.communicationDisabledUntil.toUTCString()}!**`
-                        } else {
-                            newMessageContent = `**USER TIME-OUT EXPIRED!**`
+                        if (oldMember.nickname !== newMember.nickname) {
+                            newMessageContent = `**USER NICKNAME CHANGED: ${newMember.nickname}!**`
                         }
                         newMessageContent += `\n-# **Time:** ${utcString}`;
                         const obj = await global.focuscol.findOne({
@@ -336,6 +322,18 @@ class guildEvents {
                             content: newMessageContent,
                             allowedMentions: {parse: []}
                         });
+                    }
+                    let rolesadd = newMember["_roles"].filter(role => oldMember["_roles"].indexOf(role) === -1);
+                    let rolesrem = oldMember["_roles"].filter(role => newMember["_roles"].indexOf(role) === -1);
+                    if (rolesadd.length > 0) {
+                        rolesadd = rolesadd.map(role => role = `<@&${role}>`);
+                        exampleEmbed.addFields([{name: "Added Roles:", value: `${rolesadd}`, inline: false}]);
+                        flag = true;
+                    }
+                    if (rolesrem.length > 0) {
+                        rolesrem = rolesrem.map(role => role = `<@&${role}>`);
+                        exampleEmbed.addFields([{name: "Removed Roles:", value: `${rolesrem}`, inline: false}]);
+                        flag = true;
                     }
                     if (obj.userupdate === "none" || !obj || !flag) {
                         return;
