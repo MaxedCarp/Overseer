@@ -203,41 +203,7 @@ eventEmitter.on('updateList', async () => {
     await updateBotStats();
 
 });
-eventEmitter.on('channelsCheckStart', async () => {
-    // Check channels for unremoved one-time access permissions
-    const ChannelsCheck = async () => {
-        client.guilds.cache.forEach(guild => {
-            guild.channels.cache.forEach(channel => {
-                (async () => {
-                    let overwrites = await global.channelscol.find({
-                        "srv": guild.id,
-                        "channelID": channel.id
-                    }).toArray();
-                    if (!!overwrites.length > 0) {
-                        if (await channel.permissionOverwrites.cache.find(exp => exp.type === 1) && channel.members.size < 1) {
-                            for (const overwrite of overwrites) {
-                                const members = await guild.members.fetch();
-                                const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
-                                if (!!member) {
-                                    await channel.permissionOverwrites.delete(member.user);
-                                    await global.channelscol.deleteOne({
-                                        "srv": guild.id,
-                                        "channelID": channel.id,
-                                        "userID": overwrite.userID
-                                    })
-                                }
-                            }
-                        }
-                    }
-                })();
-            })
-        });
-        setTimeout(ChannelsCheck, 120000);
-    };
 
-    // Run immediately
-    await ChannelsCheck();
-});
 //Interaction Event
 client.on(Events.InteractionCreate, async interaction => {
     if (interaction.isChatInputCommand()) {
