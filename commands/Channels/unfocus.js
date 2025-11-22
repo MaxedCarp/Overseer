@@ -19,12 +19,10 @@ module.exports = {
             });
         } else {
             const obj = await global.focuscol.findOne({"userid": user.id, "srv": interaction.guild.id});
-            const ch = await global.client.channels.cache.get(obj.ch);
-            await ch.delete();
             await global.focuscol.deleteOne({srv: interaction.guild.id, userid: user.id})
             if (!!interaction.channel) {
                 await interaction.reply({
-                    content: `No longer focusing on user ${user}!`,
+                    content: `No longer focusing on user ${user}!\nChannel will remain open as an archive, you may have to delete it yourself if this was an accident.`,
                     ephemeral: true
                 });
             }

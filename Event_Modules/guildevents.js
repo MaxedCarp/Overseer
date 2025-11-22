@@ -649,6 +649,18 @@ class guildEvents {
                                 newMessageContent += `- ${m}\n`
                             });
                         }
+                        if (newChan?.id === "1422378190122385529" && !newState?.member?.user?.bot) {
+                            const overwrite = await global.channelscol.findOne({
+                                "srv": newState.guild.id,
+                                "channelID": newChan.id,
+                                "userID": newState.member.user.id
+                            });
+                            if (!overwrite && newState.member.user.id !== "275305152842301440") {
+                                await newState.disconnect();
+                                let dmChannel = await client.users.createDM(newState.member.user.id);
+                                await dmChannel.send(`Please message Carp before trying to join this channel!`);
+                            }
+                        }
                         if (newChan.members.size > 1) {
                             newMessageContent += "\n**New Channel Participants:**\n"
                             newChan.members.forEach(m => {
