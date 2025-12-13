@@ -686,12 +686,17 @@ function getArgs(obj) {
 async function printLines() {
     let count = 0;
     const foldersPath = path.join(__dirname, 'commands');
+    const eventModulesPath = path.join(__dirname, 'Event_Modules');
     const projectFolders = fs.readdirSync(foldersPath);
     const baseFiles = fs.readdirSync(__dirname).filter(file => file.endsWith('.js'));
+
+    // Count base files
     for (const file of baseFiles) {
         const filePath = path.join(__dirname, file);
         count += await fs2.countlines(filePath);
     }
+
+    // Count commands folder
     for (const folder of projectFolders) {
         if (!folder.includes('node_modules')) {
             try {
@@ -706,6 +711,26 @@ async function printLines() {
             }
         }
     }
+
+    // Count Event_Modules folder recursively
+    async function countEventModules(dirPath) {
+        try {
+            const items = fs.readdirSync(dirPath);
+            for (const item of items) {
+                const itemPath = path.join(dirPath, item);
+                const stat = fs.statSync(itemPath);
+                if (stat.isDirectory()) {
+                    await countEventModules(itemPath);
+                } else if (item.endsWith('.js')) {
+                    count += await fs2.countlines(itemPath);
+                }
+            }
+        } catch (err) {
+            // Ignore errors
+        }
+    }
+    await countEventModules(eventModulesPath);
+
     return count;
 }
 

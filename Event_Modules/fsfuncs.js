@@ -31,15 +31,29 @@ class fs2 {
     }
 	static countlines(path, encoding = null) {
         return new Promise((resolve, reject) => {
-			var i;
 			var count = 0;
+			var lastChar = null;
+			var hasContent = false;
+
             fs.createReadStream(path)
 			.on('data', function(chunk) {
-				for (i=0; i < chunk.length; i++)
-					if (chunk[i] == 10) count++;
+				if (chunk.length > 0) {
+					hasContent = true;
+					lastChar = chunk[chunk.length - 1];
+					for (let i = 0; i < chunk.length; i++) {
+						if (chunk[i] == 10) count++;
+					}
+				}
 			})
 			.on('end', function() {
+				// If file has content and doesn't end with newline, add 1
+				if (hasContent && lastChar !== 10) {
+					count++;
+				}
 				resolve(count);
+			})
+			.on('error', function(err) {
+				reject(err);
 			});
         });
     }

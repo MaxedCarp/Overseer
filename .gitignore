@@ -65,3 +65,4 @@ Desktop.ini
 /.idea/vcs.xml
 /pnpm-lock.yaml
 /.idea/misc.xml
+/.claude/settings.local.json
