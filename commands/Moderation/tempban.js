@@ -39,7 +39,8 @@ module.exports = {
 		await member.ban();
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});
 		const inttime = await essentials.parsetime(time, "s");
-		const bandata = {srv: interaction.guild.id, user: {id: user.id, username: user.username, globalName: user.globalName}, expire: Math.floor(new Date().getTime() / 1000) + inttime, type: "temp"}
+		const usrdata = {id: user.id, username: user.username, globalName: user.globalName}
+		const bandata = {srv: interaction.guild.id, user: usrdata, expire: Math.floor(new Date().getTime() / 1000) + inttime, type: "temp"}
 		await global.bancol.insertOne(bandata);
 		await interaction.reply({ content: `User: ${member.user} temporarily banned for ${await essentials.parsetime(time, "s")} seconds.\nReason: ${reason || "No reason provided."}.`});
 		const dt = await global.notecol.findOne({serial: {$gt: -1}});
