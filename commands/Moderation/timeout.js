@@ -50,7 +50,7 @@ module.exports = {
 		await global.notecol.insertOne(msgobj);
 		let obj = await global.srvcol.findOne({ "srv": interaction.guild.id});
 		let resembed = await EmbedCreator.Create(`Moderation Command executed in: <#${interaction.channel.id}>`, `Command: /timeout\nTarget User: ${member.user}.\nTime: ${time}.`  || " ", false, interaction.guild.name, interaction.guild.iconURL(), `${interaction.user.globalName || interaction.user.username} (${interaction.user.username})`, `https://cdn.discordapp.com/avatars/${interaction.user.id}/${interaction.user.avatar}`, 0xff9900, []);
-		if (obj.delete === "none" || !obj)
+		if (obj.moderationlog === "none" || !obj)
 			return;
 		if (((interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.SendMessages) && (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.ViewChannel)) || (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.Administrator))
 			await client.channels.cache.get(obj.moderationlog).send({ embeds: [resembed] });

@@ -61,7 +61,7 @@ module.exports = {
 		if (deletemsg) {
 			await purgeset.user(interaction,user,100,true);
 		}
-		if (obj.delete === "none" || !obj)
+		if (obj.moderationlog === "none" || !obj)
 			return;
 		if (((interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.SendMessages) && (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.ViewChannel)) || (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.Administrator))
 			await client.channels.cache.get(obj.moderationlog).send({ embeds: [resembed] });
