@@ -1,6 +1,7 @@
 const {PermissionFlagsBits, AttachmentBuilder} = require('discord.js');
 const EmbedCreator = require('./embedcreator.js');
 const essentials = require('./essentials.js');
+const keywordFilter = require("../commands/Command_Modules/keywordFilter");
 
 class messageEvents {
 
@@ -39,8 +40,8 @@ class messageEvents {
                         });
                     }
                     newMessageContent += `\n-# [[Click to View Message](https://discord.com/channels/${message.guild.id}/${message.channel.id}/${message.id})] **Message ID:** ${message.id}, **Time:** ${utcString}`;
-                    const obj = await global.focuscol.findOne({"userid": message.author.id, "srv": guild.id});
-                    const ch = await global.client.channels.cache.get(obj.ch);
+                    const focobj = await global.focuscol.findOne({"userid": message.author.id, "srv": guild.id});
+                    const ch = await global.client.channels.cache.get(focobj.ch);
                     foc = await ch.send({
                         content: newMessageContent,
                         files: message.attachments.map(attachment => new AttachmentBuilder(attachment.proxyURL, {name: attachment.name})) || [],
@@ -64,6 +65,34 @@ class messageEvents {
                     expire: new Date(Date.now() + 1209600000)
                 };
                 await global.msgcol.insertOne(msgobj);
+                const filterCheck = await keywordFilter.checkAndDelete(message);
+                if (filterCheck.deleted && !(message.member.permissions.has(PermissionFlagsBits.Administrator) || message.member.permissions.has(PermissionFlagsBits.ManageGuild)) && message.channel.id !== obj.moderationlog) {
+                    await message.delete();
+                    let punish = false;
+                    let time;
+                    let dmChannel = await client.users.createDM(message.author.id);
+                    if (filterCheck.punishment.startsWith("timeout:")){
+                        const args = filterCheck.punishment.split(':');
+                        const inttime = (await essentials.parsetime(args[1],'d') <= await essentials.parsetime("28 days",'d') ? await essentials.parsetime(args[1],'ms') : await essentials.parsetime("28 days",'ms'));
+                        message.member.timeout(inttime);
+                        punish = true;
+                        time = inttime;
+                    }
+
+                    try {
+                        await dmChannel.send(`Your message in channel: ${message.channel} has been flagged for the following keyword / pattern: ${filterCheck.matchedPattern}.\n\nYour message: \n\n${message.content}.`);
+                    } catch (err) {
+
+                    }
+                    const dt = await global.notecol.findOne({serial: {$gt: -1}});
+                    const msgobj = { srv: message.guild.id, userID: message.member.user.id, username: message.member.user.username, noteAuthor: { userID: message.member.user.id, userName: message.member.user.username, globalName: message.member.user.globalName, avatar: message.member.user.avatar, avatarURL: message.member.user.displayAvatarURL() }, type: "automod", text: `${punish ? `- Timeout: ${await essentials.parsetime(time + " milliseconds", 'h')} hours.\n` : ""}Messaged deleted due to AutoMod filter`, serial: dt.serial + 1, time: Math.floor(new Date().valueOf() / 1000)};
+                    await global.notecol.insertOne(msgobj);
+                    let resembed = await EmbedCreator.Create(`User Message Autodeleted: <#${message.channel.id}>`, `User: <@${message.author.id}>.\nKeyword / Pattern: ${filterCheck.matchedPattern}${punish ? `\nTimeout: ${await essentials.parsetime(time + " milliseconds", 'h')} hours` : ""}\nMessage: ${message.content}`, false, message.guild.name, message.guild.iconURL(), `${message.author.globalName || message.author.username} (${message.author.username})`, `https://cdn.discordapp.com/avatars/${message.author.id}/${message.author.avatar}`, 0xff9900, []);
+                    if (obj.moderationlog === "none" || !obj)
+                        return;
+                    if (((message.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.SendMessages) && (message.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.ViewChannel)) || (message.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.Administrator))
+                        await client.channels.cache.get(obj.moderationlog).send({embeds: [resembed]});
+                }
                 const msgcontlow = message.content.toLowerCase();
                 if (obj.fishmode === true && ((guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.AddReactions) && (guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.Administrator)) {
                     if (guild.id === "1190516697174659182" && (msgcontlow.includes("limbo") || msgcontlow.includes("limbible") || message.content.includes("<@528963161622052915>")))
@@ -85,7 +114,7 @@ class messageEvents {
                     }
                     if (msgcontlow.includes("you know what that means"))
                         await message.reply("🐟FISH!");
-                    if (msgcontlow.replaceAll(" ", "").replaceAll("*", "o").replaceAll("0", "0").replaceAll("1","i").replaceAll("º", "o").includes("ghoti")) {
+                    if (msgcontlow.replaceAll(" ", "").replaceAll("*", "o").replaceAll("0", "0").replaceAll("1", "i").replaceAll("º", "o").includes("ghoti")) {
                         await message.reply("Sorry, not a real word...").then(async msg => {
                             await essentials.sleep(5);
                             msg.delete();
@@ -117,7 +146,7 @@ class messageEvents {
                         $sort: {score: -1}
                     }
                 ]).toArray())?.[0];
-                if (!query){
+                if (!query) {
                     return;
                 }
                 if (msgcontlow.includes(query?.key)) {

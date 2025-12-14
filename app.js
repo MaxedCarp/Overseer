@@ -37,6 +37,7 @@ const {
     secretkeyscol,
     channelscol,
     focuscol,
+    filtercol,
     botlistmetoken,
     botlistmeURL
 } = require('./config.json'); // These variables need to be defined in your config.json file!
@@ -71,6 +72,7 @@ client.once(Events.ClientReady, async c => {
     global.secretkeyscol = global.db.collection(secretkeyscol);
     global.channelscol = global.db.collection(channelscol);
     global.focuscol = global.db.collection(focuscol);
+    global.filtercol = global.db.collection(filtercol);
     await client.user.setPresence({activities: [{name: `Bot started up!`, type: ActivityType.Custom}]});
     eventEmitter.emit('banTimer');
     eventEmitter.emit('keepAlive');
