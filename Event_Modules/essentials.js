@@ -1,3 +1,5 @@
+const { contact } = require("../config.json");
+
 class essentials {
 	static sleep(seconds){
 		return new Promise(r => setTimeout(r, seconds * 1000));
@@ -65,6 +67,15 @@ class essentials {
     }
 	static async checkFocus(user,server){
 		return !!(await global.focuscol.findOne({"userid": user, "srv": server}));
+	}
+	static async log(text, code){
+		if (code === 'GuildMembersTimeout') {
+			// Ignore this specific error
+			return;
+		}
+		console.error(`Caught exception: ${text}`);
+		let dmChannel = await global.client.users.createDM(contact);
+		await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${text}`);
 	}
 }
 module.exports = essentials;

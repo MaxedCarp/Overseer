@@ -84,13 +84,7 @@ client.once(Events.ClientReady, async c => {
 client.login(token).then();
 
 process.on('uncaughtException', async (err) => {
-    if (err.code === 'GuildMembersTimeout') {
-        // Ignore this specific error
-        return;
-    }
-    console.error(`Caught exception: ${err.stack}`);
-    let dmChannel = await client.users.createDM(contact);
-    await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
+    await essentials.log(err.stack, err.code);
 });
 
 client.commands = new Collection();
@@ -260,7 +254,7 @@ client.on(Events.InteractionCreate, async interaction => {
         try {
             await command.execute(interaction);
         } catch (err) {
-            console.error(err);
+            await essentials.log(err, err.code);
             let dmChannel = await client.users.createDM(contact);
             await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
             if (interaction.replied || interaction.deferred) {
@@ -325,7 +319,7 @@ client.on(Events.InteractionCreate, async interaction => {
         try {
             await command.execute(interaction);
         } catch (err) {
-            console.error(err);
+            await essentials.log(err, err.code);
             let dmChannel = await client.users.createDM(contact);
             await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
             if (interaction.replied || interaction.deferred) {
@@ -509,7 +503,7 @@ client.on(Events.GuildCreate, async (guild) => {
     try {
         await guildEvents.GuildCreate(guild);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -518,7 +512,7 @@ client.on(Events.GuildDelete, async (guild) => {
     try {
         await guildEvents.GuildDelete(guild);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -527,7 +521,7 @@ client.on(Events.GuildUpdate, async (oGuild, nGuild) => {
     try {
         await guildEvents.GuildUpdate(oGuild, nGuild);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -536,7 +530,7 @@ client.on(Events.GuildMemberAdd, async (member) => {
     try {
         await guildEvents.MemberJoin(member);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -545,7 +539,7 @@ client.on(Events.GuildMemberRemove, async (member) => {
     try {
         await guildEvents.MemberLeave(member);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -554,7 +548,7 @@ client.on(Events.GuildMemberUpdate, async (oldMember, newMember) => {
     try {
         await guildEvents.MemberUpdate(oldMember, newMember);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -563,7 +557,7 @@ client.on(Events.UserUpdate, async (oldUser, newUser) => {
     try {
         await guildEvents.UserUpdate(oldUser, newUser);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -572,7 +566,7 @@ client.on(Events.GuildBanAdd, async (ban) => {
     try {
         await guildEvents.MemberBan(ban);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -582,7 +576,7 @@ client.on(Events.VoiceStateUpdate, async (oldState, newState) => {
     try {
         await guildEvents.VoiceState(oldState, newState);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -591,7 +585,7 @@ client.on(Events.PresenceUpdate, async (oldPresence, newPresence) => {
     try {
         await guildEvents.PresenceUpdate(oldPresence, newPresence);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -601,7 +595,7 @@ client.on(Events.MessageCreate, async (message) => {
     try {
         await messageEvents.MessageCreate(message);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -610,7 +604,7 @@ client.on(Events.MessageUpdate, async (omessage, nmessage) => {
     try {
         await messageEvents.MessageUpdate(omessage, nmessage);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -619,7 +613,7 @@ client.on(Events.MessageDelete, async (message) => {
     try {
         await messageEvents.MessageDelete(message);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -628,7 +622,7 @@ client.on(Events.MessageBulkDelete, async (messages) => {
     try {
         await messageEvents.MessageBulkDelete(messages);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         console.log(messages[0]);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
@@ -638,7 +632,7 @@ client.on(Events.MessageReactionAdd, async (reaction, user) => {
     try {
         await messageEvents.ReactionAdd(reaction, user);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
@@ -647,7 +641,7 @@ client.on(Events.MessageReactionRemove, async (reaction, user) => {
     try {
         await messageEvents.ReactionRemove(reaction, user);
     } catch (err) {
-        console.error(err);
+        await essentials.log(err, err.code);
         let dmChannel = await client.users.createDM(contact);
         await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
     }
