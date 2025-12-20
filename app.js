@@ -84,6 +84,10 @@ client.once(Events.ClientReady, async c => {
 client.login(token).then();
 
 process.on('uncaughtException', async (err) => {
+    if (err.code === 'GuildMembersTimeout') {
+        // Ignore this specific error
+        return;
+    }
     console.error(`Caught exception: ${err.stack}`);
     let dmChannel = await client.users.createDM(contact);
     await dmChannel.send(`[<t:${Math.floor(new Date().valueOf() / 1000)}:f>] ${err.stack}`);
