@@ -146,5 +146,68 @@ module.exports = {
                 ephemeral: true
             });
         }
+
+        if (subcommand === 'list') {
+            const queuedUsers = await global.voicecol.find({
+                type: "queue",
+                srv: interaction.guild.id
+            }).toArray();
+
+            const queueEmbed = new EmbedBuilder()
+                .setColor(0x69FA04)
+                .setTitle(`Access Queue List`)
+                .setAuthor({ name: `${interaction.user.username}`, iconURL: `${interaction.member.displayAvatarURL()}` })
+                .setFooter({ text: interaction.guild.name, iconURL: interaction.guild.iconURL() });
+
+            if (queuedUsers.length > 0) {
+                let list = "";
+                for (let i = 0; i < queuedUsers.length; i++) {
+                    list += `(${i}). User: <@${queuedUsers[i].id}>.\n\n`;
+                }
+                queueEmbed.setDescription(list);
+            } else {
+                queueEmbed.setDescription("The access queue is empty!");
+            }
+
+            await interaction.reply({ embeds: [queueEmbed], ephemeral: true });
+        }
+
+        if (subcommand === 'remove') {
+            const index = interaction.options.getInteger('index');
+
+            const queuedUsers = await global.voicecol.find({
+                type: "queue",
+                srv: interaction.guild.id
+            }).toArray();
+
+            if (queuedUsers.length === 0) {
+                await interaction.reply({
+                    content: `The access queue is empty!`,
+                    ephemeral: true
+                });
+                return;
+            }
+
+            if (index >= queuedUsers.length || index < 0) {
+                await interaction.reply({
+                    content: `Index out of range! Valid indices: 0-${queuedUsers.length - 1}`,
+                    ephemeral: true
+                });
+                return;
+            }
+
+            const userToRemove = queuedUsers[index];
+
+            await global.voicecol.deleteOne({
+                type: "queue",
+                id: userToRemove.id,
+                srv: interaction.guild.id
+            });
+
+            await interaction.reply({
+                content: `Successfully removed <@${userToRemove.id}> from the access queue (index ${index})!`,
+                ephemeral: true
+            });
+        }
     },
 };
