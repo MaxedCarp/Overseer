@@ -594,6 +594,51 @@ class guildEvents {
                             }
                         })()
                     })
+
+                    // TALKINGSTICK: Auto-disable if initiator leaves
+                    const talkingstickDoc = await global.voicecol.findOne({
+                        type: "talkingstick",
+                        srv: oldState.guild.id,
+                        channelID: oldChan.id
+                    });
+
+                    if (talkingstickDoc && talkingstickDoc.initiatorID === oldState.member.id) {
+                        // Initiator left - disable talkingstick for this channel
+                        // Delete the talkingstick document first
+                        await global.voicecol.deleteOne({
+                            type: "talkingstick",
+                            srv: oldState.guild.id,
+                            channelID: oldChan.id
+                        });
+
+                        // Unmute everyone still in THIS channel who has mute tracking
+                        const remainingMembers = oldChan.members;
+                        for (const [memberId, member] of remainingMembers) {
+                            const memberMuteDoc = await global.voicecol.findOne({
+                                type: "mute",
+                                srv: oldState.guild.id,
+                                userID: memberId
+                            });
+
+                            if (memberMuteDoc) {
+                                // Delete tracking document BEFORE unmuting to prevent race condition
+                                await global.voicecol.deleteOne({
+                                    type: "mute",
+                                    srv: oldState.guild.id,
+                                    userID: memberId
+                                });
+
+                                // Unmute if they weren't previously muted
+                                if (!memberMuteDoc.wasPreviouslyMuted) {
+                                    try {
+                                        await member.voice.setMute(false);
+                                    } catch (error) {
+                                        // Permission error - skip
+                                    }
+                                }
+                            }
+                        }
+                    }
                 } else if (!oldChan?.id && newChan?.id) { //join
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
                         const now = new Date();
@@ -663,6 +708,70 @@ class guildEvents {
                                 content: `Shall I ping the others for stream?`,
                                 components: [rowModMenu]
                             });
+                        }
+                    }
+
+                    // TALKINGSTICK: Auto-mute handling for users joining channels
+                    const muteDoc = await global.voicecol.findOne({
+                        type: "mute",
+                        srv: newState.guild.id,
+                        userID: newState.member.id
+                    });
+
+                    if (muteDoc) {
+                        // User has mute tracking - check if THIS channel has talkingstick active
+                        const talkingstickDoc = await global.voicecol.findOne({
+                            type: "talkingstick",
+                            srv: newState.guild.id,
+                            channelID: newChan.id
+                        });
+
+                        if (!talkingstickDoc) {
+                            // This channel does NOT have talkingstick - unmute the user
+                            if (!muteDoc.wasPreviouslyMuted) {
+                                try {
+                                    await newState.member.voice.setMute(false);
+                                } catch (error) {
+                                    // Permission error - skip
+                                }
+                            }
+
+                            // ONLY delete the tracking document AFTER unmuting
+                            await global.voicecol.deleteOne({
+                                type: "mute",
+                                srv: newState.guild.id,
+                                userID: newState.member.id
+                            });
+                        }
+                        // If this channel HAS talkingstick, keep mute document and stay muted
+                    } else {
+                        // No mute tracking - check if we should auto-mute for active talkingstick
+                        const talkingstickDoc = await global.voicecol.findOne({
+                            type: "talkingstick",
+                            srv: newState.guild.id,
+                            channelID: newChan.id
+                        });
+
+                        if (talkingstickDoc && !newState.member.user.bot) {
+                            const wasMuted = newState.serverMute;
+
+                            // Create tracking document (guild-wide, no channelID)
+                            await global.voicecol.insertOne({
+                                type: "mute",
+                                srv: newState.guild.id,
+                                userID: newState.member.id,
+                                wasPreviouslyMuted: wasMuted,
+                                mutedByTalkingstick: true
+                            });
+
+                            // Auto-mute if not the initiator and not already muted
+                            if (newState.member.id !== talkingstickDoc.initiatorID && !wasMuted) {
+                                try {
+                                    await newState.member.voice.setMute(true);
+                                } catch (error) {
+                                    // Permission error - skip
+                                }
+                            }
                         }
                     }
                 }
@@ -758,6 +867,70 @@ class guildEvents {
                             }
                         }
                     }
+
+                    // TALKINGSTICK: Handle moves between channels
+                    const muteDoc = await global.voicecol.findOne({
+                        type: "mute",
+                        srv: newState.guild.id,
+                        userID: newState.member.id
+                    });
+
+                    if (muteDoc) {
+                        // User has mute tracking - check if NEW channel has talkingstick
+                        const talkingstickDoc = await global.voicecol.findOne({
+                            type: "talkingstick",
+                            srv: newState.guild.id,
+                            channelID: newChan.id
+                        });
+
+                        if (!talkingstickDoc) {
+                            // New channel does NOT have talkingstick - unmute
+                            if (!muteDoc.wasPreviouslyMuted) {
+                                try {
+                                    await newState.member.voice.setMute(false);
+                                } catch (error) {
+                                    // Permission error - skip
+                                }
+                            }
+
+                            // Delete tracking document AFTER unmuting
+                            await global.voicecol.deleteOne({
+                                type: "mute",
+                                srv: newState.guild.id,
+                                userID: newState.member.id
+                            });
+                        }
+                        // If new channel HAS talkingstick, keep mute document and stay muted
+                    } else {
+                        // No mute tracking - check if we should auto-mute for new channel
+                        const talkingstickDoc = await global.voicecol.findOne({
+                            type: "talkingstick",
+                            srv: newState.guild.id,
+                            channelID: newChan.id
+                        });
+
+                        if (talkingstickDoc && !newState.member.user.bot) {
+                            const wasMuted = newState.serverMute;
+
+                            // Create tracking document (guild-wide)
+                            await global.voicecol.insertOne({
+                                type: "mute",
+                                srv: newState.guild.id,
+                                userID: newState.member.id,
+                                wasPreviouslyMuted: wasMuted,
+                                mutedByTalkingstick: true
+                            });
+
+                            // Auto-mute if not the initiator
+                            if (newState.member.id !== talkingstickDoc.initiatorID && !wasMuted) {
+                                try {
+                                    await newState.member.voice.setMute(true);
+                                } catch (error) {
+                                    // Permission error - skip
+                                }
+                            }
+                        }
+                    }
                 }
                 if (oldState.selfDeaf !== newState.selfDeaf && (newChan && oldChan)) {
                     if (await essentials.checkFocus(newState.member.id, newState.guild.id)) {
@@ -824,6 +997,25 @@ class guildEvents {
                             content: newMessageContent,
                             allowedMentions: {parse: []}
                         });
+                    }
+
+                    // TALKINGSTICK: Prevent manual unmuting (re-mute)
+                    if (!newState.serverMute && oldState.serverMute) {
+                        // User was manually unmuted - check if they have talkingstick tracking
+                        const muteDoc = await global.voicecol.findOne({
+                            type: "mute",
+                            srv: newState.guild.id,
+                            userID: newState.member.id
+                        });
+
+                        if (muteDoc && !muteDoc.wasPreviouslyMuted) {
+                            // User is being tracked by talkingstick - re-mute them
+                            try {
+                                await newState.member.voice.setMute(true);
+                            } catch (error) {
+                                // Permission error - skip
+                            }
+                        }
                     }
                 }
                 if (oldState.serverDeaf !== newState.serverDeaf && (newChan && oldChan)) {
