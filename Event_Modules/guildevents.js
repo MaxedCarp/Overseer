@@ -511,15 +511,20 @@ class guildEvents {
                         if (oldChan.members.size < 1) {
                             if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1)) {
                                 for (const overwrite of overwrites) {
-                                    const members = await oldState.guild.members.fetch();
-                                    const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
-                                    if (!!member) {
-                                        await oldChan.permissionOverwrites.delete(member.user);
-                                        await global.channelscol.deleteOne({
-                                            "srv": oldState.guild.id,
-                                            "channelID": oldChan.id,
-                                            "userID": overwrite.userID
-                                        })
+                                    if (!overwrite.perm) {
+                                        try {
+                                            const member = await oldState.guild.members.fetch(overwrite.userID);
+                                            if (member) {
+                                                await oldChan.permissionOverwrites.delete(member.user);
+                                                await global.channelscol.deleteOne({
+                                                    "srv": oldState.guild.id,
+                                                    "channelID": oldChan.id,
+                                                    "userID": overwrite.userID
+                                                });
+                                            }
+                                        } catch (error) {
+                                            // Member not found or other error, skip
+                                        }
                                     }
                                 }
                             }
@@ -529,17 +534,20 @@ class guildEvents {
                                 "channelID": oldChan.id,
                                 "userID": newState.member.user.id
                             });
-                            if (!!overwrite) {
+                            if (!!overwrite && !overwrite.perm) {
                                 if (await oldChan.permissionOverwrites.cache.find(exp => exp.id === overwrite.userID)) {
-                                    const members = await oldState.guild.members.fetch();
-                                    const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
-                                    if (!!member) {
-                                        await oldChan.permissionOverwrites.delete(member.user);
-                                        await global.channelscol.deleteOne({
-                                            "srv": oldState.guild.id,
-                                            "channelID": oldChan.id,
-                                            "userID": overwrite.userID
-                                        })
+                                    try {
+                                        const member = await oldState.guild.members.fetch(overwrite.userID);
+                                        if (member) {
+                                            await oldChan.permissionOverwrites.delete(member.user);
+                                            await global.channelscol.deleteOne({
+                                                "srv": oldState.guild.id,
+                                                "channelID": oldChan.id,
+                                                "userID": overwrite.userID
+                                            });
+                                        }
+                                    } catch (error) {
+                                        // Member not found or other error, skip
                                     }
                                 }
                             }
@@ -708,15 +716,20 @@ class guildEvents {
                         if (oldChan.members.size < 1) {
                             if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1)) {
                                 for (const overwrite of overwrites) {
-                                    const members = await newState.guild.members.fetch();
-                                    const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
-                                    if (!!member) {
-                                        await oldChan.permissionOverwrites.delete(member.user);
-                                        await global.channelscol.deleteOne({
-                                            "srv": oldState.guild.id,
-                                            "channelID": oldChan.id,
-                                            "userID": overwrite.userID
-                                        })
+                                    if (!overwrite.perm) {
+                                        try {
+                                            const member = await newState.guild.members.fetch(overwrite.userID);
+                                            if (member) {
+                                                await oldChan.permissionOverwrites.delete(member.user);
+                                                await global.channelscol.deleteOne({
+                                                    "srv": oldState.guild.id,
+                                                    "channelID": oldChan.id,
+                                                    "userID": overwrite.userID
+                                                });
+                                            }
+                                        } catch (error) {
+                                            // Member not found or other error, skip
+                                        }
                                     }
                                 }
                             }
@@ -726,17 +739,20 @@ class guildEvents {
                                 "channelID": oldChan.id,
                                 "userID": newState.member.user.id
                             });
-                            if (!!overwrite) {
+                            if (!!overwrite && !overwrite.perm) {
                                 if (await oldChan.permissionOverwrites.cache.find(exp => exp.type === 1 && exp.id === overwrite.userID)) {
-                                    const members = await newState.guild.members.fetch();
-                                    const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
-                                    if (!!member) {
-                                        await oldChan.permissionOverwrites.delete(member.user);
-                                        await global.channelscol.deleteOne({
-                                            "srv": oldState.guild.id,
-                                            "channelID": oldChan.id,
-                                            "userID": overwrite.userID
-                                        })
+                                    try {
+                                        const member = await newState.guild.members.fetch(overwrite.userID);
+                                        if (member) {
+                                            await oldChan.permissionOverwrites.delete(member.user);
+                                            await global.channelscol.deleteOne({
+                                                "srv": oldState.guild.id,
+                                                "channelID": oldChan.id,
+                                                "userID": overwrite.userID
+                                            });
+                                        }
+                                    } catch (error) {
+                                        // Member not found or other error, skip
                                     }
                                 }
                             }

@@ -38,6 +38,7 @@ const {
     channelscol,
     focuscol,
     filtercol,
+    voicecol,
     botlistmetoken,
     botlistmeURL
 } = require('./config.json'); // These variables need to be defined in your config.json file!
@@ -73,6 +74,7 @@ client.once(Events.ClientReady, async c => {
     global.channelscol = global.db.collection(channelscol);
     global.focuscol = global.db.collection(focuscol);
     global.filtercol = global.db.collection(filtercol);
+    global.voicecol = global.db.collection(voicecol);
     await client.user.setPresence({activities: [{name: `Bot started up!`, type: ActivityType.Custom}]});
     eventEmitter.emit('banTimer');
     eventEmitter.emit('keepAlive');
@@ -216,15 +218,20 @@ eventEmitter.on('channelsCheckStart', async () => {
                     if (!!overwrites.length > 0) {
                         if (await channel.permissionOverwrites.cache.find(exp => exp.type === 1) && channel.members.size < 1) {
                             for (const overwrite of overwrites) {
-                                const members = await guild.members.fetch();
-                                const member = await members.find(m => m.id === overwrite.userID && !overwrite.perm);
-                                if (!!member) {
-                                    await channel.permissionOverwrites.delete(member.user);
-                                    await global.channelscol.deleteOne({
-                                        "srv": guild.id,
-                                        "channelID": channel.id,
-                                        "userID": overwrite.userID
-                                    })
+                                if (!overwrite.perm) {
+                                    try {
+                                        const member = await guild.members.fetch(overwrite.userID);
+                                        if (member) {
+                                            await channel.permissionOverwrites.delete(member.user);
+                                            await global.channelscol.deleteOne({
+                                                "srv": guild.id,
+                                                "channelID": channel.id,
+                                                "userID": overwrite.userID
+                                            });
+                                        }
+                                    } catch (error) {
+                                        // Member not found or other error, skip
+                                    }
                                 }
                             }
                         }
