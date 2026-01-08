@@ -74,6 +74,12 @@ class forms {
                 }, {
                     name: '/onetimeaccess <user> (<channel>)',
                     value: "Grant a user access to a channel for a limited time. Can be used while in a VC to grant access to it, or manually specify one."
+                }, {
+                    name: '/permaccess <user> (<channel>)',
+                    value: "Grant a user permanent access to a channel. Can be used while in a VC to grant access to it, or manually specify one."
+                }, {
+                    name: '/accessqueue <add|list|remove|push>',
+                    value: "Manage the voice channel access queue. Administrators only."
                 }]);
                 const helpMisc = await EmbedCreator.Create(`Command List - Page 5: Miscellaneous`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, `https://maxedcarp.net/imgs/overseer.png`, 0x00A012, [{
                     name: 'Misc',
