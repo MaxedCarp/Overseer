@@ -13,6 +13,7 @@ This directory contains command files for channel management operations.
 | `/permaccess` | Manage Server | Grant permanent voice channel access |
 | `/setlogchannel` | Manage Channels | Configure log channels |
 | `/unsetlogchannel` | Manage Channels | Disable log channels |
+| `/talkingstick` | Manage Channels | Toggle exclusive speaking rights in voice channel |
 
 ## Detailed Command Documentation
 
@@ -266,6 +267,117 @@ In #mod-log channel:
 - Bot stops sending that log type
 - No errors shown to users
 - Can be re-enabled with `/setlogchannel`
+
+---
+
+### /talkingstick
+**File:** `talkingstick.js`
+**Permission:** Manage Channels
+
+**Purpose:** Toggle exclusive speaking rights in voice channel - mute everyone except the initiator
+
+**Parameters:** None
+
+**Behavior:**
+
+**When Inactive (Activation):**
+1. Validates user is in a voice channel
+2. Checks bot has `MuteMembers` permission
+3. Creates channel marker document in `voicecol`
+4. Server-mutes all members except initiator and bots
+5. Creates guild-wide tracking documents for each muted user
+6. Records original mute state of each user
+
+**When Active (Deactivation):**
+1. Validates only the initiator can deactivate
+2. Deletes channel marker document
+3. Unmutes all tracked users who weren't previously muted
+4. Deletes all tracking documents for members in channel
+5. Preserves original mute state for already-muted users
+
+**Auto-Mute System:**
+- Users joining talkingstick channel → automatically muted
+- Users moving into talkingstick channel → automatically muted
+- Users manually unmuted by admin → automatically re-muted
+- Tracking persists across disconnects
+
+**Auto-Disable Triggers:**
+- Initiator leaves the channel → everyone unmuted, mode disabled
+
+**Cleanup on User Movement:**
+- User joins non-talkingstick channel → unmuted, tracking deleted
+- User moves to non-talkingstick channel → unmuted, tracking deleted
+- User disconnects → tracking persists for cleanup on rejoin
+
+**Database Records:**
+
+*Channel Marker (type: "talkingstick"):*
+```javascript
+{
+    type: "talkingstick",
+    srv: String,           // Guild ID
+    channelID: String,     // Voice channel ID
+    initiatorID: String,   // User who activated it
+    timestamp: Date        // When activated
+}
+```
+
+*User Mute Tracking (type: "mute"):*
+```javascript
+{
+    type: "mute",
+    srv: String,                  // Guild ID
+    userID: String,               // User being tracked
+    wasPreviouslyMuted: Boolean,  // Was user already muted before talkingstick?
+    mutedByTalkingstick: Boolean  // Always true
+}
+```
+
+**Access Control:**
+- Any admin with `ManageChannels` can activate
+- Only the initiator can deactivate
+- Other admins attempting to deactivate receive error
+
+**Edge Cases Handled:**
+1. **Duplicate tracking prevention**: Checks for existing tracking before creating new documents
+2. **Race condition prevention**: Deletes tracking before unmuting to avoid re-mute
+3. **Previously muted users**: Preserves original mute state (`wasPreviouslyMuted: true`)
+4. **Multiple talkingstick channels**: Guild-wide tracking works across all channels
+5. **Manual unmute attempts**: Re-mutes users if admin tries to unmute during active mode
+6. **Disconnect persistence**: Tracking survives disconnects, cleaned up on next join
+
+**Validation Checks:**
+- User must be in voice channel
+- Bot must have `MuteMembers` permission in channel
+- Only initiator can deactivate active talkingstick
+
+**Use Cases:**
+- One person presenting to a group
+- Town hall meetings with single speaker
+- Classroom/lecture environments
+- Organized debates with turn-taking
+
+**Error Handling:**
+- Not in voice channel: Ephemeral error message
+- Missing permissions: Ephemeral error message
+- Non-initiator deactivation attempt: Ephemeral error message
+- Mute failures: Silently skipped, logged to console
+
+**Example:**
+```
+User A in #general-vc with Users B, C, D:
+/talkingstick
+→ "You now have the talking stick! You are now the only one who can speak in #general-vc."
+→ Users B, C, D are server-muted
+→ User A can speak normally
+
+User E joins #general-vc:
+→ User E automatically muted
+
+User A: /talkingstick
+→ "You no longer have the talking stick! All members have been unmuted."
+→ Users B, C, D, E unmuted
+```
 
 ---
 
