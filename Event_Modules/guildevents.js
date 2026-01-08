@@ -45,6 +45,27 @@ class guildEvents {
                             let roles = await guild.roles.cache.filter(role3 => finrole.indexOf(role3.id) !== -1);
                             roles = await roles.filter(role => role.editable);
                             await member2.roles.add(roles);
+
+                            // Restore channel access
+                            const channelAccess = await global.channelscol.find({
+                                srv: guild.id,
+                                userID: member.id
+                            }).toArray();
+
+                            for (const access of channelAccess) {
+                                try {
+                                    const channel = guild.channels.cache.get(access.channelID);
+                                    if (channel && (guild.members.me).permissionsIn(channel).has(PermissionFlagsBits.ManageRoles)) {
+                                        await channel.permissionOverwrites.create(member.user, {
+                                            ViewChannel: true,
+                                            Connect: true,
+                                            Speak: true
+                                        });
+                                    }
+                                } catch (error) {
+                                    // Silently skip if channel access restoration fails
+                                }
+                            }
                         } else {
                             if (obj?.joinroles?.length !== 0 && !!obj && (member.guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles)) {
                                 if ((guild.members.me).permissions.has(PermissionFlagsBits.ManageRoles) || (guild.members.me).permissions.has(PermissionFlagsBits.Administrator)) {
