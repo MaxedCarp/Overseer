@@ -1090,8 +1090,7 @@ class guildEvents {
                         joinroles: [],
                         editlog: [],
                         banlist: [],
-                        secretkeys: [],
-                        fishmode: false
+                        secretkeys: []
                     };
                     await global.srvcol.insertOne(obj);
                 }

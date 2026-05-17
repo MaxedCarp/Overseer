@@ -30,7 +30,6 @@ const {
     activedb,
     msgcol,
     srvcol,
-    fishcol,
     notecol,
     persistcol,
     bancol,
@@ -66,7 +65,6 @@ client.once(Events.ClientReady, async c => {
     global.db = global.mongo.db(activedb);
     global.msgcol = global.db.collection(msgcol);
     global.srvcol = global.db.collection(srvcol);
-    global.fishcol = global.db.collection(fishcol);
     global.notecol = global.db.collection(notecol);
     global.persistcol = global.db.collection(persistcol);
     global.bancol = global.db.collection(bancol);

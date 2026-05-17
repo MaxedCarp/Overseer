@@ -287,16 +287,6 @@ class messageEvents {
                     inline: false
                 }, {name: "New Message:", value: `${nmessage.content}`, inline: false}]);
                 let obj = await global.srvcol.findOne({"srv": nmessage.guild.id})
-                if (obj.fishmode === true) {
-                    if (nmessage.content.toLowerCase().includes("ghoti")) {
-                        await nmessage.reply("Sorry, not a real word...").then(async msg => {
-                            await essentials.sleep(5);
-                            msg.delete();
-                            nmessage.delete();
-                            return -1;
-                        })
-                    }
-                }
                 const look = {messageID: nmessage.id};
                 const attachm = nmessage.attachments.map(attach => {
                     return {fileName: attach.name, attachurl: attach.url, fileType: attach.contentType}
