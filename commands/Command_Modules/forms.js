@@ -5,14 +5,14 @@ class forms {
     static GetForm(number, gname, gicon,) {
         return new Promise((resolve) => {
             (async () => {
-                const helpChannels = await EmbedCreator.Create(`Command List - Page 1: Channels`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, `https://maxedcarp.net/imgs/overseer.png`, 0x00A012, [{
+                const helpChannels = await EmbedCreator.Create(`Command List - Page 1: Channels`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:@User time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, global.client.user.displayAvatarURL(), 0x00A012, [{
                     name: 'Channels',
                     value: "----------------"
                 }, {
                     name: '/setlogchannel <type>',
                     value: "Sets the specified logs channel to the channel the command is executed in."
                 }, {name: '/unsetlogchannel <type>', value: "Unsets the specified logs channel."}]);
-                const helpRoles = await EmbedCreator.Create(`Command List - Page 2: Roles`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, `https://maxedcarp.net/imgs/overseer.png`, 0x00A012, [{
+                const helpRoles = await EmbedCreator.Create(`Command List - Page 2: Roles`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:@User time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, global.client.user.displayAvatarURL(), 0x00A012, [{
                     name: 'Roles',
                     value: "----------------"
                 }, {
@@ -34,7 +34,7 @@ class forms {
                     name: '/secretkeys delete <index>',
                     value: "Delete a secret keyset (use /secretkeys list list to get the index)"
                 }]);
-                const helpMod = await EmbedCreator.Create(`Command List - Page 3: Moderation`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, `https://maxedcarp.net/imgs/overseer.png`, 0x00A012, [{
+                const helpMod = await EmbedCreator.Create(`Command List - Page 3: Moderation`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:@User time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, global.client.user.displayAvatarURL(), 0x00A012, [{
                     name: 'Moderation',
                     value: "----------------"
                 }, {
@@ -62,7 +62,7 @@ class forms {
                     name: '/purge attachments (<count>) (<user>)',
                     value: "Purges messages containing attachments up to 100 messages."
                 }]);
-                const helpAdmin = await EmbedCreator.Create(`Command List - Page 4: Administration`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, `https://maxedcarp.net/imgs/overseer.png`, 0x00A012, [{
+                const helpAdmin = await EmbedCreator.Create(`Command List - Page 4: Administration`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:@User time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, global.client.user.displayAvatarURL(), 0x00A012, [{
                     name: 'Administration',
                     value: "----------------"
                 }, {
@@ -81,7 +81,7 @@ class forms {
                     name: '/accessqueue <add|list|remove|push>',
                     value: "Manage the voice channel access queue. Administrators only."
                 }]);
-                const helpMisc = await EmbedCreator.Create(`Command List - Page 5: Miscellaneous`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:maxedcarp time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, `https://maxedcarp.net/imgs/overseer.png`, 0x00A012, [{
+                const helpMisc = await EmbedCreator.Create(`Command List - Page 5: Miscellaneous`, `< > - Parameter\n(< > < >...) - Optional parameter(s)\nExample for commands that require time:\n/tempban user:@User time:5 hours 3m 31 second`, false, gname, gicon, `Help Form`, global.client.user.displayAvatarURL(), 0x00A012, [{
                     name: 'Misc',
                     value: "----------------"
                 }, {name: '/help', value: "- Displays this help form"}]);

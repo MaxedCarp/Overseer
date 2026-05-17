@@ -63,7 +63,7 @@ module.exports = {
 		if (titleurl)
 			exampleEmbed.setURL(titleurl);
 		if (desc){
-			desc2 = desc.replaceAll("\\n", "\n");
+			const desc2 = desc.replaceAll("\\n", "\n");
 			exampleEmbed.setDescription(desc2);
 		}
 		if (thumb)
@@ -82,10 +82,9 @@ module.exports = {
 				else
 					newinlines.push(false);
 			}
-			console.log(newinlines);
 		}
 		if (fields){
-			fieldesc2 = fieldesc.replaceAll("\\n", "\n");
+			const fieldesc2 = fieldesc.replaceAll("\\n", "\n");
 			let splitfield = fields.split('//, ');
 			let splitfieldesc = fieldesc2.split('//, ');
 			for (i = 0; i < splitfield.length; i++){

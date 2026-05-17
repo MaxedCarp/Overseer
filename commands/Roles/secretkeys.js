@@ -43,7 +43,7 @@ module.exports = {
 				await interaction.reply({ content: `Successfully added role "${role}" with the keyword(s) "${key.toLowerCase()}"! Required age: ${agereq} seconds.`, ephemeral: true });
 			break;
 			case "delete":
-				if (!!(await global.secretkeyscol.findOne())) {
+				if (!!(await global.secretkeyscol.findOne({srv: interaction.guild.id, key: key.toLowerCase()}))) {
 					await global.secretkeyscol.deleteOne({srv: interaction.guild.id, key: key.toLowerCase()});
 					await interaction.reply({content: `Key "${key.toLowerCase()}" deleted successfully!`, ephemeral: true});
 				}

@@ -100,7 +100,7 @@ class purgeset {
                 comp[chatmsg.channel.id].msgs.push(chatmsg);
                 msgnum++;
             } catch (err) {
-                await global.msgcol.deleteOne({"messageID": msgs[i].messageID});
+                await global.msgcol.deleteOne({"messageID": msg.messageID});
             }
         }
         for (let c in comp) {

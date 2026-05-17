@@ -1,4 +1,4 @@
-const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits, EmbedBuilder, ChannelType } = require('discord.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -32,7 +32,7 @@ module.exports = {
                     option.setName('channel')
                         .setDescription('Voice channel')
                         .setRequired(true)
-                        .addChannelTypes(2))) // GuildVoice = 2
+                        .addChannelTypes(ChannelType.GuildVoice)))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
     async execute(interaction) {
         const subcommand = interaction.options.getSubcommand();

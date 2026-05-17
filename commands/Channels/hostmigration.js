@@ -26,7 +26,6 @@ module.exports = {
             });
             return;
         }
-        console.log(channel.permissionOverwrites.cache);
         await interaction.member.voice.channel.members.forEach((member) => {
             member.voice.setChannel(channel);
         });

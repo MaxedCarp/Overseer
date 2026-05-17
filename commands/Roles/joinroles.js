@@ -53,7 +53,7 @@ module.exports = {
 					await global.srvcol.updateOne(look, upd);
 					await interaction.reply({ content: `Successfully removed join role at index ${index}!`, ephemeral: true });
 				}
-				else if (index < (data2.joinroles.length))
+				else if (data2.joinroles.length === 0)
 					await interaction.reply({ content: `There are no join roles on this server!`, ephemeral: true });
 			break;
 			case "list":

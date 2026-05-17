@@ -182,7 +182,7 @@ eventEmitter.on('keepAlive', async () => {
 eventEmitter.on('updateList', async () => {
     // Function to update bot stats
     const updateBotStats = async () => {
-        if (client.user.id !== "1205253895258120304")
+        if (!botlistmetoken || !botlistmeURL)
             return;
         try {
             const response = await fetch(botlistmeURL, {

@@ -1,4 +1,5 @@
-const { SlashCommandBuilder } = require('discord.js');
+const { SlashCommandBuilder, PermissionFlagsBits } = require('discord.js');
+const { contact } = require('../../config.json');
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('supersecretmsgcommand')
@@ -12,14 +13,16 @@ module.exports = {
                 .setDescription('User')
 				.setRequired(true)),
 	async execute(interaction) {
-		if (interaction.user.id !== "275305152842301440"){
+		const isContact = interaction.user.id === contact;
+		const isAdmin = interaction.member.permissions.has(PermissionFlagsBits.Administrator);
+		if (!isContact && !isAdmin) {
 			interaction.reply({ content: 'I apologize, but you do not have any rights (to use this command)!', ephemeral: true });
 			return;
 		}
 		const msg = interaction.options.getString('message');
 		const usr = interaction.options.getUser('user');
-		let dmChannel = await client.users.createDM(usr.id);
+		let dmChannel = await global.client.users.createDM(usr.id);
 		await dmChannel.send(msg);
-		await interaction.reply({ content: `Message successfully set to "${usr.globalName}"!`, ephemeral: true });
+		await interaction.reply({ content: `Message successfully sent to "${usr.globalName}"!`, ephemeral: true });
 	},
 };

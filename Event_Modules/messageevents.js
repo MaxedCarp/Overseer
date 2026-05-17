@@ -94,7 +94,7 @@ class messageEvents {
                         await client.channels.cache.get(obj.moderationlog).send({embeds: [resembed]});
                 }
                 const msgcontlow = message.content.toLowerCase();
-                if (message.content.includes("<@1205253895258120304>"))
+                if (message.content.includes(`<@${global.client.user.id}>`))
                     await message.reply("Yes, how may I assist?");
 
 

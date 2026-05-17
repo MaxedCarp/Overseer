@@ -23,7 +23,7 @@ module.exports = {
 						await global.persistcol.insertOne(duser);
 					}
 					else {
-						await global.persistcol.updateOne(look, {$set: {nickname: member.nickname, roles: member["_roles"]}})
+						await global.persistcol.updateOne(look2, {$set: {nickname: member.nickname, roles: member["_roles"]}})
 					}
 				})();
 			});

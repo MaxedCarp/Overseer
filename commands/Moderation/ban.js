@@ -60,6 +60,6 @@ module.exports = {
 		if (obj.moderationlog === "none" || !obj)
 			return;
 		if (((interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.SendMessages) && (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.ViewChannel)) || (interaction.guild.members.me).permissionsIn(obj.moderationlog).has(PermissionFlagsBits.Administrator))
-			await client.channels.cache.get(obj.moderationlog).send({ embeds: [resembed] });
+			await global.client.channels.cache.get(obj.moderationlog).send({ embeds: [resembed] });
 	},
 };
