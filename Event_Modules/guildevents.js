@@ -318,13 +318,6 @@ class guildEvents {
                             inline: false
                         }]);
                         flag = true;
-                        if (newMember?.nickname?.toLowerCase().replaceAll(" ", "").replaceAll("*", "o").includes("ghoti") && !!obj.fishmode){
-                            await newMember.setNickname(newMember.user.globalName);
-                            let dmChannel = await client.users.createDM(newMember.user.id);
-                            const msg = await dmChannel.send("Sorry, not a real word!");
-                            await essentials.sleep(5);
-                            await msg.delete();
-                        }
                     }
                     const now = new Date();
                     const utcString = now.toUTCString();
@@ -374,7 +367,7 @@ class guildEvents {
         return new Promise((resolve, reject) => {
             (async () => {
                 let flag = false;
-                await client.guilds.cache.forEach(guild => {
+                client.guilds.cache.forEach(guild => {
                     (async () => {
                         if (guild.members.cache.has(newUser.id)) {
                             let obj = await global.srvcol.findOne({"srv": guild.id});
@@ -683,33 +676,7 @@ class guildEvents {
                             }
                         })()
                     })
-                    if (newChan?.id === "1422378190122385529" && !newState?.member?.user?.bot) {
-                        const overwrite = await global.channelscol.findOne({
-                            "srv": newState.guild.id,
-                            "channelID": newChan.id,
-                            "userID": newState.member.user.id
-                        });
-                        if (!overwrite && newState.member.user.id !== "275305152842301440") {
-                            await newState.disconnect();
-                            let dmChannel = await client.users.createDM(newState.member.user.id);
-                            await dmChannel.send(`Please message Carp before trying to join this channel!`);
-                        }
-                    }
-                    if (newChan?.id === "1345093720822775839" && newState?.member?.user?.id === "528963161622052915") {
-                        const obj = await global.srvcol.findOne({srv: "1190516697174659182"});
-                        const then = new Date(obj.stream).toLocaleDateString('en-US', { timeZone: 'America/New_York' });
-                        const now = new Date().toLocaleDateString('en-US', { timeZone: 'America/New_York' });
-                        if ((then.split('/')[0] < now.split('/')[0]) || (then.split('/')[1] < now.split('/')[1]) || (then.split('/')[2] < now.split('/')[2])) {
-                            const cancel = await EmbedCreator.Button(`cancel`, "Cancel", ButtonStyle.Danger);
-                            const confirm = await EmbedCreator.Button(`scinotify`, "Yes, please notify!", ButtonStyle.Primary);
-                            const rowModMenu = new ActionRowBuilder().addComponents(cancel, confirm);
-                            let dmChannel = await client.users.createDM(newState?.member?.user?.id);
-                            await dmChannel.send({
-                                content: `Shall I ping the others for stream?`,
-                                components: [rowModMenu]
-                            });
-                        }
-                    }
+
 
                     // TALKINGSTICK: Auto-mute handling for users joining channels
                     const muteDoc = await global.voicecol.findOne({

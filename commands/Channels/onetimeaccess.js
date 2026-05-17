@@ -22,10 +22,6 @@ module.exports = {
             });
             return;
         }
-        if (channel.id === "1422378190122385529" && interaction.user.id !== "275305152842301440") {
-            await interaction.reply({content: `Only Carp may grant access to this channel!`, ephemeral: true});
-            return;
-        }
         if (!((interaction.guild.members.me).permissionsIn(channel).has(PermissionFlagsBits.ViewChannel) || (interaction.guild.members.me).permissions.has(PermissionFlagsBits.Administrator)))
         {
             await interaction.reply({

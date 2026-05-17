@@ -94,35 +94,6 @@ class messageEvents {
                         await client.channels.cache.get(obj.moderationlog).send({embeds: [resembed]});
                 }
                 const msgcontlow = message.content.toLowerCase();
-                if (obj.fishmode === true && ((guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.AddReactions) && (guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.ViewChannel)) || (guild.members.me).permissionsIn(message.channel.id).has(PermissionFlagsBits.Administrator)) {
-                    if (guild.id === "1190516697174659182" && (msgcontlow.includes("limbo") || msgcontlow.includes("limbible") || message.content.includes("<@528963161622052915>")))
-                        await message.react("🎩");
-                    const msgsplit = msgcontlow.split(' ');
-                    let flag = true;
-                    for (let prt of msgsplit) {
-                        let fishtest = await global.fishcol.findOne({"name": prt})
-                        if (!!fishtest || message.content.includes("🐟") || msgcontlow.includes("sci-fi freak")) {
-                            if (flag) {
-                                try {
-                                    await message.react("🐟");
-                                } catch (err) {
-                                    console.log("Reaction failed in: " + message.guild.name + ": #" + message.channel.name)
-                                }
-                                flag = false;
-                            }
-                        }
-                    }
-                    if (msgcontlow.includes("you know what that means"))
-                        await message.reply("🐟FISH!");
-                    if (msgcontlow.replaceAll(" ", "").replaceAll("*", "o").replaceAll("0", "0").replaceAll("1", "i").replaceAll("º", "o").includes("ghoti")) {
-                        await message.reply("Sorry, not a real word...").then(async msg => {
-                            await essentials.sleep(5);
-                            msg.delete();
-                            message.delete();
-                            return -1;
-                        })
-                    }
-                }
                 if (message.content.includes("<@1205253895258120304>"))
                     await message.reply("Yes, how may I assist?");
 
