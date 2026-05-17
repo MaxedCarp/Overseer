@@ -33,30 +33,6 @@ return new Promise(r => setTimeout(r, seconds * 1000));
 
 ---
 
-#### fishList()
-**Returns:** `Array<String>`
-**Purpose:** Returns list of fish names for fish mode feature
-
-**Fish Names:** (40 total)
-- Common: salmon, tuna, cod, bass, trout, carp
-- Exotic: mahi-mahi, marlin, barracuda
-- Small: guppy, anchovy, sardine
-- Special: betta, tang, shark, eel, shrimp
-- Generic: "fish"
-
-**Usage:**
-```javascript
-const fishes = essentials.fishList();
-// ["salmon", "tang", "shark", ...]
-```
-
-**Notes:**
-- Used by fish mode feature to identify fish-related messages
-- Includes "carp" (likely reference to user "Carp")
-- Total of 40 fish types
-
----
-
 #### parsetime(str, format)
 **Returns:** `Promise<Number>`
 **Purpose:** Parse human-readable time strings into milliseconds or specified format

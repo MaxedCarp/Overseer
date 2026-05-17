@@ -11,7 +11,6 @@ This directory contains utility and informational commands.
 | `/serverinfo` | None | Display server statistics |
 | `/count` | Manage Channels | Count media in database |
 | `/createembed` | Manage Messages | Create custom embeds |
-| `/fishmode` | Manage Server | Toggle fish mode Easter eggs |
 | `/seticon` | Administrator | Set server icon from URL |
 | `/timeconversion` | None | Convert time strings to units |
 | `/updateval` | Carp-only | Update server icons in database |
@@ -190,45 +189,6 @@ Emojis: 50 | Stickers: 10 | Soundboards: 3
 
 ---
 
-## /fishmode
-**File:** `fishmode.js`
-**Permission:** Manage Server
-
-**Purpose:** Toggle fish mode Easter egg features
-
-**Behavior:**
-1. Fetches current fish mode status
-2. Toggles boolean value
-3. Updates database
-4. Confirms new status
-
-**Database Update:**
-```javascript
-await global.srvcol.updateOne(
-    {srv: guildId},
-    {$set: {fishmode: !currentValue}}
-);
-```
-
-**Fish Mode Features (when enabled):**
-1. **Fish Name Reactions** - Reacts 🐟 to fish names
-2. **"Ghoti" Blocking** - Deletes messages/nicknames with "ghoti"
-3. **Special Reactions** - Server-specific Easter eggs
-4. **Auto-Reply** - "🐟FISH!" to "you know what that means"
-
-**Implemented in:** `messageevents.js` and `guildevents.js`
-
-**Example:**
-```
-/fishmode
-→ "Fish mode is now enabled"
-
-/fishmode
-→ "Fish mode is now disabled"
-```
-
----
-
 ## /seticon <url>
 **File:** `test.js`
 **Permission:** Administrator
@@ -376,11 +336,6 @@ await interaction.reply({content: "Message", ephemeral: true});
 - Navigation handled in `app.js` button interactions
 - Automatically includes all commands
 
-### Fish Mode
-- Global toggle affects multiple event handlers
-- Database field: `fishmode` (boolean)
-- Easter egg features for fun/community engagement
-
 ### Time Conversion
 - Uses locale-based parsing (`parselocale.js`)
 - Supports multiple time formats
@@ -398,7 +353,6 @@ await interaction.reply({content: "Message", ephemeral: true});
 - Most commands are public (no special permissions)
 - All replies ephemeral (except embeds sent to channel)
 - Time conversion uses milliseconds internally
-- Fish mode is server-specific toggle
 - Server info updates in real-time (not cached)
 - Count commands limited to database retention (14 days)
 - Owner-only commands have hardcoded user ID checks

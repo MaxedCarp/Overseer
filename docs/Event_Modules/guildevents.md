@@ -88,9 +88,6 @@ All methods are static and return Promises.
 **Tracked Changes:**
 1. **Nickname Changes**
    - Shows old vs new nickname
-   - **Fish Mode Check**: Blocks "ghoti" in nicknames
-   - Sends DM: "Sorry, not a real word!"
-   - Resets nickname to global name
 2. **Role Changes**
    - Added roles
    - Removed roles
@@ -104,14 +101,6 @@ All methods are static and return Promises.
 **Focus Integration:**
 - Sends nickname change notifications to focus channel
 - Includes timestamp
-
-**Fish Mode "ghoti" Detection:**
-```javascript
-newMember.nickname.toLowerCase()
-    .replaceAll(" ", "")
-    .replaceAll("*", "o")
-    .includes("ghoti")
-```
 
 **Embed Colors:**
 - Update: `0xff9900` (Orange)
@@ -220,8 +209,7 @@ Updates server record with new name and icon
     joinroles: [],            // Automatic join roles
     editlog: [],              // Edit log (unused in current code)
     banlist: [],              // Ban list (unused in current code)
-    secretkeys: [],           // Secret keys for role assignment
-    fishmode: false           // Fish mode toggle
+    secretkeys: []            // Secret keys for role assignment
 }
 ```
 
@@ -377,16 +365,6 @@ await essentials.checkFocus(userId, serverId)
 
 ---
 
-## Fish Mode
-
-**Nickname Check:**
-- Blocks "ghoti" in nicknames
-- Replaces `*` with `o` before checking
-- Resets to global name if detected
-- Sends temporary DM notification
-
----
-
 ## Database Schema
 
 ### srvcol (Server Configuration)
@@ -414,7 +392,6 @@ await essentials.checkFocus(userId, serverId)
     defaultnick: String,
     autodelist: Array,
     joinroles: Array,
-    fishmode: Boolean,
     stream: Number            // Timestamp
 }
 ```

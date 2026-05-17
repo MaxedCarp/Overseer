@@ -23,7 +23,7 @@ Overseer/
 │   └── locales/
 │       └── parselocale.js         # Time parsing locale
 ├── commands/                       # Slash commands
-│   ├── Channels/                  # Channel management (7 files)
+│   ├── Channels/                  # Channel management (9 files)
 │   ├── Command_Modules/           # Utility modules (5 files)
 │   ├── Messages/                  # Message commands (3 files)
 │   ├── Misc/                      # Miscellaneous (9 files)
@@ -48,7 +48,6 @@ Overseer/
     "activedb": "database-name",
     "msgcol": "messages",
     "srvcol": "servers",
-    "fishcol": "fish",
     "notecol": "notes",
     "persistcol": "persistence",
     "bancol": "bans",
@@ -125,8 +124,6 @@ node app.js
 ### Customization
 - **Join/Leave Messages:** Custom welcome/goodbye messages
 - **Default Nicknames:** Auto-nickname new members
-- **Fish Mode:** Fun Easter egg features
-- **Auto-Delete List:** Auto-delete from specific users
 
 ---
 
@@ -158,7 +155,6 @@ Configured via `/setlogchannel` and other admin commands:
     // Settings
     rolepersistence: false,       // Restore roles on rejoin
     ismsgembed: false,            // Send messages as embeds
-    fishmode: false,              // Enable fish mode
     defaultnick: "",              // Default nickname
 
     // Messages
@@ -189,7 +185,6 @@ Configured via `/setlogchannel` and other admin commands:
 |------------|---------|-----------|
 | `msgcol` | Message storage | 14-day expiry |
 | `srvcol` | Server configuration | One per guild |
-| `fishcol` | Fish names | Static data |
 | `notecol` | User notes | Moderation records |
 | `persistcol` | Role persistence | User roles/nicknames |
 | `bancol` | Temporary bans | Auto-expire tracking |
@@ -202,7 +197,7 @@ Configured via `/setlogchannel` and other admin commands:
 
 ## 🎮 Command Categories
 
-### Channels (7 Commands)
+### Channels (9 Commands)
 - `/focus` - Monitor user activity
 - `/unfocus` - Stop monitoring
 - `/hostmigration` - Move VC members
@@ -210,6 +205,8 @@ Configured via `/setlogchannel` and other admin commands:
 - `/permaccess` - Permanent VC access
 - `/setlogchannel` - Configure logging
 - `/unsetlogchannel` - Disable logging
+- `/talkingstick` - Toggle exclusive speaking mode
+- `/accessqueue` - Manage voice channel access queue
 
 ### Moderation (8 Commands)
 - `/ban` - Ban user permanently
@@ -231,14 +228,13 @@ Configured via `/setlogchannel` and other admin commands:
 - `/setleavemessage` - Configure leave message
 - `/supersecretmsgcommand` - Special message features
 
-### Misc (9 Commands)
+### Misc (8 Commands)
 - `/help` - Interactive help pages
 - `/ping` - Latency test
 - `/serverinfo` - Server information
 - `/count` - Count messages
 - `/createembed` - Custom embeds
-- `/fishmode` - Toggle fish mode
-- `/test` - Testing command
+- `/seticon` - Set server icon
 - `/timeconversion` - Time utilities
 - `/updateval` - Update values
 
@@ -259,7 +255,7 @@ Configured via `/setlogchannel` and other admin commands:
 - **PresenceUpdate:** Online/offline monitoring
 
 ### Message Events
-- **MessageCreate:** Logging, filtering, fish mode, secret keys
+- **MessageCreate:** Logging, filtering, secret keys
 - **MessageUpdate:** Edit tracking
 - **MessageDelete:** Deletion logging
 - **MessageBulkDelete:** Purge logging
@@ -311,13 +307,6 @@ Configured via `/setlogchannel` and other admin commands:
 - Online/offline status
 - Server join/leave
 - Reactions
-
-### Fish Mode
-**Easter egg features:**
-- Reacts with 🐟 to fish names
-- Blocks "ghoti" in messages/nicknames
-- Special reactions for specific users
-- Reply to "you know what that means"
 
 ### AutoMod System
 **Keyword/regex filtering:**

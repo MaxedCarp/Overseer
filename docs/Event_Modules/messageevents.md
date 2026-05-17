@@ -19,7 +19,7 @@ All methods are static and return Promises.
 ---
 
 ## MessageCreate(message)
-**Purpose:** Handles new messages - logging, filtering, fish mode, secret keys
+**Purpose:** Handles new messages - logging, filtering, secret keys
 **Parameters:** `message` - Message object
 
 ### Workflow Overview
@@ -30,9 +30,8 @@ All methods are static and return Promises.
 5. **Message Logging**: Saves message to database with 14-day expiry
 6. **Focus Tracking**: Sends message copy to focus channel
 7. **Keyword Filter**: Checks and deletes filtered content
-8. **Fish Mode**: Reacts with 🐟 emoji, blocks "ghoti"
-9. **Bot Mention**: Responds when mentioned
-10. **Secret Keys**: Grants roles based on message content
+8. **Bot Mention**: Responds when mentioned
+9. **Secret Keys**: Grants roles based on message content
 
 ### Auto-Delete List
 **Purpose:** Automatically delete messages from specific users
@@ -131,47 +130,6 @@ Your message:
 - Title: "User Message Autodeleted: <#channelID>"
 - Description: User, keyword/pattern, timeout (if any), message content
 - Color: `0xff9900` (Orange)
-
-### Fish Mode
-**Enabled Check:** `obj.fishmode === true`
-
-**Features:**
-
-#### 1. Limbo/Limbible Reaction (Specific Server)
-**Server ID:** `1190516697174659182`
-**Trigger:** Message contains "limbo", "limbible", or mentions user `528963161622052915`
-**Action:** Reacts with 🎩 emoji
-
-#### 2. Fish Name Detection
-**Source:** `global.fishcol` collection
-**Process:**
-- Splits message into words
-- Checks each word against fish database
-- Also matches 🐟 emoji or "sci-fi freak"
-- Reacts with 🐟 if found
-
-**Fish List:** See `essentials.fishList()` - includes salmon, tuna, carp, etc.
-
-#### 3. "You know what that means"
-**Trigger:** Message contains "you know what that means"
-**Action:** Replies with "🐟FISH!"
-
-#### 4. "Ghoti" Blocking
-**Detection:**
-```javascript
-message.content.toLowerCase()
-    .replaceAll(" ", "")
-    .replaceAll("*", "o")
-    .replaceAll("0", "o")
-    .replaceAll("1", "i")
-    .replaceAll("º", "o")
-    .includes("ghoti")
-```
-
-**Action:**
-1. Replies "Sorry, not a real word..."
-2. Waits 5 seconds
-3. Deletes both reply and original message
 
 ### Bot Mention Response
 **Trigger:** Message contains `<@1205253895258120304>`
@@ -316,8 +274,7 @@ deleteMany({ messageID: { $in: messageIds } })
 2. **Bot Filter**: Ignores bot messages
 3. **Database Check**: Returns if message not in database
 4. **Content Check**: Returns if content unchanged
-5. **Fish Mode Check**: Blocks "ghoti" in edited messages
-6. **Update Log**: Sends edit embed
+5. **Update Log**: Sends edit embed
 7. **Database Update**: Updates stored message content
 8. **Focus Notification**: Notifies if user is monitored
 
@@ -327,12 +284,6 @@ deleteMany({ messageID: { $in: messageIds } })
 - "New Message:": Edited content
 - Title: "**Message Edited:** [Click to View](link)"
 - Color: `0xf7ef02` (Yellow)
-
-### Fish Mode "Ghoti" Check
-**Same as MessageCreate:**
-- Detects "ghoti" in edited message
-- Replies "Sorry, not a real word..."
-- Deletes both messages after 5 seconds
 
 ### Database Update
 **Updates:**
@@ -428,12 +379,6 @@ deleteMany({ messageID: { $in: messageIds } })
 - Optional timeout punishments
 - Moderation log integration
 
-### Fish Mode
-- Multiple detection methods
-- Fun reactions and replies
-- "Ghoti" word blocking
-- Server-specific Easter eggs
-
 ### Secret Key Roles
 - Text search based matching
 - Age requirement checking
@@ -451,17 +396,12 @@ deleteMany({ messageID: { $in: messageIds } })
 
 ### srvcol (Server Config)
 - Channel configuration
-- Fish mode toggle
 - Auto-delete list
 - Message embed settings
 
 ### focuscol (Focus Monitoring)
 - User monitoring settings
 - Focus channel mapping
-
-### fishcol (Fish Names)
-- Fish name list
-- Used for fish mode reactions
 
 ### notecol (Moderation Notes)
 - AutoMod violations
@@ -489,7 +429,6 @@ if (
 ```
 
 **Additional Permission Checks:**
-- `AddReactions`: For fish mode emoji reactions
 - `ManageRoles`: For secret key role assignment
 
 ---
@@ -500,7 +439,6 @@ if (
 - DM messages logged to console only
 - Message expiry prevents database bloat
 - Focus system provides comprehensive user monitoring
-- Fish mode includes multiple fun features
 - AutoMod supports configurable punishments
 - Secret keys use MongoDB text search for fuzzy matching
 - Bulk deletes handled efficiently with batch operations

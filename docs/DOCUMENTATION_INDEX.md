@@ -49,7 +49,7 @@ Location: `Event_Modules/`
 
 ## 🎮 Command Documentation
 
-### Channels Commands (7 files)
+### Channels Commands (9 files)
 
 **Document:** [CHANNELS_README.md](./commands/Channels/CHANNELS_README.md)
 
@@ -61,6 +61,8 @@ Location: `Event_Modules/`
 - `/permaccess` - Permanent VC access
 - `/setlogchannel` - Configure logging
 - `/unsetlogchannel` - Disable logging
+- `/talkingstick` - Toggle exclusive speaking mode
+- `/accessqueue` - Manage voice channel access queue
 
 **Key Topics:** Focus system, voice access management, log channel configuration
 
@@ -94,7 +96,7 @@ Location: `Event_Modules/`
 
 ---
 
-### Misc Commands (9 files)
+### Misc Commands (8 files)
 
 **Document:** [MISC_README.md](./commands/Misc/MISC_README.md)
 
@@ -104,12 +106,11 @@ Location: `Event_Modules/`
 - `/serverinfo` - Server statistics
 - `/count` - Count media in database
 - `/createembed` - Custom embeds
-- `/fishmode` - Toggle fish mode
 - `/seticon` - Set server icon
 - `/timeconversion` - Time unit conversion
 - `/updateval` - Update server icons (owner)
 
-**Key Topics:** Help system, server info, embeds, fish mode, utilities
+**Key Topics:** Help system, server info, embeds, utilities
 
 ---
 
@@ -158,13 +159,13 @@ Location: `Event_Modules/`
 |----------|-------|----------|----------|
 | **Core** | 3 | - | Main app, deployment, index |
 | **Event Modules** | 6 | - | Events, utilities, helpers |
-| **Channels** | 7 | 7 | Focus, access, logs |
+| **Channels** | 9 | 9 | Focus, access, logs |
 | **Command Modules** | 5 | 1 | Utilities, helpers |
 | **Messages** | 3 | 3 | Join/leave, DM |
-| **Misc** | 9 | 9 | Help, info, utilities |
+| **Misc** | 8 | 8 | Help, info, utilities |
 | **Moderation** | 8 | 9 | Ban, timeout, notes |
 | **Roles** | 4 | 4 | Join roles, persistence |
-| **TOTAL** | **45** | **33** | **All features** |
+| **TOTAL** | **45** | **35** | **All features** |
 
 ---
 
@@ -188,7 +189,7 @@ Location: `Event_Modules/`
 ### Server Configuration
 - [MESSAGES_README.md](./commands/Messages/MESSAGES_README.md) - Join/leave messages
 - [CHANNELS_README.md](./commands/Channels/CHANNELS_README.md) - Log channels
-- [MISC_README.md](./commands/Misc/MISC_README.md) - Fish mode, settings
+- [MISC_README.md](./commands/Misc/MISC_README.md) - Utilities, settings
 
 ### Automation
 - [ROLES_README.md](./commands/Roles/ROLES_README.md) - Secret keys, join roles
@@ -230,9 +231,6 @@ See [README.md](./README.md#-permission-system) for comprehensive permission gui
 
 ### Focus System
 See [guildevents.md](./Event_Modules/guildevents.md#focus-system) for monitoring details
-
-### Fish Mode
-See [MISC_README.md](./commands/Misc/MISC_README.md#fishmode) for Easter egg features
 
 ### Secret Keys
 See [ROLES_README.md](./commands/Roles/ROLES_README.md#secret-keys-integration) for role automation

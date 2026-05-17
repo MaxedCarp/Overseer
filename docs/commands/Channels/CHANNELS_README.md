@@ -14,6 +14,7 @@ This directory contains command files for channel management operations.
 | `/setlogchannel` | Manage Channels | Configure log channels |
 | `/unsetlogchannel` | Manage Channels | Disable log channels |
 | `/talkingstick` | Manage Channels | Toggle exclusive speaking rights in voice channel |
+| `/accessqueue` | Administrator | Manage the voice channel access queue |
 
 ## Detailed Command Documentation
 
@@ -381,6 +382,74 @@ User A: /talkingstick
 
 ---
 
+### /accessqueue <subcommand>
+**File:** `accessqueue.js`
+**Permission:** Administrator
+
+**Purpose:** Manage a server-wide queue of users awaiting voice channel access, then bulk-grant them access in one action.
+
+**Subcommands:**
+
+| Subcommand | Parameters | Description |
+|------------|------------|-------------|
+| `add` | `user` (User, Required) | Add a user to the access queue |
+| `list` | — | List all users currently in the queue |
+| `remove` | `index` (Integer, Required) | Remove a user from the queue by index |
+| `push` | `channel` (Voice Channel, Required) | Grant queued users access to a voice channel and clear the queue |
+
+**Behavior — `add`:**
+1. Checks if user is already in the queue
+2. Inserts a queue record into `voicecol` (`type: "queue"`)
+3. Confirms addition ephemerally
+
+**Behavior — `list`:**
+1. Fetches all queue records for the server
+2. Returns numbered embed listing each queued user
+
+**Behavior — `remove`:**
+1. Fetches current queue to validate the index
+2. Deletes the specified entry from `voicecol`
+3. Confirms removal ephemerally
+
+**Behavior — `push`:**
+1. Validates bot can see the target voice channel
+2. Fetches all queued users for the server
+3. Grants `ViewChannel`, `Connect`, and `Speak` permissions to each user on the channel
+4. Inserts a `channelscol` record for each user (for automatic cleanup tracking)
+5. Skips users already having access
+6. Deletes all queue records after processing
+7. Reports how many were added and how many were skipped
+
+**Database Records:**
+```javascript
+// voicecol queue entry
+{ type: "queue", id: String, srv: String }
+
+// channelscol access entry (created on push)
+{ srv: String, channelID: String, userID: String }
+```
+
+**Error Handling:**
+- User already in queue: Ephemeral error
+- Empty queue on push/remove: Ephemeral error
+- Index out of range: Ephemeral error with valid range
+- Bot lacks channel access: Ephemeral error
+- User not in server during push: Silently skipped
+
+**Example:**
+```
+/accessqueue add user:@Alice
+→ "User @Alice has been added to the access queue!"
+
+/accessqueue list
+→ Embed: (0). User: @Alice
+
+/accessqueue push channel:#waiting-room
+→ "Pushed 1 user(s) to #waiting-room!"
+```
+
+---
+
 ## Common Patterns
 
 ### Permission Checking
@@ -398,6 +467,7 @@ if (!((guild.members.me).permissionsIn(channel).has(Permission) ||
 Commands use global MongoDB collections:
 - `global.focuscol`: Focus monitoring
 - `global.channelscol`: Channel access records
+- `global.voicecol`: Access queue records
 - `global.srvcol`: Server configuration
 
 ### Error Messages

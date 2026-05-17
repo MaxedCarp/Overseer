@@ -13,7 +13,7 @@ const { Client, Collection, Events, GatewayIntentBits, Partials, ActivityType, E
 
 ### Database
 - **MongoDB**: For persistent data storage
-- **Collections**: Messages, servers, fish, notes, persistence, bans, secret keys, channels, focus, filters
+- **Collections**: Messages, servers, notes, persistence, bans, secret keys, channels, focus, filters, voice
 
 ### Internal Modules
 - `Event_Modules/embedcreator.js`: Creates Discord embeds
@@ -34,7 +34,7 @@ Loads from `config.json`:
 - `contact`: Contact user ID for error notifications
 - `dbusr`, `dbpwd`, `addr`: MongoDB credentials
 - `activedb`: Active database name
-- Collection names: `msgcol`, `srvcol`, `fishcol`, `notecol`, `persistcol`, `bancol`, `secretkeyscol`, `channelscol`, `focuscol`, `filtercol`
+- Collection names: `msgcol`, `srvcol`, `notecol`, `persistcol`, `bancol`, `secretkeyscol`, `channelscol`, `focuscol`, `filtercol`, `voicecol`
 - `botlistmetoken`, `botlistmeURL`: Bot list integration
 
 ## Client Initialization
@@ -80,7 +80,6 @@ Triggered once when the bot successfully connects to Discord.
 ```javascript
 global.msgcol      // Messages collection
 global.srvcol      // Servers collection
-global.fishcol     // Fish mode collection
 global.notecol     // Notes collection
 global.persistcol  // Role persistence collection
 global.bancol      // Bans collection
@@ -88,6 +87,7 @@ global.secretkeyscol  // Secret keys collection
 global.channelscol    // Channel access collection
 global.focuscol       // Focus mode collection
 global.filtercol      // Keyword filter collection
+global.voicecol       // Voice access queue collection
 ```
 
 ## Command Loading System (Lines 90-109)
@@ -387,7 +387,6 @@ All event handlers use consistent error handling:
 | `global.db` | Database | Active database |
 | `global.msgcol` | Collection | Messages |
 | `global.srvcol` | Collection | Servers |
-| `global.fishcol` | Collection | Fish mode |
 | `global.notecol` | Collection | User notes |
 | `global.persistcol` | Collection | Role persistence |
 | `global.bancol` | Collection | Bans |
@@ -395,6 +394,7 @@ All event handlers use consistent error handling:
 | `global.channelscol` | Collection | Channel access |
 | `global.focuscol` | Collection | Focus mode |
 | `global.filtercol` | Collection | Keyword filters |
+| `global.voicecol` | Collection | Voice access queue |
 
 ## Key Features
 
